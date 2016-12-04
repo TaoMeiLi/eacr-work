@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>支付</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/scanCodeCharge/payment.css" />
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+	</head>
+	<body>
+		<div class="list"></div><!--list-->
+		<div class="foot" >确认付款</div>
+	</body>
+	<script>
+//		var OpenId=getQueryString('openId');
+		var OpenId = getOpenId('openId');
+		var oId=getQueryString('id');
+		var oRder_sn='';//交易流水
+		var cHarge_time='';//充电时长
+		var cHarge_quantity='';//充电度数
+		var sErvice_money='';//服务费
+		var eLectric_money='';//电费
+		var pAy_id='';
+		var mOney='';//消费金额
+		var payId='';
+		var pileUrl = config.cdzServerUrl+'/order/getorderdetail';
+		var pileParams = 'id='+oId;
+		jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+			var oData=result.data;
+			if(result.code==2000){
+				oRder_sn = oData.order_sn;
+				cHarge_time = oData.charge_time;
+				cHarge_quantity = oData.charge_quantity;
+				sErvice_money = oData.service_money;
+				eLectric_money = oData.electric_money;
+				mOney = oData.detail_money;
+				pAy_id=oData.pay_id;
+				if(pAy_id==0){
+					payId='<img src="../../static/images/scanCodeCharge/wx-icon.png" class="pay-icon" />微信支付';
+				}else if(pAy_id==1){
+					payId="支付宝支付";
+				}
+				$(".list").html('<ul><li>交易流水：<span>'+oRder_sn+'</span></li><li>充电耗时：<span>'+cHarge_time+'</span></li><li>充电电量：<span>'+cHarge_quantity+'</span></li><li>服务费：<span>'+sErvice_money+'</span></li><li>电费：<span>'+eLectric_money+'</span></li><li class="payment-way">支付方式：<span>'+payId+'</span></li><li class="expenditure"><p>消费金额：<span>'+mOney+'</span>元</p></li></ul>')
+				
+			}
+			
+		},null,null, {openId:OpenId});
+		function getWechatCookie() {
+			var oUserCode=getStorageUC();
+            var timestamp = new Date().getTime().toString().substr(0, 10);
+            var token = $.md5(timestamp +OpenId+ 'spisolar');
+            var wechatCookie = base64_encode("userCode="+oUserCode+";device=wecha#2#3#4#5#"+OpenId+";time=" + timestamp + ";token=" + token + ";");
+            return wechatCookie;
+        }
+		//调起支付onclick="callpay()"
+			$(".foot").one("click",function(){
+				var wechatCookie = 'wechatCookie='+getWechatCookie(); //请时API必传参数
+                var order_sn = oRder_sn;
+                $.ajax({
+                    type: "post",
+                    data: 'order_sn='+order_sn+'&' + wechatCookie,
+                    url: config.cdzServerUrl+"/wxpay/pay?",
+                    dataType: "json",
+                    async: false,
+                    success: function (json) {
+                        if (json.code == 2000) {
+                            jsApiParameters = json.data;
+                            jsApiCall(jsApiParameters);//网页端调起支付API
+                        } else {
+                            console.log(json);
+                            alert(json.code)
+                            alert(json.msg)
+                            return false;
+                        }
+                    }
+                });
+			})
+           
+
+            //调用微信JS api 支付
+            function jsApiCall(){
+                WeixinJSBridge.invoke(
+                        'getBrandWCPayRequest',
+                        jsApiParameters,
+                        function (res) {
+                            WeixinJSBridge.log(res.err_msg);
+                            if (res.err_msg == 'get_brand_wcpay_request:ok') {
+//                              alert('支付成功,跳转到相关页');
+                                var jumpHref = './payment-succeed.html?id='+oId+'&openId='+OpenId+'&detail_money='+mOney+'&pay_id='+pAy_id;
+								location.href = jumpHref;
+                            }
+
+                            if (res.err_msg == 'get_brand_wcpay_request:cancel') {
+//                              alert('支付过程中用户取消,跳转到订单页');
+								window.location.href=window.location.href;
+                            }
+
+                            if (res.err_msg == 'get_brand_wcpay_request:fail') {
+//                              alert('支付失败,跳转到相关页面');
+								var jumpHref = './payment-lose.html?id='+oId+'&openId='+OpenId+'&detail_money='+mOney+'&pay_id='+pAy_id;
+								location.href = jumpHref;
+                            }
+                        }
+                );
+            }
+		
+	
+	</script>
+</html>

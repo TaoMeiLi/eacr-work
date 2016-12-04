@@ -1,0 +1,20 @@
+html,body{height:100%;}
+.main{width:100%;min-height:100%;}
+.main ul li{width:100%;background:#fff;margin-top:0.75rem;}
+.main ul li .title{width:100%;height:1.75rem;border-bottom:1px solid #e5e2e2;font-size:0.65rem;color:#9a9a9a;line-height: 1.75rem;padding:0 0.75rem;}
+.main ul li .title p:first-child{float:left;}
+.main ul li .title p:first-child img{width:0.7rem;vertical-align:top;margin:0.55rem 5px 0 0;}
+.main ul li .title p:last-child{float:right;color:#333333;}
+.main ul li h4{font-size:0.75rem;color:#333333;line-height: 1.9rem;font-weight: normal;padding:0 0.75rem;}
+.main ul li .con1,.main ul li .con2{width:17rem;border-left:1px solid #9e9e9f;margin-left:1.1rem;font-size:0.65rem;color:#9a9a9a;}
+.main ul li h5{width:17rem;margin-left:1.1rem;font-weight: normal;font-size:0.65rem;color:#9a9a9a;}
+.main ul li h5 span{margin:-1rem 0 0 0.75rem;display: block;width:16rem;white-space: nowrap;overflow:hidden;text-overflow: ellipsis;}
+.main ul li h5 img{width:0.5rem;margin-left:-0.25rem;margin-right:0.5rem;}
+.main ul li .con1{padding-top:1.1rem;}
+.main ul li .con1 p:nth-child(1),.main ul li .con2 p:nth-child(1){line-height:1rem;}
+.main ul li .con1 p:nth-child(1) img,.main ul li .con2 p:nth-child(1) img{width:0.5rem;margin-left:-0.25rem;margin-right:0.5rem;}
+.main ul li .con1 p:nth-child(2),.main ul li .con1 p:nth-child(3){margin-left:0.7rem;}
+.main ul li .con1 p:nth-child(1){line-height:1rem;}
+.main ul li .con1 p:nth-child(3){padding-bottom:1rem;}
+.main ul li .con2 p:nth-child(2){line-height:1rem;margin-left:0.75rem;}
+.main ul li .con2{border:none;}

@@ -1,0 +1,23 @@
+body{font-size:14px;font-family:"Hiragino Sans GB","STXihei", Arial, Helvetica, sans-serif;}
+.entering{width:100%;margin-top:10px;}
+.entering ul li{position:relative;}
+.entering ul .phone-box,.entering ul .password-box,.entering ul .note-box{width:100%;height:50px;border-top:1px solid #e8e8e8; background:#fff;}
+.entering ul .password-box{border-bottom:1px solid #e8e8e8;}
+.entering ul .phone-box input,.entering ul .password-box input,.entering ul .note-box input{width:100%;height: 100%; border:none;padding-left:10%;padding-right:10%;font-size:14px;}
+.entering ul .phone-box>img:first-child,.entering ul .password-box>img:first-child,.entering ul .note-box>img:first-child{position: absolute;top: 16px;left: 4%;width: 14px;}
+.entering ul .note-box>img:first-child{top:20px;}
+.entering ul .password-box em,.entering ul .phone-box em{position:absolute;top:0px;right:0px; display: inline-block; width:50px; height:50px;z-index:100;}
+.entering ul .password-box em img,.entering ul .phone-box em img{width: 17px; margin-top: 15px;margin-left: 18px;}
+.entering ul .state i{position:absolute; top:7px; left:4%; display:inline-block;width:10px;height:10px;background:url(../../images/scanCodeCharge/login-icon.png) -125px 0 no-repeat;}
+.entering ul .state span{color:#b5b5b5;font-size:12px;position:absolute;left:9%;top:3px;}
+.entering ul .state a{position:absolute; top:3px; right:4%;color:#7db147;font-size:12px;}
+.entering ul .submit {width:100%;margin-top:100px;}
+.entering ul .submit p{width:94%;height:40px;border-radius:10px;line-height: 40px;text-align:center;background:#79c526;margin:0 auto;color:#fff;font-size:15px;font-family: "微软雅黑";}
+.entering ul .note-box .validateBtn{display:inline-block;width:90px; height:30px;background:#fff;border:1px solid #79c526;position:absolute;z-index: 100;border-radius: 5px;color:#79c526;padding:0;right:4%;top:9px;}
+/*.entering ul .note-box i{display: inline-block;width:16px;height:11px;background:url(../../images/scanCodeCharge/login-icon.png) -141px 0 no-repeat;position:absolute;top:20px;left:4%;}*/
+.entering ul .logon-btn{font-size:15px;text-align: right;margin-right:3%;margin-top:20px;}
+.entering ul .logon-btn a{color:rgb(121, 197, 38);}
+
+.alerts{position:fixed;top:190px;left:50%;margin-left:-135px;z-index:200;background:rgba(0,0,0,.3); height:30px;width:270px;line-height:30px;text-align:center; color:#fff;font-size:12px;display: none;border-radius: 8px;}
+.loading{display:none;background:#000;color:#fff;text-align:center;-webkit-opacity: 0.5;-moz-opacity: 0.5;-o-opacity: 0.5;-ms-opacity: 0.5;opacity: 0.5;width:160px;height:50px;line-height:50px;position: fixed;left:50%;top:50%;margin-top:-25px;margin-left:-80px;border-radius: 10px;z-index: 999;}
+.load-paw{width:180px;height:80px;line-height: 30px;padding:10px;}

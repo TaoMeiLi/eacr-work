@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>我的补桩记录</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        
+        <link rel="stylesheet" href="css/common.css" />
+        <link rel="stylesheet" type="text/css" href="css/pile-record.css"/>
+        <script src="js/jquery-2.1.4.min.js" type="text/javascript" ></script>
+        <script src="js/common.js" type="text/javascript" ></script>
+	</head>
+	<body>
+		<div class="main" id="main">
+			<div class="header-top">
+				<div class="back-btn"><img src="img/mendpile/back.png" alt="" /></div>
+				<p class="tit">我的补桩记录</p>
+			</div>
+			<div class="myimg" style="width:100%;padding-top:4.9rem; text-align:center;display: none;">
+				<img style="width:7.9rem;margin:0 auto;" src="img/mendpile/myimg1.png" alt="" />
+				<p style="color:#333333;font-size:0.75rem;text-align: center;margin-top:1rem;">无收录电桩的数据</p>
+			</div>
+			<ul class="list">
+				
+			</ul>
+		</div><!--main-->
+		<script>
+			$(function(){
+				var oState = getQueryString("type");	//1是已收录；2是未收录 ;0全部
+				var userId = getQueryString("userId");	//用户userid
+				var uLng;
+				var uLat;
+				if(oState==0){
+					$(".myimg p").html("无补桩数据");
+				}
+				if(oState==1){
+					$(".tit").html("已收录");
+				}
+				if(oState==2){
+					$(".tit").html("未收录");
+				}
+				var pileUrl = config.cdzServerUrl+'/pile/list';
+				var pileParams = 'user_id='+userId+'&type='+oState;
+				jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+					if(result.code==2000){
+						var payData = result.data;
+//						console.log(payData);
+						if (typeof payData === "object" && !(payData instanceof Array)){
+							$(".main").css("background","#fff");
+							$(".myimg").show();	
+						}else{
+							$(".myimg").hide();
+							var str ='';
+							for(var i=0; i<=payData.length; i++){
+								var oStatus;//(0:待审;1:已领取;2:通过审核;3:未通过;4:已采纳;)
+								var sText = payData[i].status;
+								if(sText==0){
+									oStatus="待审核";
+								}else if(sText==1){
+									oStatus="已领取";
+								}else if(sText==2){
+									oStatus="通过审核";
+								}else if(sText==3){
+									oStatus="未收录";
+								}else if(sText==4){
+									oStatus="已采纳";
+								}
+								str ='<li zid='+payData[i].id+'><div class="title clearfix"><p><img src="img/mendpile/time-icon.png" alt="" /><span>提交时间：<i>'+payData[i].add_time+'</i></span></p><p class="check1">'+oStatus+'</p></div><div class="position"><h4>'+payData[i].pile_name+'</h4><p ><a><span><img src="img/mendpile/map-logo2.png" alt="" />'+payData[i].pile_address+'</span></a></p></div></li>';
+								$(".list").prepend(str);
+							}
+						}	
+					}else{
+						alert(result.msg);
+					}
+				})
+				$("body").on("touchstart",".check1",function(){
+					var $zid = $(this).parents("li").attr("zid");
+					var jumpHref = './state.html?user_id='+userId+'&id='+$zid+'&ohtml=pile';
+					location.href = jumpHref;
+				})
+				
+				 //返回上一层
+		        $(".back-btn").on("touchstart",function(){
+		        	var jumpHref = 'javascript:history.go(-1)';
+		        	location.href = jumpHref;
+		        })
+			})
+		</script>
+	</body>
+</html>

@@ -1,0 +1,15 @@
+html,body{height:100%;}
+.main{width:100%;height:100%;background:#EFEFF4;}
+.con{padding-top:0.75rem;}
+.con .photo{width:100%;background:#fff;padding:0.75rem;padding-right:0;}
+.con .photo li{width:5.25rem;height:5.85rem;border:1px solid #333333;float:left;margin-right:0.75rem;overflow: hidden;}
+.con .photo li img{width:100%;vertical-align: middle;}
+.con .photo .add{background:url(../img/mendpile/add-icon.png) center center no-repeat;)}
+.con .photo .add form ,.con .photo .add form input{width:100%;height:100%;opacity:0;}
+.con>p:nth-child(2){background:#fff;padding:0 0 0.75rem 0.75rem;font-size:0.65rem;color:#bcbcbc;margin-bottom:0.75rem;}
+.con .name,.con .phone{position:relative;width:100%;height:2.25rem;padding-left:0.75rem;background:#fff;font-size:0.65rem;line-height: 2.25rem;}
+.con .name{border-bottom:1px solid #c8c8c8;}
+.con .name input,.con .phone input{width:12.5rem;height:100%;border:none;font-size:0.65rem;color:#333333;position:absolute;top:0;right:0.75rem;text-align: right;}
+input::-webkit-input-placeholder{color:#bcbcbc;}
+.botton-btn{position:fixed;bottom:0;left:0;width:100%;}
+.botton-btn input{width:100%;height:2.45rem;font-size:0.85rem;background:#009cff;border:none;color:#fff;text-align: center;line-height: 2.45rem;}

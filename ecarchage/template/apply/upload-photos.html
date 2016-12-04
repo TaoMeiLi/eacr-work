@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>上传照片</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/apply.css">
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+    </head>
+    <body>
+       
+        <div class="add-pic-content">
+            <dl>
+                <dd style="position: relative;" id="upload-btn">
+                    <img src="../../static/images/apply/add_pic.png" width="96" />
+                    <div><input id="Filedata" name="Filedata" type="file" class="upload-photo" accept="image/*" /></div>
+                <botton value="上传"  class="upload" style="display:none;">上传</botton>
+                </dd>
+            </dl>
+            <div class="clear"></div>
+            <input type="hidden" name="files" value="" id="fileurl"/>
+            <input type="hidden" name="sizes" value="" id="sizes"/>
+        </div>
+        <div class="mask"></div>
+        <div class="loading"><img src="../../static/images/apply/loading-white.gif" width="16" class="mr10" /><span>上传中....</span></div>
+        <script type="text/javascript" src="../../static/js/jquery.upload.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery.form.js"></script>
+        <script type="text/javascript">
+            var $loading = $(".loading");
+            var $mask = $(".mask");
+            var $documentH = $(document.body).height();
+            var fileSize = 0;
+            var timer = null;
+            var applySuccess = {
+                init: function () {
+                    var that = this;
+                    xwznUtility.hideHeader();
+                    that.setOneStepTxt();
+                    //提交审核
+                    $('.next-btn').click(function () {
+                                        var openOrUserId = xwznUtility.getOpenOrUserId();
+                          				var OpenId = getOpenId('openId');
+//                        图片必传的限制
+                                          if ($('#fileurl').val() == '') {
+                                              that.hideTip('请上传图片');
+                                              return false;
+                                              location.href = './success.html?'+openOrUserId+'&id='+getQueryString("id");
+                                          }
+                        var userId = getQueryString("userId");
+                        if (userId) {
+                            var OpenId = "appWebView_" + userId;
+                            var openOrUserId = "userId=" + userId;
+                        } else {
+                            var OpenId = getOpenId();
+                            var openOrUserId = 'openId=' + OpenId;
+                        }
+                        that.hideTip('提交中....', 1);
+                        if (OpenId) {
+                            //console.log(config.cdzServerUrl + '/project/postimg?',' sizes=' + $("#sizes").val() +'&files=' + $("#fileurl").val() + '&' +openOrUserId);
+                            jqueryAjaxGetJsonp(config.cdzServerUrl + '/project/postimg?', ' sizes=' + $("#sizes").val() + '&files=' + $("#fileurl").val() + '&' + openOrUserId, function (result) {
+                                if (result.code == 2000) {
+                                    location.href = './success.html?' + openOrUserId;
+                                } else {
+                                    that.hideTip('提交失败');
+                                    return false;
+                                }
+                            }, null, null, {openId: OpenId});
+                        }
+                        return false;
+                    });
+                    //上传图片操作
+                    var file = document.getElementById('Filedata');
+                    $("body").on("change", "input[type='file']", function () {
+                        fileSize = this.files[0].size / 1000;
+                        if (fileSize > 1024 * 2) {
+                            that.hideTip('图片不得超过2M');
+                        } else {
+                            $(".upload").click();
+                            that.hideTip('上传中....', 1);
+                        }
+                    });
+
+
+                    $(".upload").upload({
+                        uploadUrl: config.apiServerUrl + "/image/upload.json",
+                        uploadData: '',
+                        successFn: "success",
+                        deleteData: {
+                            id: function () {
+                                return "asdfasdf";
+                            }
+                        }
+                    });
+                },
+                //设置第一步的文字，荒地类型显示土地信息
+                setOneStepTxt: function () {
+                    if ('2' == getQueryString('form')) {
+                        $(".cooperation-step").find("li:first div").text('土地信息');
+                    }
+                },
+                //删除图片
+                drop: function (e) {
+                    if (confirm('确认删除吗？') == true) {
+                        var $fileurl = $('#fileurl');
+                        var $sizes = $("#sizes");
+                        $(e).parent().remove();
+                        $('.add-pic-content dl dd:last').css("display", "block");
+                        var arr = $fileurl.val().split(',');
+                        var arrSizes = $sizes.val().split(',');
+
+                        if (arr.length == 1) {
+                            $fileurl.val('');
+                            $sizes.val('');
+                        } else {
+                            for (var i = 0; i < arr.length; i++) {
+                                if (arr[i] == $(e).next().find("img").attr('data-img')) {
+                                    arr.splice(i, 1);
+                                    arrSizes.splice(i, 1);
+                                }
+                            }
+
+                            $fileurl.val(arr.join(','));
+                            $sizes.val(arrSizes.join(','));
+                        }
+                        return false;
+                    }
+                },
+                //弹出层 data:显示的文字；showImg:是否显示等待符
+                hideTip: function (data, showImg) {
+                    if (timer) {
+                        clearTimeout(timer);
+                    }
+                    $loading.css("display", "block");
+                    if (showImg) {
+                        $mask.css('position', 'fixed').show();
+                        $loading.children('img').show();
+                    } else {
+                        $mask.hide();
+                        $loading.children('img').hide();
+                    }
+                    $loading.children("span").text(data);
+                    if (!showImg) {
+                        timer = setTimeout(function () {
+                            $loading.css("display", "none");
+                        }, 2000);
+                    }
+                },
+                lookBigPic: function () {
+                    var $detaiPicsWrapper = $(".add-pic-content dl dd").not($("#upload-btn")[0]);
+                    $detaiPicsWrapper.find(".small-pic").on("click", function () {
+                        $(".big-pic").remove();
+                        var $this = $(this),
+                                $documentH = $(document).height(),
+                                $windowH = $(window).height();
+                        $(".com-head").before('<div class="big-pic"><img src="' + $this.parent().attr("attr") + '" /></div>');
+                        var $bigPicOrignH = $(".big-pic img").height(),
+                                $bigPic = $(".big-pic img");
+                        if ($bigPicOrignH > $documentH) {
+                            $bigPic.css("height", $windowH - 40)
+                        }
+                        var $oMask = $(".mask"),
+                                $bigPicH = 0;
+                        $oMask.css({"display": "block", "height": $documentH});
+                        //$(document.body).css("overflow-y","hidden");
+                        $(".big-pic img")[0].onload = function () {
+                            var $bigPicH = $(this).height();
+                            $(".big-pic").css({"top": "50%", "margin-top": (-$bigPicH / 2 + 60)})
+                        }
+                        $(".big-pic").on("click", function () {
+                            $(this).add($oMask).css("display", "none");
+                            $(document.body).css("overflow-y", "auto");
+                        })
+                    })
+                }
+            }
+            $(function () {
+                applySuccess.init();
+            });
+            //上传成功
+            function success(response, statusText, xhr, $this) {
+                //比如插入编辑器
+                applySuccess.hideTip('上传成功');
+                if (statusText == 'success') {
+                    var $fileurl = $('#fileurl');
+                    var $sizes = $("#sizes");
+                    if ($('.add-pic-content dl dd').size() == 5) {
+                        $('.add-pic-content dl dd:last').css("display", "none");
+                    }
+                    if ($('.add-pic-content dl dd').size() >= 6) {
+                        imgurl = $('#fileurl').val();
+                        var strs = new Array();
+                        strs = imgurl.split(',');
+                        strs.pop();
+                        strs.join(',');
+                        $fileurl.val(response.data.path + ',' + strs);
+                        //文件大小修改
+                        var strSizes = $sizes.val().split(',');
+                        strSizes.pop();
+                        $sizes.val(fileSize + ',' + strSizes.join(','));
+                        //$('.add-pic-content dl dd:last').prev().remove();
+
+                    } else if ($('.add-pic-content dl dd').size() > 1) {
+                        imgurl = $fileurl.val();
+                        $fileurl.val(response.data.path + ',' + imgurl);
+                        $sizes.val(fileSize + ',' + $sizes.val());
+                    } else {
+                        $fileurl.val(response.data.path);
+                        $sizes.val(fileSize);
+                    }
+                    $('.add-pic-content dl').prepend("<dd attr=" + response.data['thumbUrl_2'] + "><div class='del-pic' onclick='applySuccess.drop(this)'>×</div><div class='small-pic'><img src='" + response.data.url + "@98w_98h' data-img='" + response.data.path + "' ></div></dd>");
+                    //处理不规则图片，显示一致
+                    var img = new Image();
+                    img.src = response.data.url + "@98w_98h";
+                    img.onload = function () {
+                        var imgWidth = img.naturalWidth;
+                        var imgHeight = img.naturalHeight;
+                        var $firstDD = $('.add-pic-content dl dd:first');
+                        if (imgWidth > imgHeight) {
+                            $firstDD.find("img").css({
+                                "width": "auto",
+                                "height": $(window).width() * 0.3 + 'px'
+                            });
+                        } else {
+                            $firstDD.css({
+                                "height": $(window).width() * 0.3 + 'px',
+                                "overflow": "hidden"
+                            });
+                        }
+                    };
+                }
+                applySuccess.lookBigPic();
+            }
+            //上传失败
+            function error(response, statusText, xhr, $this) {
+                applySuccess.hideTip('上传失败');
+            }
+        </script>
+    </body>
+</html>

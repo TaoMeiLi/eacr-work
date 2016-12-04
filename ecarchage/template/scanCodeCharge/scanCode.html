@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>扫码充电</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/scanCodeCharge/scanCode.css" />
+        
+        <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+       
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+       	<script type="text/javascript" src="../../static/js/storageCommon.js"></script>
+       	
+	</head>
+	<body style="background:#fff;">
+		<div class="con">
+			<div class="con-top">
+				<a id="oScanCode"><img src="../../static/images/scanCodeCharge/sm-icon.png" alt="" /></a>
+				<p>扫描充电桩屏幕上的二维码，开启充电</p>
+			</div>
+			<div class="solids"></div>
+			<div class="con-bom">
+				<a class="inCode"><img src="../../static/images/scanCodeCharge/bm-icon.png" alt="" /></a>
+				<p>输入充电桩屏幕上电桩编号，开始充电</p>
+			</div>
+		</div><!--con-->
+		<div class="mask"></div>
+		<div class="msg">
+			<p class="msg-text">您的爱车正在充电</p>
+			<p  class="msg-btn" >去看看</p>
+		</div>
+	</body>
+	<script>	
+		$(function(){	
+		//判断usercode是否存在来判断用户是否登录
+        var oUserCode=getStorageUC();
+		if(!oUserCode||oUserCode==''){
+			var jumpHref = './login.html';
+			location.href = jumpHref;
+			return false;
+		}
+		var OpenId = getOpenId('openId');
+		//检测用户的爱车是否在充电
+			function oDetection(){
+				var pileUrl = config.cdzServerUrl+'/user/userinit';
+				var pileParams = 'action=1&source=1';//开始充电
+				jqueryAjaxGetJsonp( pileUrl,pileParams, function( result ) {
+					var oData=result.data;
+					var type_N;
+					if(result.code==1020){
+						if(oData.type=="直流"){
+							type_N=0;
+						}else if(oData.type=="交流"){
+							type_N=1;
+						}
+						$(".mask").show();
+						$(".msg").show();
+						$(".msg").on("click",function(){
+							var jumpHref = './charging.html?' +'pile_id='+ oData.pile_id +'&type='+ type_N+'&serial_number='+oData.serial_number;
+							location.href = jumpHref;
+						})
+					}
+				},null,null, {openId:OpenId});
+			}
+			oDetection();
+		//扫一扫页面布局
+			var $H=initParams.clientHeight;
+			$(".con").css({"height":$H});
+		
+		//调用微信接口
+			var wxReady;
+			var callWXApiList = ["hideOptionMenu","showMenuItems", "getLocation", "chooseImage", "previewImage","scanQRCode"];
+			
+			getWXJSTicket(callWXApiList);
+			wx.ready(function() {
+				wxReady = true;
+				wx.showMenuItems({
+				    menuList: ["menuItem:refresh", "menuItem:share:appMessage"] // 要显示的菜单项，所有menu项见附录3
+					, success: function(res) {
+					//  alert("showMenuItems ok");
+					}
+				});
+				wx.hideOptionMenu();
+			});
+			//扫一扫,获取桩编号
+			var PileId;		//电桩编号
+			$("#oScanCode").on("click",fnScanCode);
+			function fnScanCode(){
+				if(wxReady){
+					wx.scanQRCode({
+					    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+					    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+					    success: function (res) {
+						    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果//返回电桩编号
+						    PileId=result;
+						    //扫描成功，获取到桩编号，
+							var jumpHref = './onOff.html?' +'pile_id='+ PileId;
+							location.href = jumpHref;
+						}
+					});
+				}else{
+					alert("获取失败！")
+					return;
+				}
+			}
+			//点击输入设备号按钮进入“输入编码”页面 传参：openId
+			$(".inCode").on("click",function(){
+				var jumpHref = './in-code.html';
+				location.href = jumpHref;
+			})
+			
+			
+			
+			
+		})
+	</script>
+</html>
+
+
+
+
+
+
+
+

@@ -1,0 +1,28 @@
+body{font-size:14px;font-family:"Hiragino Sans GB","STXihei", Arial, Helvetica, sans-serif;}
+.headline{width:94%;margin:0 auto;background:#fff;padding:2.5%;border:1px solid #e8e8e8;border-radius: 5px;margin-top:10px;margin-bottom:10px; overflow:hidden;position:relative;}
+.headline .left-img{width:90px;height:60px;margin-right:2.5%; float:left;overflow: hidden;}
+.headline .left-img img{width:100%;}
+.headline .right-text{float:left;width:65%;padding-top:2%;}
+.headline .building{margin-bottom:10px;}
+.headline .pile-num{ font-size:12px; color:#666666;}
+.headline .pile-num span{font-size:13px; color:#79c526;}
+.headline .mark{position:absolute;width:78px;top:-20px;right:-20px;}
+.list{width:94%; margin:0 auto;border:1px solid #e8e8e8;border-radius: 5px;background:#fff;margin-bottom:30px;}
+.list ul li{width:100%;border-bottom:1px solid #E8E8E8;padding:3% 2.5%; }
+.list ul li span{font-family:arial;color:#999999;}
+.list ul .expenditure{overflow: hidden;}
+.list ul .expenditure p{float:right;}
+.list ul .expenditure span{color:#f88d21; font-size:25px;}
+.list ul .pay-status img{width:16px;height:16px;vertical-align: middle;margin-right:5px;}
+.foot{width:94%;height:40px;background:#f88d21;text-align:center;line-height:35px;color:#fff;margin:0 auto; border-radius: 5px;}
+.foot a{display: inline-block;width:100%;height:100%;}
+
+
+@media only screen and (max-width:320px ) {
+	.headline .right-text{padding-top:1%;width:65%;}	
+	.headline .building{margin-bottom:5px;}
+	.headline .mark{width:70px;}
+	.headline .left-img{width:85px;height:56px;}
+	
+	
+}

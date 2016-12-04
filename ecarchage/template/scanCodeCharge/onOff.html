@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>充电开关</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/scanCodeCharge/onOff.css" />
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+
+	</head>
+	<body>
+		<div class="main"></div>	 <!-- main-->
+		<div class="mask"></div>
+		<div class="msg">
+			<p class="msg-text">此桩已被占用，请换桩扫码</p>
+			<p  class="msg-btn" >确定</p>
+		</div>
+	</body>
+	<script>
+		$(function(){
+			//旋转按钮
+			var RotateHTML='<div class="on-off-bg" ><div class="on-off"><img class="rotate" id="rotate" src="../../static/images/scanCodeCharge/annular.png" alt=""  /><img class="rotate-bg" src="../../static/images/scanCodeCharge/annular-con.png" alt="" /><span>开始</span></div></div>'
+			//通过URL获取电桩编号：pile_id
+			var PileId=getQueryString('pile_id');
+//			var OpenId=getQueryString('openId');
+			var OpenId = getOpenId('openId');
+			var $Main=$(".main");
+			var str='';
+			var SerialNumber='';       //流水号(查看充电进度使用)
+			function pileDeail(){
+				var pileUrl = config.cdzServerUrl+'/pile/getdetailbypilenum';
+				var pileParams = 'source=1&pile_num='+PileId;
+				jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+					var oMsg=decodeURIComponent(result.msg);
+					if(result.code==2000){
+						var oData=result.data;
+						var oStatus=oData.status;//电桩状态0：空闲中、1：充电中、2：故障中、3：急停中
+						var oPayType='';    //支付方式0：微信支付；1：支付宝支付（尚未支持）oData.pay_type;
+						var oType=oData.type;//电桩类型
+						var type_N;
+						if(oType=="直流"){
+							type_N=0;
+						}else if(oType=="交流"){
+							type_N=1;
+						}
+						if(oData.pay_type==0){  //判断支付方式
+							oPayType = '微信支付';
+						}else if(oData.pay_type==1){
+							oPayType = '支付宝支付';
+						}
+						str = '<div class="nav"><p>'+ oData.title +'</p><span><i>'+oData.index +'</i></span></div><div class="list"><ul><li><em>桩位信息</em><i>'+ oData.pile_type_str +'</i></li><li><em>充电费</em><i>'+ oData.charging_fee +'</i></li><li><em>服务费</em><i>'+ oData.service_fee +'</i></li><li class="park"><em>停车费</em><span><i><em class="demo1">'+ oData.parking_fee +'</em></i></span></li><li><em>支付方式</em><i>'+oPayType+'</i></li></ul></div>';
+						$Main.html(str);
+						
+						if(oStatus==0){   
+							$Main.append(RotateHTML);
+							Ratate();//扫码充电页面中开始、结束按钮旋转
+							$(".on-off").on("click",function(){//开始充电按钮
+								var pileUrl = config.cdzServerUrl+'/user/chargesetting';
+								var pileParams = 'action=1&source=1&pile_id='+PileId;//开始充电
+								jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+									var oData=result.data;
+									SerialNumber=oData.serial_number;
+									if(result.code==2000){
+										var jumpHref = './charging.html?pile_id='+ PileId +'&type='+ type_N+'&serial_number='+SerialNumber;
+										location.href = jumpHref;	
+									}else if(result.code==1019){
+//										$Main.html('');
+										$(".mask").css({"display":"block"});
+										$(".msg").css({"display":"block"});
+										$(".msg-text").html(result.msg);
+										$(".msg-btn").on("click",function(){
+											var jumpHref = './mine-index.html';
+											location.href = jumpHref;
+										})
+									}else{
+										alert(decodeURIComponent(result.msg))
+										var jumpHref = './scanCode.html?wx=1';
+										location.href = jumpHref;
+									}
+								},null,null, {openId:OpenId});
+								
+								
+							})
+						}else if(oStatus==1){
+						//alert("充电中")
+							$Main.html('');
+							$(".mask").css({"display":"block"});
+							$(".msg").css({"display":"block"});
+							$(".msg-text").html(oMsg);
+	
+						}else if(oStatus==2){
+						//alert("故障中")
+							$(".list").after('<div class="state-img"><img src="../../static/images/scanCodeCharge/fault.png" alt="" /></div>')
+						}else if(oStatus==3){
+						//alert("急停中")
+							$(".list").after('<div class="state-img"><img src="../../static/images/scanCodeCharge/stop.png" alt="" /></div>')
+						}
+					}else{
+						$(".mask").css({"display":"block"});
+						$(".msg").css({"display":"block"});
+						$(".msg-text").html(oMsg);
+						$(".msg-btn").on("click",function(){
+							var jumpHref = './scanCode.html?wx=1';
+							location.href = jumpHref;
+						})
+					}
+				},null,null, {openId:OpenId});
+			}
+			pileDeail();	
+//			$(".msg-btn").on("click",function(){
+//				var jumpHref = './scanCode.html';
+//				location.href = jumpHref;
+//			})
+			//停车费说明太长：demo1
+			function oDemo(){
+				var oDomoW=$(".demo1").width()-240;
+				if(oDomoW>=0){
+					var oleft=0;
+					setInterval(function(){
+						oleft+=1;
+						if(oleft<=(oDomoW+10)){
+							$(".demo1").css("left","-"+oleft+"px")
+						}else{
+							oleft=0;
+						}
+						
+					},50)	
+				}
+			}
+			oDemo();
+		})
+	</script>
+</html>

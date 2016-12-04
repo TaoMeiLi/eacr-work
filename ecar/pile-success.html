@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>补桩提交成功</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        
+        <link rel="stylesheet" href="css/common.css" />
+        
+        <script src="js/jquery-2.1.4.min.js" type="text/javascript" ></script>
+        <script src="js/common.js" type="text/javascript" ></script>
+        <style>
+        	html,body{height:100%;}
+        	.main{height:100%;width:100%;background:#f0eff5;}
+        	.succe{width:8.475rem;margin:0 auto;padding-top:3.05rem;margin-bottom:1rem;}
+        	.succe img{width:8.475rem;}
+        	.con p{font-size:0.75rem;color:#333333;line-height:1.2rem;text-align: center;}
+        	.con p:nth-child(3){color:#9a9a9a;}
+        	.btn-pile{width:8.75rem;height:2rem;margin:0 auto;margin-top:1.55rem;line-height: 1.8rem;text-align: center;border:1px solid #299dff;border-radius: 1rem/50%;font-size:0.75rem;color:#299DFF;}
+        </style>
+	</head>
+	<body>
+		<div class="main">
+			<div class="header-top">
+				<div class="back-btn"><img src="img/mendpile/back.png" alt="" /></div>
+				<p class="tit">补桩提交成功</p>
+			</div>
+			<div class="con">
+				<div class="succe">
+					<img src="img/mendpile/success-icon.png" alt="" />
+				</div>
+				<p>感谢您为绿色出行做出的贡献！</p>
+				<p>信息审核通过后将赠送 50 积分哦</p>
+				<div class="btn-pile">查看补桩记录</div>
+			</div>
+		</div><!--main-->
+		<script>
+			$(function(){
+				var userId=getQueryString("userId");
+				var userLng = getQueryString("userLng");	
+				var userlat = getQueryString("userlat");
+				$(".btn-pile").click(function(){
+					var jumpHref = './pile-record.html?type=0&userId='+userId;
+					location.href = jumpHref;
+				})
+				 //返回上一层
+		        $(".back-btn").on("touchstart",function(){
+		        	var jumpHref = './mend-pile.html?userId='+userId+'&lng='+userLng+'&lat='+userlat;
+		        	location.href = jumpHref;
+		        })
+		    })
+		</script>
+	</body>
+</html>

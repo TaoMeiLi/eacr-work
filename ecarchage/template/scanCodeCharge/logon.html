@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>注册</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/scanCodeCharge/login.css" />
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+        <script type="text/javascript" src="../../static/js/storageCommon.js"></script>
+        
+	</head>
+	<body>
+		<div class="entering">
+			<ul>
+				<li class="phone-box">
+					<img src="../../static/images/scanCodeCharge/ic_user.png" alt="" />
+					<input type="text" maxlength="11" placeholder="请输入11位手机号"  class="phone"/>
+					<!--<em class="delete"></em>-->
+				</li>
+				<li class="note-box">
+					<img src="../../static/images/scanCodeCharge/ic_code.png" alt="" />
+					<input type="text" placeholder="请输入短信验证码" class="codeNum"/>
+					<!--<span class="validateBtn" >获取验证码</span>-->
+					<input type="button" value="获取验证码" class="validateBtn" />
+				</li>
+				<li class="password-box">
+					<img src="../../static/images/scanCodeCharge/ic_psw.png" alt="" />					
+					<input type="password" maxlength="20" class="password" placeholder="请输入密码"/>
+					<em class="close"><img src="../../static/images/scanCodeCharge/cb_show_pressed.png" alt="" /></em>					
+				</li>
+				<li class="submit">
+					<p>立即提交</p>
+				</li>
+			</ul>
+		</div><!--entering-->
+		<div class="loading"></div>
+	</body>
+	<script>
+		$(function(){
+			var OpenId = getOpenId('openId');
+			
+			//密码可见设置begin
+			var oC=1;
+			$(".close").on("click",function(){
+				if(oC==1){
+					$(".close img").attr("src","../../static/images/scanCodeCharge/cb_show_normal.png")
+					$(".password").attr("type","text");
+					oC=2;
+				}else if(oC==2){
+					
+					$(".close img").attr("src","../../static/images/scanCodeCharge/cb_show_pressed.png")
+					$(".password").attr("type","password");
+					oC=1;
+				}
+			})
+			//密码可见设置end
+			var RegPhone = /^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;		//手机号验证
+			var RegPassword =/((?=.*[a-z])(?=.*\d)|(?=[a-z])(?=.*[-#@!~%^&*])|(?=.*\d)(?=.*[-#@!~%^&*]))[a-z\d-#@!~%^&*]{6,20}/i	//密码设置规则6-20位 包含数字、字符、字母最少两种
+			var $PhonVal=$(".phone").val(),			
+			 	$PasswordVal=$(".password").val(),  		
+			    $CodeVal=$(".codeNum").val(); 
+			$(".submit").on("click",function(){
+				$(".loading").removeClass("load-paw");
+				$PhonVal=$(".phone").val();		
+			 	$PasswordVal=$(".password").val();  		
+			    $CodeVal=$(".codeNum").val();  
+				if($PhonVal==''){
+					hideTip('请输入手机号');
+					return;
+				}else if(!RegPhone.test($PhonVal)){
+					hideTip('请输入正确的电话号');
+					return;
+				}
+				if($CodeVal==''){
+					hideTip('请输入验验证码');
+					return;
+				}else{
+					oPhonecode();
+					return;
+				}
+				if($PasswordVal==''){
+					hideTip('请输入密码');
+					return;
+				}else if(!RegPassword.test($PasswordVal)){
+					$(".loading").addClass("load-paw");
+					hideTip('密码必须有数字加字符或者加字母组合(6位-20位)');
+					return;
+				}
+//				oLogo();
+			})
+		//注册成功
+			function oLogo(){    		
+				var pileUrl = config.cdzServerUrl+'/register/index';
+				var pileParams = 'version=1.0.0&source=4&mobile='+$PhonVal+'&password='+$PasswordVal;
+				jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+					var oData=result.data;
+					if(result.code==2000){
+//						var oMsg=decodeURIComponent(result.msg);
+						var oMsg=result.msg;
+						hideTip(oMsg);
+						var jumpHref = './login.html';//进入登录页面
+						location.href = jumpHref;
+					}else if(result.code==4003){
+						hideTip('您的电话号已注册');
+						return;
+					}else{
+						var oMsg=decodeURIComponent(result.msg);
+						hideTip(oMsg);
+						return;
+					}
+				},null,null, {openId:OpenId});
+			}
+		//注册手机号发送验证码
+			$(".validateBtn").on("click",function(){
+				$PhonVal=$(".phone").val(),			
+			 	$PasswordVal=$(".password").val(),  		
+			    $CodeVal=$(".codeNum").val(); 
+		
+				if($PhonVal==''){
+					hideTip('请输入手机号');
+					return;
+				}else if(!RegPhone.test($PhonVal)){
+					hideTip('请输入正确的电话号');
+					return;
+				}else{
+					var pileUrl = config.cdzServerUrl+'/register/sendmobile';
+					var pileParams ='mobile='+$PhonVal;
+					 jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+						if(result.code==2000){
+							oSetime();
+						}else if(result.code==3012){
+							var jumpHref = './login.html';//进入登录页面
+							location.href = jumpHref;
+							return false;
+						}else{
+							hideTip(result.msg);
+							return false;
+						}
+					},null,null, {openId:OpenId});
+				}
+			})
+			//倒计时
+			function oSetime(){
+				var Downtime=120;
+				var temt=null;
+				temt=setInterval(function(){
+					Downtime-=1;
+					if(Downtime>0){
+						$(".validateBtn").val("("+Downtime+"s)后重发");
+						$(".validateBtn").attr("disabled","disabled");//倒计时中，按钮不可点
+						$(".validateBtn").css({"background":"rgba(10, 10, 10, 0.3)","color":"#fff"});
+					}else{
+						$(".validateBtn").val("重新发送");
+						clearInterval(temt)
+						$(".validateBtn").removeAttr("disabled");
+						$(".validateBtn").css({"background":"#fff","color":"#79c526"});
+					}
+					
+				},1000)
+			}
+			//注册手机验证码 校验
+			function oPhonecode(){
+				var pileUrl = config.cdzServerUrl+'/register/verifyregsms';
+				var pileParams = 'version=1.0.0&mobile='+$PhonVal+'&code='+$CodeVal;
+				 jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+					if(result.code==2000){
+						hideTip ("验证码正确");
+						oLogo();
+					}else if(result.code==3009){
+						hideTip ("验证码错误");
+						return;
+					}
+				},null,null, {openId:OpenId});
+			}
+			//小提示框样式
+			function hideTip (data) {
+				$(".loading").show();
+				$(".loading").html(data);
+				setTimeout(function () {
+					$(".loading").hide();
+				}, 2000);
+			}	
+			
+		})	
+	</script>
+</html>

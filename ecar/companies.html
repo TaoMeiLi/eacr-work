@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>运营商</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        
+        <link rel="stylesheet" href="css/common.css" />
+        
+        <script src="js/jquery-2.1.4.min.js" type="text/javascript" ></script>
+        <script src="js/common.js" type="text/javascript" ></script>
+        <style>
+        	html,body{height:100%;background:#f0eff5;}
+			.main{width:100%;min-height:100%;background:#f0eff5;position:relative;padding-bottom:3.2rem;}
+			.main ul li{float:left;width:5.25rem;height:1.75rem;margin:0.75rem 0 0 0.75rem;border:1px solid #e6e6e7;}
+			.main ul li input{width:100%;height:100%;background:#fff;font-size:0.65rem;color:#333333;line-height:1.75rem;text-align: center;border:none;}
+			.main .confirm-btn{position:absolute; bottom:0;left:0;width:100%;height:2.45rem;text-align: center;line-height: 2.45rem;background:#009cff;color:#fff;}
+        </style>
+	</head>
+	<body>
+		<div class="main">
+			<div class="header-top">
+				<div class="back-btn"><img src="img/mendpile/back.png" alt="" /></div>
+				<p class="tit">运营商</p>
+			</div>
+			<ul class="company clearfix">
+				
+			</ul>
+			<div class="confirm-btn">确定</div>
+		</div><!--main-->
+		<script>
+		$(function(){
+			var $opeNum;//运营商个数
+			var pileUrl = config.cdzServerUrl+'/station/operates';
+			var pileParams = '';
+			jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+				var oData = result.data;
+				var str='';
+				for(var s in oData.list){
+					str = '<li><input type="button" class="operator" value="'+oData.list[s]+'" sta="0"/></li>';
+					$(".company").append(str);
+				}
+				$opeNum=$(".company li").length;
+			})
+			Array.prototype.remove = function(val) {
+				var index = this.indexOf(val);
+				if (index > -1) {
+					this.splice(index, 1);
+				}
+			};
+			var oPitch;//存选择的运营商；
+			
+			$("body").on("click",".operator",function(){
+				$(".operator").css({"background":"#fff","color":"#333333"}).attr("sta","1");
+				$(this).css({"background":"#009cff","color":"#fff"});
+				var pitch=$(this).val();
+				var pIndex=$(this).parent("li").index();
+				oPitch=pitch+','+pIndex;
+			})
+			
+			$(".confirm-btn").click(function(){
+				var comStr = JSON.stringify(oPitch);
+				if( window.parent && window.parent.returnComVal ) {
+					window.parent.returnComVal(comStr);
+	
+				} else {
+					alert( JSON.stringify(comStr) );
+				}
+			})
+			
+			//返回上一级
+			$(".back-btn").on("touchstart",function(){
+				if( window.parent && window.parent.returnComVal ) {
+					$(window.parent.document).find("#regionCom").addClass("uhide");
+				}
+			})
+		})
+		</script>
+	</body>
+</html>

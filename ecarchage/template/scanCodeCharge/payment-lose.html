@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>支付失败</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/scanCodeCharge/payment.css" />
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+	</head>
+	<body>
+		<!--<header class="com-head">
+            <h1 class="title">支付</h1>
+            <a href="javascript:history.go(-1);" class="navBtn navBtn-back"></a>
+            <span>完成</span>
+        </header>-->
+		<div class="lose">
+			<div class="condition">
+				<img src="../../static/images/scanCodeCharge/lose.png" alt="" />
+				<p>支付失败</p>
+			</div>
+			<ul class="lose-list"></ul>
+		</div><!--lose-->
+		<div class="foot">重新支付</div>
+	</body>
+	<script>
+//		var OpenId=getQueryString('openId');
+		var OpenId = getOpenId('openId');
+		var pAy_id=getQueryString('pay_id');//支付方式
+		var mOney=getQueryString('detail_money');//消费金额
+		var oId=getQueryString('id');//订单ID
+		var payId='';
+		if(pAy_id==0){
+			payId='<img src="../../static/images/wx-icon.png" class="pay-icon" />微信支付';
+		}else if(pAy_id==1){
+			payId='支付宝支付';
+		}
+		var str='<li><p>支付方式：'+payId+'<span></span></p></li><li><p>消费金额：<i>'+mOney+'</i><span>元 </span></p></li>';
+		$(".lose-list").html(str);
+		
+		$(".foot").on("click",function(){
+			var jumpHref = './payment.html';
+			location.href = jumpHref;
+		})
+	</script>
+</html>

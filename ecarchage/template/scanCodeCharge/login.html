@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>登录</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/scanCodeCharge/login.css" />
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+        <script type="text/javascript" src="../../static/js/storageCommon.js"></script>
+        
+	</head>
+	<body>
+		<div class="entering">
+			<ul>
+				<li class="phone-box">
+					<img src="../../static/images/scanCodeCharge/ic_user.png" alt="" />
+					<input type="text" maxlength="11" placeholder="请输入11位手机号" class="phone"/>
+					<em class="delete"><img src="../../static/images/scanCodeCharge/ic_del.png" alt="" /></em>					
+				</li>
+				<li class="password-box">
+					<img src="../../static/images/scanCodeCharge/ic_psw.png" alt="" />
+					<input type="password" maxlength="20" class="password" placeholder="请输入密码"/>
+					<em class="close"><img src="../../static/images/scanCodeCharge/cb_show_pressed.png" alt="" /></em>					
+				</li>
+				<li class="state">
+					<!--<i class="self-motion"></i>-->
+					<!--<span>自动登录</span>-->
+					<a class="forgetPassword">忘记密码？</a>
+				</li>
+				<li class="submit">
+					<p>立即登录</p>
+				</li>
+				<li class="logon-btn"><a class="gologon">立即注册</a></li>
+			</ul>
+		</div><!--entering-->
+		<div class="loading"></div>
+	</body>
+	<script>
+//		var OpenId = getQueryString('openId');
+		var OpenId = getOpenId('openId');
+		var oUrl = getQueryString('oUrl');
+		//清空电话号码
+		$(".delete").on("click",function(){
+			$(".phone").val('');
+		})
+		var RegPhone = /^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;		//手机号验证
+		var RegPassword =/((?=.*[a-z])(?=.*\d)|(?=[a-z])(?=.*[-#@!~%^&*])|(?=.*\d)(?=.*[-#@!~%^&*]))[a-z\d-#@!~%^&*]{6,20}/i	//密码设置规则6-20位 包含数字、字符、字母最少两种
+		var $PhonVal=$(".phone").val(),			
+		 	$PasswordVal=$(".password").val(),  		
+		    $CodeVal=$(".codeNum").val(); 	
+		$(".submit").on("click",function(){
+			$PhonVal=$(".phone").val();			
+		 	$PasswordVal=$(".password").val();  
+		    if($PhonVal==''){
+				hideTip('请输入手机号');
+				return;
+			}else if(!RegPhone.test($PhonVal)){
+				hideTip('请输入正确的电话号');
+				return;
+			}
+			if($PasswordVal==''){
+				hideTip('请输入密码');
+				return;
+			}
+			oLogin();
+		})
+		//用户登录
+		function oLogin(){
+			var pileUrl = config.cdzServerUrl+'/login/index';
+			var pileParams = 'mobile='+$PhonVal+'&password='+$PasswordVal;
+			jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+				if(result.code==2000){
+					//登录成功，开始扫码，进入扫码页面
+					var oUserCode=result.data.userCode;
+					var oUserId= result.data.userId;
+					setStorageUC(oUserCode);//储存userCode
+					storageData('userId',oUserId);//本地存储userId
+					var jumpHref = './scanCode.html';
+					location.href = jumpHref;
+				}else if(result.code==5200){
+					hideTip(result.msg);
+					return;
+				}else if(result.code==5201){
+					hideTip(result.msg);
+					return;
+				}else{
+					hideTip(result.msg);
+					return;
+				}
+			},null,null, {openId:OpenId});
+		}
+		
+		//密码可见设置begin
+		var oC=1;
+		$(".close").on("click",function(){
+			if(oC==1){
+				$(".close img").attr("src","../../static/images/scanCodeCharge/cb_show_normal.png")
+				$(".password").attr("type","text");
+				oC=2;
+			}else if(oC==2){
+				
+				$(".close img").attr("src","../../static/images/scanCodeCharge/cb_show_pressed.png")
+				$(".password").attr("type","password");
+				oC=1;
+			}
+		})
+		//去注册
+		$(".gologon").on("click",function(){
+			var jumpHref = './logon.html';
+			location.href = jumpHref;
+		})
+		//找回密码
+		$(".forgetPassword").on("click",function(){
+			var jumpHref = './forgetPassword.html';
+			location.href = jumpHref;
+		})
+		//小提示框样式
+		function hideTip (data) {
+			$(".loading").show();
+			$(".loading").html(data);
+			setTimeout(function () {
+				$(".loading").hide();
+			}, 2000);
+		}	
+	</script>
+</html>

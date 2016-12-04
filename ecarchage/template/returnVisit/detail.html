@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>项目详情</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/apply.css">
+        <link rel="stylesheet" href="../../static/css/return-visit.css">
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+    </head>
+    <body style="background:#fff;">
+        <header ><!--class="com-head jsCom-head"-->
+            <!--<h1 class="title">项目详情</h1>
+            <a href="javascript:history.go(-1);" class="navBtn navBtn-back"></a>-->
+        </header>		
+        <div class="apply-content">
+            <div class="detail-pic-list">
+                <ul></ul>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="apply-gap visit-info-gap"></div>
+        <div class="mask"></div>
+        <div class="visite-info">
+            <div class="detail-notice"></div>
+        </div>
+        <script type="text/javascript">
+            var userId = getQueryString("userId");
+            if (userId) {
+                var OpenId = "appWebView_" + userId;
+                var openOrUserId = "userId=" + userId;
+            } else {
+                var OpenId = getOpenId();
+                var openOrUserId = 'openId=' + OpenId;
+            }
+
+
+            var projectDetail = {
+                init: function () {
+                    xwznUtility.hideHeader();
+                    this.getProjectDetail();
+                },
+                id: getQueryString("id"),
+                getProjectDetail: function () {
+                    var that = this;
+                    if (OpenId && that.id) {
+                        jqueryAjaxGetJsonp(config.cdzServerUrl + '/project/detail', "id=" + that.id + '&' + openOrUserId, function (result) {
+                            if (result.code == 2000) {
+                                var str = "",
+                                        ifVisited = '',
+                                        ifPass = '',
+                                        visiteTime = '',
+                                        pulicInfo = ''
+                                data = result.data,
+                                        visiteInfo = '',
+                                        paddingNum = 'padding-right:29%;';
+                                if (data.status == '待回访') {
+                                    ifVisited = '待回访';
+                                    paddingNum = 'padding-right:8%;';
+                                } else if (data.status == '通过' || data.status == '未通过' || data.status == '已删除') {
+                                    ifVisited = '已回访';
+                                }
+                                if (data.status == '通过') {
+                                    ifPass = '<img src="../../static/images/return-visit/pass-pic.png" width="60" />';
+                                } else if (data.status == '未通过' || data.status == '已删除') {
+                                    ifPass = '<img src="../../static/images/return-visit/close-pic.png" width="60" />';
+                                }
+                                if (data.deal_time != 0) {
+                                    visiteTime = data.deal_time;
+                                }
+                                if (data.type == '公共桩') {
+                                    pulicInfo = '<li>对接及收益单位：<span class="gray-color" >' + data.company + '</span></li><li>桩位地址类型：<span class="gray-color" >' + data.address_type + '</span></li>'
+                                }
+                                str += '<div class="item-state" id="projectInfo"><div class="item-state-title"><div class="fl">状态：<span class="green-color" id="status">' + ifVisited + '</span></div><div class="fr gray-color">提交时间：<span  id="submitTime">' + data.add_time + '</span></div><div class="clear"></div></div><ul style="' + paddingNum + '"><li>项目编号：<span class="gray-color" id="pId">' + data.id + '</span></li><li>建桩地址：<span id="pAddr" class="gray-color">' + data.address + '</span></li><li>联系方式：<span class="gray-color" id="phone">' + data.mobile + '</span></li><li>车位数量：<span class="gray-color" id="carnum">' + data.car_num + '</span></li>' + pulicInfo + '<li>其他：<span class="gray-color" id="proprietor">' + data.info + '</span></li></ul><div class="if-pass-icon">' + ifPass + '</div></div><div class="apply-gap pic-gap"></div>';
+                                $(".apply-content").before(str);
+                                var imgStr = '';
+                                if (data.images) {
+                                    for (var p in data.images) {
+                                        imgStr += '<li bigpic="' + data.images[p].large + '"><img src="' + data.images[p].small + '" /></li>';
+                                    }
+                                }
+                                if (data.images.length == 0) {
+                                    $(".apply-content").remove();
+                                    $(".pic-gap").remove();
+                                }
+                                $(".detail-pic-list ul").append(imgStr);
+                                if (data.status == '通过' || data.status == '未通过' || data.status == '已删除') {
+                                    visiteInfo += '<p>回访时间：' + visiteTime + '</p><p>回访备注：' + data.remark + '</p>';
+                                    $(".detail-notice").html(visiteInfo);
+                                } else {
+                                    $(".visite-info").remove();
+                                    $(".visit-info-gap").remove();
+                                    $(".detail-pic-list").css("border", "none")
+                                }
+
+                                that.setHeight();
+                                that.lookBigPic();
+                                $(".apply-content").after();
+                            } else {
+                                $(".apply-content").html(decodeURI(result.msg));
+                            }
+                        }, null, null, {openId: OpenId});
+                    }
+                },
+                setHeight: function () {
+                    var $detaiPicsWrapper = $(".detail-pic-list ul li");
+                    $detaiPicsWrapper.css({"height": $detaiPicsWrapper.css("width")})
+                },
+                lookBigPic: function () {
+                    var $detaiPicsWrapper = $(".detail-pic-list ul li");
+                    $detaiPicsWrapper.on("click", function () {
+                        $(".big-pic").remove();
+                        var $this = $(this),
+                                $documentH = $(document).height(),
+                                $windowH = $(window).height();
+                        $(".apply-content").before('<div class="big-pic"><img src="' + $this.attr("bigpic") + '" /></div>');
+                        var $bigPicOrignH = $(".big-pic img").height(),
+                                $bigPic = $(".big-pic img");
+                        if ($bigPicOrignH > $documentH) {
+                            $bigPic.css("height", $windowH - 40)
+                        }
+                        var $oMask = $(".mask"),
+                                $bigPicH = 0;
+                        $oMask.css({"display": "block", "height": $documentH});
+                        //$(document.body).css("overflow-y","hidden");
+                        $(".big-pic img")[0].onload = function () {
+                            var $bigPicH = $(this).height();
+                            $(".big-pic").css({"top": "50%", "margin-top": (-$bigPicH / 2)})
+                        }
+                        $(".big-pic").on("click", function () {
+                            $(this).add($oMask).css("display", "none");
+                            $(document.body).css("overflow-y", "auto");
+                        })
+                    })
+                }
+            }
+            $(function () {
+                projectDetail.init();
+            });
+
+        </script>
+    </body>
+</html>

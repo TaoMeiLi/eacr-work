@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>我的项目</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/apply.css">
+        <link rel="stylesheet" href="../../static/css/return-visit.css">
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+        <script type="text/javascript" src="../../static/js/storageCommon.js"></script>
+    </head>
+    <body>
+        <!--<header class="com-head jsCom-head">
+            <h1 class="title">我的项目</h1>
+            <a href="javascript:history.go(-1);" class="navBtn navBtn-back"></a>
+        </header>-->
+        <div class="all-item-list-wrapper" style="display: none;"></div>		
+    </body>
+    <script type="text/javascript">
+        $(function () {
+            /**
+             //获取openOrUserId ---begin
+             var openOrUserId = xwznUtility.getOpenOrUserId();
+             if (!openOrUserId) {
+             // 微信公众号带过来的参数
+             var _code = getQueryString("code");
+             var params = 'code=' + _code;
+             if (_code) {
+             openOrUserId = getOpenIdByWXCode(_code);
+             if (openOrUserId && openOrUserId !== "undefined") { // 成功获取到openId的值
+             openOrUserId = "openId=" + openOrUserId;
+             storageData("currentOpenOrUserId", openOrUserId);
+             }
+             }
+             }
+             if (!openOrUserId) {
+             openOrUserId = loadStorageData("currentOpenOrUserId");
+             }
+             //获取openOrUserId ---end
+             **/
+
+            var userId = getQueryString("userId");
+            if (userId) {
+                var OpenId = "appWebView_" + userId;
+                var openOrUserId = "userId=" + userId;
+            } else {
+                var OpenId = getOpenId();
+                var openOrUserId = 'openId=' + OpenId;
+            }
+            var page = 1,
+                    totalPage = 0,
+                    firstEqual = null,
+                    $head = $(".com-head");
+            var reqrUrl = config.xwServerUrl,
+                    params = '',
+                    $listWrapper = $(".all-item-list-wrapper");
+            var ajaxApply = {
+                initData: function initData(pageEle) {
+                    var that = this;
+                    params = 'page=' + pageEle + '&' + openOrUserId;
+                    if (openOrUserId) {
+                        that.ajax();
+                    }
+                },
+                ajax: function () {
+                    jqueryAjaxGetJsonp(config.cdzServerUrl + '/project/list?', params, function (result) {
+                        var str = '';
+                        if (result.data && result.code == 2000) {
+                            //显示列表元素
+                            if ($listWrapper.is(":hidden")) {
+                                $listWrapper.show();
+                            }
+                            page = result.data.nextPage;
+                            totalPage = result.data.totalPage;
+                            $.each(result.data.data, function (index, ele) {
+                                var imgStr = '',
+                                        statusStr = ele.status,
+                                        newStatus = '',
+                                        paddingNum = 'padding-right:29%;';
+                                if (statusStr == '待回访') {
+                                    imgStr = '';
+                                    newStatus = '待回访';
+                                    paddingNum = 'padding-right:8%;';
+                                } else if (statusStr == '通过') {
+                                    imgStr = '<img src="../../static/images/return-visit/pass-pic.png" width="60" />';
+                                    newStatus = '已回访';
+                                } else if (statusStr == '未通过') {
+                                    imgStr = '<img src="../../static/images/return-visit/close-pic.png" width="60" />';
+                                    newStatus = '已回访';
+
+                                }
+                                if (statusStr == '已删除') {
+                                    imgStr = '<img src="../../static/images/return-visit/close-pic.png" width="60" />';
+                                    newStatus = '已回访';
+                                }
+
+                                str += '<div class="item-state all-item-list"><div class="item-state-title"><div class="fl">状态：<span class="green-color">' + newStatus + '</span></div><div class="fr"><span class="gray-color">提交时间：' + ele.add_time + '</span></div><div class="clear"></div></div><a href="../returnVisit/detail.html?id=' + ele.id + "&" + openOrUserId + '" target="_blank"><ul style="' + paddingNum + '"><li>项目编号：<span class="gray-color">' + ele.id + '</span></li><li>项目地点：' + ele.address + '</li><li>提报人手机：<span class="gray-color">' + ele.mobile + '</span></li></ul></a><span class="detail-sword"><img src="../../static/images/global/icon-right.png" width="9" /></span><div class="if-pass-icon">' + imgStr + '</div></div> '
+                            });
+                            if (parseInt(result.data.currentPage, 10) == parseInt(result.data.totalPage, 10)) {
+                                firstEqual = true;
+                                str += '<p class="no-more-data">没有更多数据了</p>'
+                            }
+                            if (result.data.currentPage <= result.data.totalPage) {
+                                $listWrapper.append(str);
+                            }
+                        } else if (result.code == 5002) {
+                            $listWrapper.before('<div class="no-item-box"><table width="100%"><tr><td height="100%" align="center"><div><img src="../../static/images/return-visit/sorry.png" width="75" /></div><p class="gray-color mt25">您还没有申请项目哦~</p><div class="immediately-apply"><a href="../apply/operator-apply.html?' + openOrUserId + '" target="_blank">立即申请</a></div></td></tr></table></div>');
+                            //没有数据时，提示内容层设置高度
+                            var $noItemBox = $(".no-item-box");
+                            $noItemBox.css({"height": $(document).height() - 150});
+                            $noItemBox.find("td").css({"height": $(document).height() - 150});
+                            $(document.body).css("background", "#fff");
+                        }
+                    }, null, null, {openId: OpenId});
+                }
+            };
+
+            if (openOrUserId) {
+                ajaxApply.initData(page);
+            }
+            $(window).scroll(function () {
+                var winH = $(window).height(),
+                        domH = $(document).height(),
+                        scrollTop = $(document).scrollTop();
+                if ((domH - winH - scrollTop < 10) && page <= totalPage) {
+                    if (page < totalPage) {
+                        //避免发多次异步请求
+                        if (ajaxApply.ajax != undefined && ajaxApply.ajax.readyState < 4) {
+                            alert('wait');
+                            return false;
+                        }
+                        ajaxApply.initData(page);
+                    } else if ((page == totalPage) && !firstEqual) {
+                        firstEqual = true;
+                        ajaxApply.initData(page);
+                    }
+                } else {
+                    return false;
+                }
+            });
+        })
+    </script>
+</html>

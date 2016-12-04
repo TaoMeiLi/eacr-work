@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>发现</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        
+        <link rel="stylesheet" href="css/common.css" />
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="js/jquery-2.1.4.min.js" type="text/javascript" ></script>
+        <script src="js/common.js" type="text/javascript" ></script>
+        <script src="js/WebViewJavascriptBridge.js"></script>
+	</head>
+	<body>
+		<div class="main" class="main-top" style="padding-top:0;">
+			<!--<div class="header-top"></div>-->
+			<div class="con clearfix">
+				<ul class="clearfix left">
+					<li class="path" onclick="path();"><a ><img src="img/find/icon-3.png"/><span>常用路线</span></a></li>
+					<li class="mend-pile" onclick="mendPile();"><a><img src="img/find/icon-1.png" alt="" /><span>我要补桩</span></a></li>
+					<li class="prospect"  onclick="prospect();"><a><img src="img/find/icon-2.png"/><span>我要勘察</span></a></li>
+				</ul>
+				<ul class="clearfix right">
+					<li class="banner"></li>
+					<li class="rules" onclick="rules();"><a ><img src="img/find/icon-4.png"/><span>违章查询</span></a></li>
+				</ul>
+			</div>
+		</div><!--main-->
+		<!--<div class="footer-bottom"></div>-->
+		<script>
+				var $title;
+				var $type;
+//				var userId=2;
+//				var userLng = 116.317630;	//	app用户经度
+//				var userlat = 39.917155;	//app
+//				var user_from = "sograndwap";//app
+//				var token="bUSNUlLO%2fOBf4WOK9GHw1wUBh6DN5amHLLqwkatz5VM%3d";//app
+				var userId;
+				var userLng;	//	app用户经度
+				var userlat;	//app
+				var user_from;//app
+				var token;//app
+		        function testClick1() {
+		            //call native method
+		            window.WebViewJavascriptBridge.callHandler(
+		                'submitFromWeb'
+		                , {'title': $title,"type":$type}
+		                ,function(responseData) {
+		                	userId = responseData.userId;
+		                	userLng = responseData.userLng;
+		                	userlat = responseData.userlat;
+		                	user_from = responseData.user_from;
+		                	token = urlencode(responseData.token);
+		       				
+		                }
+		            );
+		        }
+				function connectWebViewJavascriptBridge(callback) {
+		            if (window.WebViewJavascriptBridge) {
+		                callback(WebViewJavascriptBridge)
+		            } else {
+		                document.addEventListener(
+		                    'WebViewJavascriptBridgeReady'
+		                    , function() {
+		                        callback(WebViewJavascriptBridge)
+		                    },
+		                    false
+		                );
+		            }
+		        }
+		
+		        connectWebViewJavascriptBridge(function(bridge) {
+		            bridge.init(function(message, responseCallback) {
+//		               responseCallback(data);
+		            });
+		        })
+		        
+			//我要补桩
+				function mendPile(){
+					$title="我要补桩";
+					$type=1;
+					testClick1();
+//					var jumpHref = './mend-pile.html?userId='+userId+'&lng='+userLng+'&lat='+userlat;
+//					location.href = jumpHref;
+				}
+			//我要勘察
+				function prospect(){
+					$title="我要勘察";
+					$type=2;
+					testClick1();
+//					var jumpHref = './prospect.html?userId='+userId+'&lng='+userLng+'&lat='+userlat;
+//					location.href = jumpHref;
+				}
+			//常用路线
+				function path(){
+					$title="常用路线";
+					$type=3;
+					testClick1();
+					
+				}
+			//违章查询
+				function rules(){
+					$title="违章查询";
+					$type=4;
+					testClick1();
+					
+//					var jumpHref = 'http://124.172.220.199:10001/illegal?user_id='+userId+'&user_from='+user_from+'&token='+token;
+//					location.href = jumpHref;
+//					
+					
+				}
+				
+			
+		</script>
+	</body>
+</html>

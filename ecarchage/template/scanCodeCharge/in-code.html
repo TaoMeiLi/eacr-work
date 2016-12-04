@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>输入编码</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/scanCodeCharge/scanCode.css" />
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+	</head>
+	<body>
+		<div class="main">
+			<p class="ti-tx">如果您扫描二维码失败，可以选择输入二维码下方的充电桩编码进行充电</p>
+			<form action="">
+				<input class="in-code" type="text" placeholder="请输入充电桩编号" />
+			</form>
+			<div class="foot">连接充电桩</div>
+		</div><!--main-->
+		<div class="mask"></div>
+		<div class="omsg">请输入充电桩编号</div>
+	</body>
+	<script>
+	$(function(){
+		var OpenId = getOpenId('openId');
+		var PileId;    //输入的充电桩编号
+		//进入充电开关 传参：电桩编号、用户openId
+			$(".foot").on("click",function(){	
+				PileId=$(".in-code").val();  
+				if(PileId!=''){
+					var jumpHref = './onOff.html?' +'pile_id='+ PileId;
+					location.href = jumpHref;
+				}else{
+					oMask();
+				}	
+			})
+		//弹窗提醒“输入电桩编号”
+		function oMask(){
+			$(".mask").css({"display":"block"});
+			$(".omsg").css({"display":"block"});
+			$(".mask").on("click",function(){
+				$(".mask").css({"display":"none"});
+				$(".omsg").css({"display":"none"});
+			})
+		}
+		
+		
+		
+	})
+	</script>
+</html>

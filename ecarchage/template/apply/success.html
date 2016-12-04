@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>申请成功</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/apply.css">
+
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+    </head>
+    <body style="background:#fff;">
+        <!--<header class="com-head jsCom-head">
+            <h1 class="title">等待回访</h1>
+            <a href="javascript:history.go(-1);" class="navBtn navBtn-back"></a>
+        </header>-->
+        <div class="cooperation-step">
+            <ul>
+                <li class="other-tab"><p>1</p><div>填写信息</div></li>
+                <li class="mid-tab"><p>2</p><div>图片上传</div></li>
+                <li class="other-tab current"><p>3</p><div>等待回访</div></li>
+            </ul>
+            <div class="step-line-bg"></div>
+        </div>
+        <div class="apply-gap"></div>
+        <div class="apply-success">
+            <table class="apply-success-table">
+                <tr><td height="200"><img src="../../static/images/process/success.png" width="138" /></td></tr>
+            </table>
+            <p class="apply-success-tip">工作人员会在5个工作日之内联系您<br/>如有疑问可联系客服：010-61293782</p>
+            <!--<p class="apply-download"><a href="http://android.myapp.com/myapp/detail.htm?apkName=com.solarbao.ck" target="_blank" class="btn-download">下载绿能宝创客APP</a></p>-->
+            <p class="apply-download"><a href="../returnVisit/all-item.html" target="_blank" class="btn-download">查看我的项目</a></p>
+            <p class="tc">随时跟踪项目进度</p>
+        </div>
+        <script type="text/javascript">
+
+            var applySuccess = {
+                init: function () {
+                    var that = this;
+                    xwznUtility.hideHeader();
+                    that.setOneStepTxt();
+                    that.modifyLink();
+                },
+                //设置第一步的文字，荒地类型显示土地信息
+                setOneStepTxt: function () {
+                    if ('2' == getQueryString('form')) {
+                        $(".cooperation-step").find("li:first div").text('土地信息');
+                    }
+                },
+                //查看我项目--链接地址
+                modifyLink: function () {
+
+                    var $a = $(".apply-download a");
+                    var userId = getQueryString("userId");
+                    if (userId) {
+                        var OpenId = "appWebView_" + userId;
+                        $a.attr("href", $a.attr('href') + '?' + 'userId=' + userId);
+                    } else {
+                        var OpenId = getOpenId();
+                        $a.attr("href", $a.attr('href') + '?' + 'openId=' + OpenId);
+                    }
+                    if (!userId && !OpenId) {
+                        $a.attr('href', 'javascript:;');
+                    }
+                }
+            }
+            $(function () {
+                applySuccess.init();
+            })
+        </script>
+    </body>
+</html>

@@ -1,0 +1,19 @@
+.main{width:100%;height:100%;}
+.main-top{padding-top:0;}
+.con{width:100%;padding:0.75rem;padding-bottom:0;}
+.con .left{float:left;}
+.con .right{float:right;}
+.con ul li{overflow: hidden;position:relative;margin-bottom:0.75rem;}
+.con ul li a{display: block;width:100%;height:100%;}
+.con ul li a span{font-size:0.85rem;color:#fff;position:absolute;bottom:1rem;right:1.1rem;}
+.con ul li img{position:absolute;}
+.con .left li{width:8.175rem;height:8.15rem;}
+.con .left li:nth-child(1){background:#199f00;}
+.con .left li:nth-child(1) img{width:2.4rem;top:1.1rem;left:1.1rem;}
+.con .left li:nth-child(2){background:#d85930;}
+.con .left li:nth-child(2) img{width:2.525rem;top:0.9rem;left:1rem;}
+.con .left li:nth-child(3){background:#1873c6;}
+.con .left li:nth-child(3) img{width:2.625rem;top:0.9rem;left:1rem;}
+.con .right .banner{width:8.325rem;height:17.075rem;overflow: hidden;background:url(../img/find/bg-icon.jpg) top left no-repeat;background-size:100%;}
+.con .right li:nth-child(2){width:8.325rem;height:8.15rem;background:#b62246;}
+.con .right li:nth-child(2) img{width:2.35rem;top:1rem;left:0.85rem;}

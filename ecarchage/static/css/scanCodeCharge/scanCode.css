@@ -1,0 +1,19 @@
+body{font-size:14px;font-family:"Hiragino Sans GB","STXihei", Arial, Helvetica, sans-serif;}p ul li:last-child .allow{display: inline-block; width:49%;height:46px;line-height:46px;text-align:center; color:#000;}
+/*扫码充电页面样式begin*/
+.con{width:100%;}
+.con-top,.con-bom{width:100%;background:#fff; text-align:center;padding-bottom:50px;}
+.con-top a,.con-bom a{display:inline-block;width:35%;margin-top:55px;}
+.con-top a img,.con-bom a img{width:100%; }
+.con-top p,.con-bom p{color:#999999;margin-top:35px;}
+.solids{width:100%;height:10px;background:#f4f4f4;}
+.msg{display: none; width: 215px;height: 100px;background: #fff;position: fixed;top: 0; left: 0; right: 0; bottom:0; margin: auto; z-index: 420; border-radius: 10px;}
+.msg p:first-child{height:60px;text-align:center;line-height:60px;border-bottom:1px solid #ddd;}
+.msg .msg-btn{display: block; height:40px;line-height: 40px;text-align:center;}
+@media only screen and (max-width:320px) {
+}
+/*输入编码页面样式begin*/
+.main{width:94%;margin:0 auto;}
+.ti-tx{color:#666666;margin-top:20px;}
+.in-code{width:100%;height:45px;border:1px solid #E8E8E8;border-radius:5px;font-size:15px;padding-left:10px;margin-top:20px;}
+.foot{width:100%;height: 40px; border-radius: 10px; line-height: 40px; text-align: center; background: #79c526;  margin: 0 auto;  color: #fff;  font-size: 15px;margin-top:70px;}
+.omsg{width:150px;height:60px; position:fixed;top:0;left:0;right:0;bottom:0;margin:auto; z-index:410;display: none; background:#fff;color:#666;font-size:15px;text-align: center; line-height: 60px; border-radius:8px;}

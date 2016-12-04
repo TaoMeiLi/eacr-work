@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>申请类型</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/apply.css">
+
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+        <script type="text/javascript" src="../../static/js/storageCommon.js"></script>
+    </head>
+    <body>
+        <!--<header class="com-head jsCom-head">
+            <h1 class="title">申请类型</h1>
+            <a href="javascript:history.go(-1);" class="navBtn navBtn-back"></a>
+        </header>-->
+        <ul class="operator-apply-list"><li class="waiting">数据加载中...</li></ul>
+    </body>
+    <script type="text/javascript">
+        var projectCategory = {
+            init: function () {
+                xwznUtility.hideHeader();
+                this.getProjectCategoryList();
+            },
+            getProjectCategoryList: function () {
+                var that = this;
+                /**
+                 var openOrUserId = xwznUtility.getOpenOrUserId();
+                 if( !openOrUserId ) {
+                 // 微信公众号带过来的参数
+                 var _code = getQueryString("code");
+                 var params='code='+_code;
+                 if(_code) {
+                 openOrUserId=getOpenIdByWXCode(_code);
+                 if( openOrUserId && openOrUserId!=="undefined" ) { // 成功获取到openId的值
+                 openOrUserId = "openId="+openOrUserId;
+                 storageData("currentOpenOrUserId", openOrUserId);
+                 }
+                 }
+                 }
+                 if( !openOrUserId ) {
+                 openOrUserId = loadStorageData("currentOpenOrUserId");
+                 }
+                 
+                 **/
+                var userId = getQueryString("userId");
+                if (userId) {
+                    var OpenId = "appWebView_" + userId;
+                    var openOrUserId = "userId=" + userId;
+                } else {
+                    var OpenId = getOpenId();
+                    var openOrUserId = 'openId=' + OpenId;
+                }
+
+
+
+
+                if (openOrUserId) {
+                    jqueryAjaxGetJsonp(config.cdzServerUrl + '/project/type', openOrUserId, function (result) {
+                        if (result.code == 2000) {
+                            console.log(result);
+                            var arrCategory = new Array(),
+                                    jumpUrl = '';
+                            $.each(result.data, function (index, element) {
+                                if (element.id == "1") {
+                                    jumpUrl = 'private-pile.html';
+                                } else if (element.id == "2") {
+                                    jumpUrl = 'public-pile.html';
+                                }
+                                var html = '<li><a href="./' + jumpUrl + '?' + openOrUserId + '&id=' + element.id + '">'
+                                        + '<img src="../../static/images/apply/operator-pic-' + element.id + '.png" class="operator-pic" width="60" alt="' + element.title + '" />'
+                                        + '<h3>' + element.title + '</h3>'
+                                        + '<p>' + element.desc + '</p>'
+                                        + '<img src="../../static/images/apply/sword-right.png" class="operator-sword-right-icon" width="8" />'
+                                        + '</a></li>';
+                                arrCategory.push(html);
+                            });
+                            $(".operator-apply-list").html(arrCategory.join(''));
+                        } else {
+                            $(".operator-apply-list").html('<p class="no-param">' + decodeURI(result.msg) + '</p>');
+                        }
+                    }, null, null, {openId: OpenId});
+                } else {
+                    $(".operator-apply-list").html('<p class="no-param">参数缺失！</p>');
+                }
+            }
+        }
+        $(function () {
+            projectCategory.init();
+        });
+    </script>
+</html>

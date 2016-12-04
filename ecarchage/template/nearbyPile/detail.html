@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>电桩详情</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />        
+        <link rel="stylesheet" href="../../static/css/common.css">
+		<link rel="stylesheet" href="../../static/css/swiper-test.css">
+		<link rel="stylesheet" href="../../static/css/detail.css">
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+		<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+		<style type="text/css">
+			.pic-count,.pic-count-num{position:absolute;background:#000;opacity:0.5;right:20px;bottom:20px;height:30px;line-height:30px;padding:0 20px;z-index:40;color:#fff;border-radius:10px;}
+			.pic-count-num{opacity:1.0;background:none;text-align:center;}
+		</style>
+    </head>
+    <body>
+    	<header class="com-head jsCom-head">
+            <h1 class="title"></h1>
+            <a href="javascript:history.go(-1);" class="navBtn navBtn-back"></a>
+        </header>		
+        <!-- Swiper -->
+		<div class="swiper-container">
+			<div class="swiper-wrapper">
+			</div>
+			<!-- Add Pagination -->
+			<div class="swiper-pagination"></div>
+			<div class="pic-count"></div>
+			<div class="pic-count-num"></div>
+		</div>
+		<!-- Swiper JS -->
+		<script src="../../static/js/swiper.min.js"></script>
+
+		<!-- Initialize Swiper -->
+		<script>
+		var curentlng="",curentlat="";//定义当前桩的经纬度；
+//		var openOrUserId = xwznUtility.getOpenOrUserId();
+		var OpenId = getOpenId('openId');
+		$(function(){
+			
+			// 获取用户当前所在的坐标点
+			
+			var lngPosition = getQueryString("user-lng"),
+				latPosition = getQueryString("user-lat");	
+			var $obanner = $(".swiper-container"),
+				groupId = getQueryString("group_id"),
+				$oBannerImgList = $(".swiper-wrapper"),
+				imgStr = '';
+			jqueryAjaxGetJsonp(config.cdzServerUrl + '/pile/getgroupdetail', 'group_id='+ groupId +'&version=1.0.0&lng='+ lngPosition +'&lat=' + latPosition , function (result) {
+//			jqueryAjaxGetJsonp(config.cdzServerUrl + '/pile/getgroupdetail', 'group_id='+ groupId +'&lng=116.4464&lat=39.90535&version=1.0.0' , function (result) {
+				if(result.code == 2000){
+					var data = result.data,
+						operatorType = '',
+						str = '',
+						dayTime = '',
+						holidayTime = '',
+						picType = '',
+						colLine2 = '',
+						colLine4 = '',
+						useStatus = '',
+						$title = $(".title");
+						curentlng=data.longitude;
+						curentlat=data.latitude;
+//						alert(data.images.length)
+					if(data.images.length>=1){
+						for(var i = 0; i < data.images.length; i++){
+							imgStr += '<div class="swiper-slide"><img src="'+ data.images[i].url +'" /></div>';
+						}
+					}else{
+						$obanner.hide();
+					}
+						
+					$title.html(data.name);
+					$oBannerImgList.html(imgStr);
+					var swiper = new Swiper('.swiper-container', {
+						pagination: '.swiper-pagination',
+						paginationClickable: true,
+						spaceBetween: 30,
+						initialSlide:0
+					});
+										
+					
+					var picList = [];
+					$(".swiper-slide img").each(function(i,n){
+						var $n = $(n);
+						picList.push($n.attr("src"));
+						$n.click(function(){
+							
+							var gourl = "./responsive.html?index=" + i;			
+							location.href = gourl;
+						})
+					})
+					
+					//将图片存储在本地
+					localStorage.setItem('picArr',picList); 	
+					
+					
+					
+					if(data.operator_type == 0){
+						operatorType = '自营';
+					}else if(data.operator_type == 1){
+						operatorType = '第三方运营';
+					}
+					if(data.pile_type == 1){
+						picType = '<img src="../../static/images/search/nation-icon.png" width="28" style="position:relative;top:3px;" />';
+					}else{
+						picType = '<img src="../../static/images/detail/icon_08.png" width="28" />';
+					}
+					dayTime = data.opentime_desc;
+					str = '<div class="detail-block"><table width="100%"><tr><td height="60" width="10%"><div class="detail-pic">'+ picType +'</div></td><td width="70%"><table class="graphic" width="97%">';
+					for(var i in data.piles){
+						
+						str += '<tr><td width="30%"><div percentNum = "'+ (data.piles[i].use / data.piles[i].total).toFixed(2) * 100 +'%"><p><em></em></p><span></span><h6>'+ data.piles[i].use + '/' + data.piles[i].total +'</h6></div></td><td><em class="text">'+ data.piles[i].name +'</em></td></tr><tr><td colspan="2" height="4"></td></tr>';
+						
+					}
+					str += '</table></td><td width="10%" align="right">'+ (data.operator_type == 1 ? "" :'<a href="tel:010-61293782"><img src="../../static/images/detail/tel.png" width="35" class="tel-btn" /></a>') +'</td></tr></table></div>';
+					str += '<div class="detail-block"><h3 class="detail-title"><span>['+ operatorType +']</span><span class="title-name">'+ data.name +'</span></h3><p class="detail-address" onclick="gotoPilesMap()" ><img src="../../static/images/detail/poi.png" width="11" /><em>'+ data.province + data.city + data.region + data.address +'</em><span>'+ data.distance +'</span></p></div><div class="gap"></div><div class="detail-block border-line-top"><dl class="pay-dl"><dt>收费方式</dt><dd><em class="tip">充电费</em><span><i><em class="demo1">'+ data.charging_fee +'</em><em class="demo2"></em></i></span></dd><dd><em class="tip">服务费</em><span><i><em class="demo1">'+ data.service_fee +'</em><em class="demo2"></em></i></span></dd><dd><em class="tip">停车费</em><span><i><em class="demo1">'+ data.parking_fee +'</em><em class="demo2"></em></i></span></dd><dd class="last"><em class="tip">支付方式</em><span><i><em class="demo1">'+ data.pay +'</em><em class="demo2"></em></i></span></dd></dl></div><div class="gap"></div><div class="detail-block border-line-top"><ul class="pay-ul"><li>开放时间</li><li><p>'+ dayTime +'</p></li></ul></div><div class="gap"></div>';
+					//桩位信息
+					str += '<div class="detail-block border-line-top"><ul class="pay-ul"><li>桩位信息</li><li><table class="pile-mes-table">';
+					if(data.pilesDetail){
+						for(var i = 0; i < data.pilesDetail.length; i++){
+							colLine2 = data.pilesDetail[i].pile_type_name ? ('<span class="status-text">'+ data.pilesDetail[i].pile_type_name +'</span>') : "";
+							
+							if(data.pilesDetail[i].use_status == 0){
+								useStatus = '空闲中';
+							}else if(data.pilesDetail[i].use_status == 1){
+								useStatus = '充电中';
+							}else if(data.pilesDetail[i].use_status == 2){
+								useStatus = '故障中';
+							}
+							colLine4 = useStatus ? ('<span class="status-text">'+ useStatus +'</span>') : "";
+							str += '<tr><td width="10%"><span class="serial-number">'+ data.pilesDetail[i].id + '</span></td><td width="30%">'+ colLine2 +'</td><td width="10%"></td><td width="25%">'+ (data.pilesDetail[i].pile_type_voltage ? data.pilesDetail[i].pile_type_voltage : "" ) +'</td><td width="25%">'+ colLine4 +'</td></tr>';
+						}
+					}	
+					str += '</table></li></ul></div>';
+					$obanner.after(str);
+					//添加滚动显示
+					addMarquee();
+					//电桩使用百分比
+					var $oDiv = $(".graphic").find("div");
+					$oDiv.each(function(i,n){
+						var $n = $(n),
+							percentNum = $n.attr("percentnum"),
+							$oEm = $n.find("em"),
+							$oSpan = $n.find("span");
+						if(parseInt(percentNum,10) == 0){
+							$n.find("p").css("background","#fff")
+						}
+						if(parseInt(percentNum,10) == 100){
+							$n.find("span").css("background","#7db147")
+						}
+						$oEm.css("margin-left",percentNum);
+						$oSpan.css("width",(93 - percentNum.substr(0,2)) + '%');						
+					})
+				}else{
+				
+				}	
+				
+			},null,null, {openId:OpenId});
+			
+		})
+		//返回地图页面 定位到选择的桩的位置
+		function gotoPilesMap() {
+			var gourl = config.appServerUrl+"/pile/m/template/map/pileMap.html?lng="+curentlng+"&lat="+curentlat+"&openId="+OpenId+"&isPos=1";			
+			location.href = gourl;
+		}	
+		function addMarquee(){			
+			var $list = $(".pay-dl dd"),
+				rollTimerArr = [],
+				$rollTxtOffsetL = 0,
+				timeGap = 10;
+			$list.each(function(i,n){
+				var $n = $(n),
+					$rollWrapper = $n.find("span"),
+					$demo1 = $n.find(".demo1"),
+					$rollTxt = $n.find("i"),
+					$rollTxtW = $demo1.width(),
+					$demo2 = $n.find(".demo2");				
+				timeGap += 10;
+				if(xwznUtility.getByteLen($rollTxt.text()) > 40){
+					$demo2.html($demo1.text());
+					var timer = setInterval(function(){Marquee()},200 + timeGap);
+					$rollWrapper.on("mouseout",function (){
+						timer = setInterval(function(){Marquee()},200 + timeGap);
+					})
+					$rollWrapper.on("mouseover",function (){
+						clearInterval(timer);
+					})
+				}
+				function Marquee(){
+					$rollWrapper = $n.find("span");
+					$rollTxt = $n.find("i");
+					$demo1 = $n.find(".demo1");
+					$rollTxtW = $demo1.width();
+					$rollTxt[0].style.left = $rollTxtOffsetL-- + 'px';
+					if($rollTxtOffsetL < -$rollTxtW){						
+						$rollTxt[0].style.left = 0;				
+						$rollTxtOffsetL = 0;
+					} 	
+				}
+								
+			})		
+			
+		}
+		</script>
+    </body>
+</html>

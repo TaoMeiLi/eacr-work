@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>我要补桩</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        
+        <link rel="stylesheet" href="css/common.css" />
+        <link rel="stylesheet" href="css/mend-pile.css" />
+        
+        <script src="js/jquery-2.1.4.min.js" type="text/javascript" ></script>
+        <script src="js/common.js" type="text/javascript" ></script>
+        <script src="js/WebViewJavascriptBridge.js"></script>
+	</head>
+	<body>
+		<div class="main">
+			<div class="header-top">
+				<div class="back-btn"><img src="img/mendpile/back.png" alt="" /></div>
+				<p class="tit">我要补桩</p>
+			</div>
+			<div class="banner"></div>
+			<ul class="state">
+				<li class="pre-includ">
+					<p>已收录</p>
+					<p><span class="pre-num">0</span>个</p>
+				</li>
+				<li class="no-includ">
+					<p>未收录</p>
+					<p><span class="no-num">0</span>个</p>
+				</li>
+				<li class="integral">
+					<p>补桩赚取</p>
+					<p><span class="integ-num">0</span>积分</p>
+				</li>
+			</ul>
+			<div class="skip-btn">
+				<a class="history">查看历史</a>
+				<a class="add-pile">我要补桩</a>
+			</div>
+		</div><!--main-->
+		<script>
+			$(function(){
+				var userId = getQueryString("userId");
+				var userLng = getQueryString("lng");//	app用户经度
+				var userlat = getQueryString("lat");//app用户纬度
+				var type; //1是已收录；2是未收录 0 全部	
+				var pileUrl = config.cdzServerUrl+'/pile/index';
+				var pileParams = 'user_id='+userId;
+				
+				jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+					var oData = result.data;
+					if(result.code==2000){
+						$(".pre-num").html(oData.ysl_count);
+						$(".no-num").html(oData.wsl_count);
+						$(".integ-num").html(oData.bz_jifei);
+					}else{
+						alert(result.msg);
+					}
+				})
+			//已收录
+				$(".pre-includ").click(function(){
+					var jumpHref = './pile-record.html?type=1&userId='+userId;
+					location.href = jumpHref;
+				})
+			//未收录
+				$(".no-includ").click(function(){
+					var jumpHref = './pile-record.html?type=2&userId='+userId;
+					location.href = jumpHref;
+				})
+			//积分
+				$(".integral").click(function(){
+					var jumpHref = './Integral.html?type=1&userId='+userId;	//type=1;补桩积分
+					location.href = jumpHref;
+				})
+			
+			//查看历史
+				$(".history").click(function(){
+					var jumpHref = './pile-record.html?type=0&userId='+userId;
+					location.href = jumpHref;
+				})
+			//补桩
+				$(".add-pile").click(function(){
+					var jumpHref = './pile-message.html?userId='+userId+'&lng='+userLng+'&lat='+userlat;
+					location.href = jumpHref;
+				})
+		        //返回上一层
+		        $(".back-btn").on("touchstart",function(){
+		        	testClick1();
+//		        	var jumpHref = 'index.html';
+//		        	location.href = jumpHref;
+		        })
+		        
+		        //qiao
+		        function testClick1() {
+		            window.WebViewJavascriptBridge.callHandler(
+		                'goIndex'
+		                , {}
+		                ,function(responseData) {
+		                	alert("成功");
+		                }
+		            );
+		        }
+		        function connectWebViewJavascriptBridge(callback) {
+		            if (window.WebViewJavascriptBridge) {
+		                callback(WebViewJavascriptBridge)
+		            } else {
+		                document.addEventListener(
+		                    'WebViewJavascriptBridgeReady'
+		                    , function() {
+		                        callback(WebViewJavascriptBridge)
+		                    },
+		                    false
+		                );
+		            }
+		        }
+		
+		        connectWebViewJavascriptBridge(function(bridge) {
+		            bridge.init(function(message, responseCallback) {
+		              // responseCallback(data);
+		            });
+		        })
+		       //qiao
+		        
+			})
+		</script>
+	</body>
+</html>

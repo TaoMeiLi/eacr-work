@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/scanCodeCharge/mine-index.css" />
+        
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+        <script type="text/javascript" src="../../static/js/storageCommon.js"></script>
+        <!--<script type="text/javascript" src="../../static/js/scanCodeCharge/hammer.js"></script>
+        <script type="text/javascript" src="../../static/js/scanCodeCharge/iscroll-zoom.js"></script>
+		<script type="text/javascript" src="../../static/js/scanCodeCharge/jquery.photoClip.js"></script>-->
+				
+	</head>
+	<body>
+		<div class="main">
+			<div class="head">
+				<div class="portrait" id="logox">
+					<img class="mine-img" id="bgl" src="../../static/images/scanCodeCharge/min-img.png" alt="" />
+					<form id="myform" name="myform" method="post" enctype="multipart/form-data" action="">
+		                <input id="profile" type="file" name="profile" value="">
+		                <input id="subm-btn" type="button" name="dosubmit" value="提交" onclick="upimg()">
+		            </form>
+				</div>
+				
+				
+				<div class="phone">***********</div>
+			</div>
+			<ul class="list">
+				<li class="my-pile">
+					<img src="../../static/images/scanCodeCharge/pilecode.png" alt="" />
+					<span>我的充电</span>
+					<img src="../../static/images/scanCodeCharge/go.png" alt="" />
+					<em></em>
+				</li>
+				<li class="change">
+					<img src="../../static/images/scanCodeCharge/password2.png" alt="" />
+					<span>修改登录密码</span>
+					<img src="../../static/images/scanCodeCharge/go.png" alt="" />
+					<em></em>
+				</li>
+				<li class="cache">
+					<img src="../../static/images/scanCodeCharge/delete.png" alt="" />
+					<span>清除缓存</span>
+					<img src="../../static/images/scanCodeCharge/go.png" alt="" />
+					<em></em>
+				</li>
+				<li class="service">
+					<img src="../../static/images/scanCodeCharge/phone2.png" alt="" />
+					<span>客服电话</span>
+					<img src="../../static/images/scanCodeCharge/go.png" alt="" />
+					<a href=""><em>**********</em></a>
+				</li>
+			</ul>
+			<div class="quit"><span>退出登录</span></div>
+		</div><!--main-->
+		<div class="mask"></div>
+		<div class="top">
+			<p class="top1">您确定要换头像？</p>
+			<p class="top2">
+				<span class="topOk">确定</span>
+				<span class="topNo">取消</span>
+			</p>
+		</div>
+		<div class="spare">
+			<p class="spare1">您确定要清除缓存？</p>
+			<p class="spare2">
+				<span class="spareOk">确定</span>
+				<span class="spareNo">取消</span>
+			</p>
+		</div>
+		<div class="spareOver">清除了哦...</div>
+		<div class="quitBtn" >
+		<p class="quitBtn1">您确定要退出？</p>
+			<p class="quitBtn2">
+				<span class="quitBtnOk">确定</span>
+				<span class="quitBtnNo">取消</span>
+			</p>
+		</div>
+	</body>
+	<script>
+		$(function(){
+			 //判断usercode是否存在来判断用户是否登录
+            var oUserCode=getStorageUC();
+			if(!oUserCode){
+				var jumpHref = './login.html';
+				location.href = jumpHref;
+				return;
+			}
+			var OpenId = getOpenId('openId');
+           //通过本地获取登录成功后的加密userId;
+           	var oUserId = loadStorageData('userId');
+           	var Count = '';
+      		 //获取用户信息
+           	function oUserinfo(){
+           		var pileUrl = config.cdzServerUrl+'/user/userinfo';
+//				var pileParams = 'userId='+oUserId;
+				var pileParams = '';
+				jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+					var oData=result.data;
+					if(result.code==2000){
+						var oPH=(oData.mobile).substr(0,3);
+						var oPF=(oData.mobile).substr(7,4);
+						Count=oData.count;
+						$(".portrait img").attr("src",oData.profile);
+						$(".phone").html(oPH+'****'+oPF);
+						$(".service>a>em").html(oData.tel)
+						$(".service>a").attr("href","tel:"+oData.tel)
+						$(".my-pile>em").html(Count);
+					}else if(result.code==3012){
+						var jumpHref = './login.html';
+						location.href = jumpHref;
+					}else{
+						alert(result.msg)
+					}
+					
+				},null,null, {openId : OpenId});
+      	}
+      	oUserinfo();   
+      	//点击“我的充电”--充电记录页面
+     	$(".my-pile").on("click",function(){
+      		var jumpHref = './chargeRecord.html?count='+Count;
+			location.href = jumpHref;
+        })
+      	//点击“修改登录密码”--忘记密码
+        $(".change").on("click",function(){
+        	var jumpHref = './forgetPassword.html';
+			location.href = jumpHref;
+        })
+			
+		//清除缓存(清除openId)
+		$(".cache").on("click",function(){
+			$(".mask").show();
+			$(".spare").show();
+		})
+		$(".spareOk").on("click",function(){
+			$(".mask").hide();
+			$(".spare").hide();
+			localStorage.removeItem('openId');
+			$(".spareOver").show();
+			setTimeout(function(){
+				$(".spareOver").hide();
+			},3000);
+		})
+		$(".spareNo").on("click",function(){
+			$(".mask").hide();
+			$(".spare").hide();
+		})
+		
+		//头像
+		function upimg() {
+			var formData = new FormData($("#myform")[0]);
+            $.ajax({
+                url: config.cdzServerUrl+'/user/upimg?wechatCookie=' + getwechatCookie(),
+                type: 'POST',
+                data: formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (returndata) {
+                    console.log(returndata);
+                    profile = returndata.data.path;
+                    $("#bgl").attr("src",returndata.data.url)
+                    
+                    $.ajax({
+                        url: config.cdzServerUrl+'/user/setprofile?wechatCookie=' + getwechatCookie(),
+                        type: 'POST',
+                        data: {"profile": profile},
+                        success: function (json) {
+                            console.log(json);
+                        }
+                    });
+                },
+                error: function (returndata) {
+                    console.log(returndata);
+                }
+            });
+            function getwechatCookie() {
+                    var timestamp = new Date().getTime().toString().substr(0, 10);
+                    var token = $.md5(timestamp + 'openIdspisolar');
+                    var wechatCookie = base64_encode("userCode="+oUserCode+";device=wecha#2#3#4#5#openId;time=" + timestamp + ";token=" + token + ";");
+                    return wechatCookie;
+
+                }
+
+		}
+		$("body").on("change",function(){
+			$(".mask").show();
+			$(".top").show();
+		})
+		$(".topOk").on("click",function(){
+			upimg();
+			$(".top").hide();
+			$(".mask").hide();
+		})
+		$(".topNo").on("click",function(){
+			$(".mask").hide();
+			$(".top").hide();
+			
+		})
+		
+		//退出登录
+		$(".quit").on("click",function(){
+			$(".mask").show();
+			$(".quitBtn").show();
+			$(".quitBtnOk").on("click",function(){
+				localStorage.removeItem('openId');
+				localStorage.clear();
+				var jumpHref = './login.html';
+				location.href = jumpHref;
+				$(".quitBtn").hide();
+				$(".mask").hide();
+			})
+			$(".quitBtnNo").on("click",function(){
+				$(".mask").hide();
+				$(".quitBtn").hide();
+			})
+		})
+		
+		
+	})		
+	</script>
+</html>

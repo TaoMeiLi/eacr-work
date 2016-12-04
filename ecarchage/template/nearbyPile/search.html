@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>电桩搜索</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />        
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/search.css" />
+        <link rel="stylesheet" href="../../static/css/list.css" />
+
+		<script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+		<script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+        <script type="text/javascript" src="../../static/js/storageCommon.js"></script>
+        <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&s=1&ak=9eQUU2A8MQQx4yF0y3pQVIBr"></script>
+	</head>
+	<body>
+		<header class="com-head">
+            <img src="../../static/images/global/back.png" width="24" class="search-poi" onclick="javascript:history.go(-1);"/>
+			<div class="search-input-wrapper"><input type="text" placeholder="请输入充电桩地址" id="pileSearchKeys"   /></div>
+			<img src="../../static/images/global/fdj.png" width="16" class="fdj"  />
+			<img src="../../static/images/global/delete.png" width="18" alt="" class="delete-search" onclick="clearSearch()"/>
+        </header>
+        <div class="list-wrapper"></div>
+        <div class="search-history"></div>
+      	<div id="container" style="display: none;"></div>
+      	<div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
+      	<li><h1></h1><h2></h2></li>
+        <script>    	
+//      	var openOrUserId = xwznUtility.getOpenOrUserId();
+			//if( !openOrUserId ) alert("获取openOrUserId失败！");
+//			alert(openOrUserId)
+			var OpenId = getOpenId('openId');
+			// 本地存储历史搜索数据对象。格式：{"data":[ {"lng": 116.123, "lat":39.4213, "name": "test", "address", "test", "time": 123456789} ]}
+			var searchHistoryObj = getStorageSearchHistory();
+			if( !searchHistoryObj || searchHistoryObj=="undefined" ) {
+				searchHistoryObj = {"data":[]};
+			}
+			var hisCount = 10; // 存储历史搜索记录个数
+			// 存储搜索记录到本地H5缓存
+			function storageSearchHistory( lng, lat, name, address ) {
+				if( lng && lat && name ) {
+					var longtime = new Date().getTime();
+					var poiJson = {"lng": lng, "lat": lat, "name": name, "address": address, "time": longtime};
+					var datas = searchHistoryObj["data"];
+					var dataJson;
+					if( datas && datas.length==0 ) {
+						datas.push( poiJson );
+					} else {
+						var hasSame = false;
+						var newArr = [];
+						for(var i=0; i<datas.length; i++) {
+							dataJson = datas[i];
+							if( dataJson["lng"]==poiJson["lng"] && dataJson["lat"]==poiJson["lat"] ) {  // 说明有重复点
+								hasSame = true;
+							} else {
+								newArr.push(dataJson);
+							}
+						}
+						if( !hasSame ) { // 不存在历史搜索记录
+							if( newArr.length>=hisCount ) {
+								newArr.shift(); // 删除最老的一条记录
+							}
+						}
+						newArr.push( poiJson );
+						datas = newArr;
+						searchHistoryObj["data"] = datas;
+						newArr = null;
+					}
+					var searchHistoryObjStr = JSON.stringify(searchHistoryObj);
+					storageData("solarPileSearchHistory", searchHistoryObjStr);
+				}
+			}
+			// 加载本地的搜索记录
+			function getStorageSearchHistory() {
+				var searchHistoryObjStr = loadStorageData("solarPileSearchHistory");
+				return eval("("+searchHistoryObjStr+")");
+			}
+			
+			
+			var strg='';
+  			var oaddress='';				//具体地址
+//			var hisName="";				//搜索框的值
+	      	function searchHistory(){
+				if( searchHistoryObj && searchHistoryObj["data"].length>0 ) {
+					// 本地缓存
+					$(".search-history").html('<ul><li class="history-title"><span>搜索历史</span></li><li onclick="clearHistory()"><p>清空搜索历史</p></li></ul>');
+					var datas = searchHistoryObj["data"];
+					var hisStr;
+					for(var i=0; i<datas.length; i++) {
+						$(".list-wrapper").html("");
+						hisStr='<li onclick="gotohistory(this)" lng="'+datas[i]["lng"]+'" lat="'+datas[i]["lat"]+'" oaddress="'+datas[i]["address"]+'" poiname="'+datas[i]["name"]+'"><h1>'+datas[i]["name"]+'</h1><h2>'+datas[i]["address"]+'</h2></li>';
+						$(".history-title").after(hisStr);
+					}
+				} else {
+					$(".search-history").html("<h3>暂无搜索记录</h3>");
+				}
+	      	}
+	      	searchHistory();
+	      	//点击搜索历史
+			function gotohistory(obj){
+				$("#pileSearchKeys").val($(obj).attr("poiname"));//被点击的历史名称写入搜索框中
+	      		var lng = $(obj).attr("lng");
+	      		var lat = $(obj).attr("lat");
+	      		oaddress = $(obj).attr("oaddress");
+	      		pp={"lng":lng,"lat":lat};
+	      		myValue = $(obj).attr("poiname");    		
+				initData(page);
+			}
+	  		//清空搜索历史
+			function clearHistory(){
+				removeStorageData("solarPileSearchHistory");
+				$(".search-history").html("<h3>暂无搜索记录</h3>");
+			}
+			//清空搜索框内容
+			function clearSearch(){
+				$("#pileSearchKeys").val("").focus();
+				window.location.reload();
+			}
+			// 百度地图API功能	
+			 
+			var pp={};							//放经纬度lng: 116.404015, lat: 39.912735
+			var myValue;					//联想-搜索框内容
+			var map = new BMap.Map("container");
+			map.centerAndZoom("北京",12);    // 初始化地图,设置城市和地图级别。
+			var ac = new BMap.Autocomplete({  //建立一个自动完成的对象
+//					"input" : "pileSearchKeys"
+//					,"location" : map
+				});
+			
+			$(".search-history ul li").on("click",function(){
+				ac = new BMap.Autocomplete({    //建立一个自动完成的对象
+					"location" : map
+				});
+			})
+			$("#pileSearchKeys").focus(function(){
+				oAc();
+				$(".list-wrapper").html("");//清空列表内容
+			})
+			function oAc(){
+				var IputVal=$("#pileSearchKeys").val();
+				
+				ac = new BMap.Autocomplete({   //建立一个自动完成的对象
+					"input" : "pileSearchKeys"
+					,"location" : map
+				});
+				$("#pileSearchKeys").val(IputVal);
+				ac.addEventListener("onconfirm", function(e) {   //鼠标点击下拉列表后的事件
+					$("#pileSearchKeys").blur();
+				var _value = e.item.value;
+					myValue = _value.business;
+					oaddress = _value.province +  _value.city +  _value.district +  _value.street + _value.business;
+					$("#searchResultPanel").innerHTML ="onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+					setPlace();				
+				});
+			}	
+			function setPlace(){
+				function myFun(){
+					pp = local.getResults().getPoi(0).point;  //获取第一个智能搜索的结果
+					console.log(pp)
+					map.centerAndZoom(pp, 18);
+					initData(page);
+					
+				}
+				var local = new BMap.LocalSearch(map, { //智能搜索
+				  onSearchComplete: myFun
+				});
+				local.search(myValue);
+			}
+			//同list文件
+			var $listWrapper = $(".list-wrapper"),
+				page = 1,
+				totalPage = 0,
+				currentPage = 0,
+				firstEqual = null,
+				str = '';
+//				console.log(openOrUserId);
+				function initData(currentPage){
+					storageSearchHistory(pp.lng, pp.lat, myValue, oaddress);
+					
+					var params = 'page='+ currentPage +'&pageSize=5&version=1.0.0&lng='+ pp.lng +'&lat='+ pp.lat;
+					if( false ) { // 不用数据库存储搜索历史
+						params += '&openId=' + OpenId+'&name='+myValue+'&address='+oaddress
+					}
+					jqueryAjaxGetJsonp(config.cdzServerUrl+'/pile/getgrouplist', params, function (result) {	
+						if(result.code == 2000){
+							$(".search-history").css({"display":"none"});
+							
+							if(firstEqual){
+								return;
+							}
+							$listWrapper.html("");
+							page = parseInt(result.data.nextPage,10);
+							totalPage = parseInt(result.data.totalPage,10);
+							currentPage = parseInt(result.data.currentPage,10);							
+							var data = result.data;
+							listNum = data.list.length;
+							var operatorType = '',
+								pileStatus  = '',
+								picType = '';
+							for(var i = 0; i < data.list.length; i++){
+								if(data.list[i].operator_type == 0){
+									operatorType = '自营';
+								}else if(data.list[i].operator_type == 1){
+									operatorType = '第三方运营';
+								}
+								if(data.list[i].use_status == 0){
+									pileStatus = '<em class="no-use">无空闲</em>';
+								}else if(data.list[i].use_status == 1){
+									pileStatus = '<em class="no-use" style="border-color:#7db147; color:#7db147;">可使用</em>';
+								}if(data.list[i].use_status == 2){
+									pileStatus = '<em class="no-use" style="border-color:#ccc; color:#ccc;">建设中</em>';
+								}if(data.list[i].use_status == 3){
+									pileStatus = '';
+								}
+								if(data.list[i].pile_type == 1){
+									picType = '<img src="../../static/images/search/nation-icon.png" width="28"  style="position:relative;top:3px;"/>';
+								}else{
+									picType = '<img src="../../static/images/detail/icon_08.png" width="28" />';
+								}
+								str += '<div class="list-block"><h3 class="detail-title"><span>['+ operatorType +']</span><span class="title-name">'+ data.list[i].name +'</span>'+ pileStatus +'</h3><p class="detail-address"><img src="../../static/images/detail/poi.png" width="11" /><em>'+  data.list[i].province + data.list[i].city + data.list[i].region + data.list[i].address +'</em><span>'+ data.list[i].distance +'</span></p><a href="./detail.html?group_id=' + data.list[i].group_id  + '&user-lng=' + pp.lng + '&user-lat=' + pp.lat + '&version=1.0.0" target="_blank"><table width="100%"><tr><td height="60" width="10%"><div class="detail-pic">'+ picType +'</div></td><td width="70%"><table class="graphic" width="97%">';
+								for(var j in data.list[i].piles){						
+									str += '<tr><td width="30%"><div percentNum = "'+ (data.list[i].piles[j].use / data.list[i].piles[j].total).toFixed(2) * 100 +'%"><p><em></em></p><span></span><h6>'+ data.list[i].piles[j].use + '/' + data.list[i].piles[j].total +'</h6></div></td><td><em class="text">'+ data.list[i].piles[j].name +'</em></td></tr><tr><td colspan="2" height="4"></td></tr>';
+								}
+								str += '</table></td><td width="10%" align="right"><img src="../../static/images/apply/sword-right.png" width="9" /></td></tr></table></a></div>';
+							}
+							if(currentPage == totalPage){								
+								firstEqual = true;
+								str += '<p class="no-more-data">没有更多数据了</p>';
+							}
+							if(currentPage <= totalPage){
+								$listWrapper.append(str);
+							}
+							//电桩使用百分比
+							var $oDiv = $(".graphic").find("div");
+							$oDiv.each(function(i,n){
+								var $n = $(n),
+									percentNum = $n.attr("percentnum"),
+									$oEm = $n.find("em"),
+									$oSpan = $n.find("span");
+								if(parseInt(percentNum,10) == 0){
+									$n.find("p").css("background","#fff")
+								}
+								if(parseInt(percentNum,10) == 100){
+									$n.find("span").css("background","#7db147")
+								}
+								$oEm.css("margin-left",percentNum);
+								$oSpan.css("width",(94 - percentNum.substr(0,2)) + '%');						
+							})
+//							reloadMask();
+
+						}else if(result.code == 5002 || result.code == 3000){
+//							$listWrapper.html('<p style="padding:20px;">' + decodeURIComponent(result.msg) + '</p>');
+
+							$(".search-history").html("");
+							
+							$listWrapper.html('<div style="text-align: center; margin-top: 100px;font-size:14px;"><img src="../../../../xwzn/m/static/images/return-visit/sorry.png" width="100"/><p style="margin-top:20px;margin-bottom:5px;">没找到？只搜个大致范围就可以哦</p><p>(如：建外SOHO西区&rarr;soho)</p><p class="refresh" onclick="clearSearch()">重新搜索</p></div>');
+						}						
+					},null,null, {openId:OpenId});
+					
+				}
+//				initData(page);	
+				var showNoDataFlag = false;
+				$(window).scroll(function(){
+					var winH = $(window).height(),
+						domH = $(document).height(),
+						scrollTop = $(document).scrollTop();
+//					if((domH - winH - scrollTop < 10) && (page <= totalPage) && !firstEqual){
+//						if(listNum < 5) return false; //当一屏数量小于5条的时候，滚动滚动条，不请求数据
+//						//避免发多次异步请求
+//						if (initData != undefined && initData.readyState < 4) {
+//							alert('wait');
+//							return false;
+//						}
+//						initData(page);	
+					if((domH - winH - scrollTop < 10)){
+						if(listNum < 5){
+							return;
+						}
+						if(page <= totalPage&&!showNoDataFlag){
+							
+							initData(page);
+							showNoDataFlag=true;
+						}
+						
+					}else{
+						showNoDataFlag=false;
+						return false;
+					}
+				})
+				
+        </script>
+	</body>
+</html>

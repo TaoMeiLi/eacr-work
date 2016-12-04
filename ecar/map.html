@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<title>待勘察电桩位置</title>
+		<link rel="stylesheet" href="css/common.css" />
+		<script src="js/jquery-2.1.4.min.js"></script>
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=kxc8PlugAKeUrngspKYF99kBIMVksLtU"></script>
+		<script src="js/WebViewJavascriptBridge.js"></script>
+		<script src="js/common.js"></script>
+		<style type="text/css">
+			body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;}
+			.BMapLabel{background:rgba(0,0,0,0) !important;color:rgba(0,0,0,0) !important;border:none !important;}
+			.float-nav{position: fixed;top:3.19rem;left:0;z-index:999;width:100%;height:1.75rem;background:#fffbc6;color:#8a6907;font-size:0.65rem;line-height: 1.75rem;text-align: center;}
+			.float-nav img{float:right;width:0.8rem;margin-right:0.75rem;vertical-align: middle;margin-top:0.425rem;}
+			.float-tab{position:fixed;bottom:0px;left:0;z-index:999;width:100%;background:#fff;}
+			.tab-top{width:100%;padding-left:0.75rem;}
+			.tab-top p:first-child{width:100%;height:1.5rem;line-height:1.5rem;color:#333333;font-size:0.75rem;}
+			.tab-top p:last-child{width:100%;height:1rem;line-height: 1rem;color:#AAAAAA;font-size:0.65rem;margin-bottom:0.75rem;}
+			.tab-top p:last-child img{width:0.5rem;vertical-align: middle;}
+			.tab-btn{width:100%;height:2.2rem;line-height: 2.2rem;text-align: center;background:#009cff;font-size:0.75rem;color:#fff;}
+			/*是否立即勘察弹窗*/
+			.cpm-bg{display:none;position:fixed;top:0;left:0;z-index:99;width:100%;height:100%;background:rgba(0,0,0,.4);}
+			.cpm{position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;width:12.9rem;height:6.75rem;border-radius:0.4rem;background:#fff;font-size:0.65rem;color:#333333;}
+			.cpm-top{height:4.5rem;text-align: center;border-bottom:1px solid #dfdfdf;}
+			.cpm-top p:first-child{font-size:0.8rem;font-weight: bold;line-height: 2.5rem;}
+			.cpm-b{height:2.25rem;overflow: hidden;}
+			.cpm-b p{float:left;text-align: center;line-height: 2.25rem;}
+			.cpm-b .cpmb-l{border-right:1px solid #dfdfdf;width:6.475rem;}
+			.cpm-b .cpmb-r{width:6.425rem;}
+			.golist{width:1rem;height:3.2rem;float:right;}
+			.golist img{width:1rem;}
+			/*用户位置*/
+			.usermap{position: fixed;bottom: 6.25rem;left: 0.75rem;z-index: 999;width: 1.8rem;height: 1.8rem; box-shadow: 0 0 4px #b6b7b7;}
+			.usermap img{width:1.8rem;}
+		</style>
+	</head>
+	<body>
+		<div class="header-top">
+			<div class="back-btn"><img src="img/mendpile/back.png" alt="" /></div>
+			<p class="tit">电桩勘察-地图</p>
+			<div class="golist"><img src="img/mendpile/go-list.png" alt="" /></div>
+		</div>
+		<div id="allmap"></div>
+		<div class="float-nav"><span>拖动地图选取电桩位置</span><img src="img/mendpile/dele-icon.png" alt="" class="dele-btn" /></div>
+		<div class="float-tab">
+			<!--<div class="tab-top"><p>电桩名称</p><p><img src="img/mendpile/map-logo2.png" alt="" /><span>电桩地址</span></p></div><div class="tab-btn">领取电桩</div>-->
+		</div>
+		<div class="usermap"><img src="img/mendpile/usermap.jpg" alt="" /></div>
+		<div class="cpm-bg">
+			<div class="cpm">
+				<div class="cpm-top">
+					<p>领取成功</p>
+					<p>请在48小时内完成勘察，否则自动取消</p>
+				</div>
+				<div class="cpm-b">
+					<p class="cpmb-l">稍后勘察</p>
+					<p class="cpmb-r">马上勘察</p>
+				</div>
+			</div>
+		</div><!--cpm-bg-->
+		<script type="text/javascript">
+			$(function(){
+				//appURL传参 用户userid/用户经纬度
+				var $title;	//传给app的状态；进行判断
+				var userId = getQueryString("userId");
+				var userLng = getQueryString("userLng");	
+				var userlat = getQueryString("userlat");	
+			// 百度地图API功能
+				var map = new BMap.Map("allmap");
+				var marker;  // 创建标注
+				var userIcon = new BMap.Icon("img/mendpile/map-logo3.png", new BMap.Size(20,20));
+				var userPoint= new BMap.Point(userLng, userlat);//初始化地图,设置中心点坐标以用户为中点
+				map.centerAndZoom(userPoint, 11);  // 地图级别
+				var userMark = new BMap.Marker(userPoint,{icon:userIcon});// 创建用户位置标注；
+				
+				map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放         
+				var pointArray = new Array();
+				var myIcon = new BMap.Icon("img/mendpile/ling.png", new BMap.Size(30,60));
+				
+			//获取带勘察列表数据
+				var pileUrl = config.cdzServerUrl+'/kancha/kanchaList';
+				var pileParams = 'uid='+userId+'&latitudeApp='+userlat+'&longitudeApp='+userLng;
+				jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+					var oData = result.data;
+					if(result.code==2000){
+						for(var i=0;i<oData.length;i++){
+							var marker = new BMap.Marker(new BMap.Point(oData[i].lng, oData[i].lat),{icon:myIcon}); // 创建点
+							map.addOverlay(marker);    //增加点
+							//在点的位置添加文本框，记录桩信息；
+							var label = new BMap.Label(oData[i].id+','+oData[i].pile_name+','+oData[i].pile_address,{offset:new BMap.Size(20,-10)});
+							marker.setLabel(label);
+							pointArray[i] = new BMap.Point(oData[i].lng, oData[i].lat);
+							marker.addEventListener("click",attribute);
+							//让所有点在视野范围内
+//							map.setViewport(pointArray);
+						}
+					}else{
+						alert(result.msg);
+					}
+				})	
+				//获取页面以用户中心位置
+				$(".usermap").on("touchstart",function(){
+					map.centerAndZoom(userPoint, 11);  // 地图级别
+					map.addOverlay(userMark);               // 将标注添加到地图中
+				})
+				//获取点击的待勘察桩信息；
+				function attribute(e){
+					var p = e.target;
+					var pText = p.zc.innerText;		//获取标注点编辑框内的桩信息字符串；
+					var oSt=[];
+						oSt=pText.split(",");
+					$(".float-tab").html('<div class="tab-top"><p>'+oSt[1]+'</p><p><img src="img/mendpile/map-logo2.png" alt="" /><span>'+oSt[2]+'</span></p></div><div class="tab-btn" zid="'+oSt[0]+'">领取电桩</div>');
+				}
+				
+				//点击领取
+				var nzid;//被点击的桩的id
+				$("body").on("touchstart",".tab-btn",function(){
+					nzid=$(this).attr("zid");
+					var pileUrl = config.cdzServerUrl+'/kancha/Lingqu';
+					var pileParams ='id='+nzid+'&uid='+userId;
+					jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+						var oData=result.data;
+						if(result.code==2000){
+							$(".cpm-bg").show();
+						}else{
+							alert(result.msg);
+						}
+					})
+				})
+				//马上勘察
+				$("body").on("touchstart",".cpmb-r",function(){
+					$(".cpm-bg").hide();
+					var jumpHref = 'pro-message.html?userId='+userId+'&id='+nzid;
+					location.href = jumpHref;
+				})
+				//稍后勘察
+				$("body").on("touchstart",".cpmb-l",function(){
+					$(".cpm-bg").hide();
+					location.reload(); 
+				})	
+				//关闭float-nav
+				$(".dele-btn").on("click",function(){
+					$(".float-nav").hide();
+				})
+				//进入待勘察列表页
+				$(".golist").on("touchstart",function(){
+					var jumpHref = 'pro-list.html?userId='+userId+'&lng='+userLng+'&lat='+userlat;
+					location.href = jumpHref;
+				})
+				//返回上一层
+				$(".back-btn").on("touchstart",function(){
+					var jumpHref = 'prospect.html?userId='+userId+'&lng='+userLng+'&lat='+userlat;
+					location.href = jumpHref;
+				})
+			})
+		
+		</script>
+
+	</body>
+</html>

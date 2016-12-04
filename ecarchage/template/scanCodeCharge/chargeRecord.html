@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>充电记录</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/scanCodeCharge/chargeRecord.css" />
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+	</head>
+	<body>
+		<div class="main"></div><!--main-->
+		<div class="foot"></div>
+	</body>
+	<script>
+		$(function(){
+			var OpenId = getOpenId('openId');
+			var Count = getQueryString('count');//总共条数
+			var page=1;
+			var pageSize=8;
+			var totalPage=0;
+			$(".main").html("");
+			InList(1);
+			function InList(page){
+				var pileUrl = config.cdzServerUrl+'/order/getorderlist';
+				var pileParams = 'page='+page+'&pageSize=8&openId='+OpenId;
+				jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+					var oData=result.data;
+					if(result.code==2000){
+						if(Count<=0){
+							$(".main").html('<div class="unfound" ><img src="../../static/images/scanCodeCharge/no.png"><p>没有充电记录呀</p></div>');
+						}else{
+							for(var i=0;i<pageSize;i++){
+								var oStatus='';
+								var payState='';
+								var detailMoney= '';
+								//获取桩号后三位
+								var opileIdNum = oData.list[i].pile_id;
+								var opileIdSize = opileIdNum.length-3;
+								var pile_id = opileIdNum.substr(opileIdSize,3);
+								if(oData.list[i].status==0){
+									oStatus='<span class="state">未支付</span>';
+									payState='<span class="payment"><a href="./payment.html?openId='+OpenId+'&id='+oData.list[i].id+'">去付款</a></span>';									
+									detailMoney='<span style="margin-left:10px;">应付:</span><i>'+oData.list[i].detail_money+'</i>';
+								}else if(oData.list[i].status==1){
+									oStatus='<span class="state" style="color:#000;">已付款</span>';
+									payState='';
+									detailMoney='<span style="margin-left:10px;"></span><i>'+oData.list[i].detail_money+'</i>';
+								}
+								str='<div class="list"><div class="list-head"><span class="time">'+oData.list[i].date+'</span>'+oStatus+'</div><div class="solid"></div><div class="list-con"><div class="left-img"><img src="'+oData.list[i].img+'" alt="" /></div><div class="right-text"><ul><li><p>'+oData.list[i].name+'</p></li><li><p>桩号 ：'+pile_id+'</p></li><li><span>充电耗时:'+oData.list[i].charge_time+'</span></li></ul></div><div class="detailMoney">'+detailMoney+'<span>元</span></div></div><div class="solid"></div><div class="list-foot">'+payState +'<span class="look-over"><a href="./detail.html?openId='+OpenId+'&id='+oData.list[i].id+'&status='+oData.list[i].status+'">查看详情</a></span></div></div>'
+								$(".main").append(str);
+							}
+						}
+							
+					}else{
+						alert(result.code)
+						alert(result.msg)
+					}
+				},null,null, {openId:OpenId});
+			}
+			//上划刷新
+			$(window).scroll(function(){
+				var winH = $(window).height(),
+					domH = $(document).height(),
+					scrollTop = $(document).scrollTop();	
+				if((domH - winH - scrollTop < 10)){	
+						page+=1;
+						if(page>((Count/pageSize)+1)){
+					$(".foot").html('<p style="height:60px;line-height:60px; text-align: center;font-size:12px;color:#9D9D9D;">没有数据了哦！</p>');
+							return;
+						}else{
+							InList(page);
+						}
+				}else{
+					return false;
+				}
+			})
+		})	
+	</script>
+</html>

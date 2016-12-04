@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>电桩列表页</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />        
+        <link rel="stylesheet" href="../../static/css/common.css">
+		<link rel="stylesheet" href="../../static/css/swiper-test.css">
+		<link rel="stylesheet" href="../../static/css/list.css">
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+		<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    </head>
+    <body>
+		<div class="mask"></div>
+    	<header class="com-head jsCom-head">
+            <img src="../../static/images/global/poi.png" width="24" class="search-poi" onclick="gotoPilesMap()" />
+			<div class="search-input-wrapper"><input type="text" placeholder="请输入充电桩地址" onfocus="searchPage()" /></div>
+			<img src="../../static/images/global/fdj.png" width="16" class="fdj"  />
+			<img src="../../static/images/global/ss.png" width="20" class="search-condition" />
+        </header>
+		<div class="list-wrapper">
+			<div class="list-loading">
+				<img src="../../static/images/global/loading.png" alt="" />
+				<p>别闹，我在拼命加载中...</p>
+			</div>
+		</div>
+		<div class="search-pop">
+			<dl class="pic-dl">
+				<dt>接口类型<span>(可多选)</span></dt>
+				<dd><img src="../../static/images/detail/icon_08.png" width="28" class="logo-icon" /><p>特斯拉</p></dd>
+				<dd class="nation-pic-dd"><img src="../../static/images/search/nation-icon.png" width="46" class="logo-icon" /><p>国标</p></dd>
+			</dl>
+			<div class="clear"></div>
+			<dl class="status-dl">
+				<dt>接口类型<span>(可多选)</span></dt>				
+				<dd>可使用</dd>
+				<dd>无空闲</dd>
+				<dd>建设中</dd>
+				<dd>第三方</dd>
+			</dl>
+			<div class="clear"></div>
+			<dl class="pay-dl">
+				<dt>支付方式<span>(可多选)</span></dt>
+				<dd>全部</dd>
+			</dl>
+			<div class="clear"></div>
+			<div><a href="javascript:;" class="pop-btn reset-btn">重置</a><a href="javascript:;" class="sure-btn pop-btn">确定</a></div>
+		</div>
+		
+		<script type="text/javascript">	
+			//初始加载openId			
+//			var openOrUserId = xwznUtility.getOpenOrUserId();
+//			if( !openOrUserId ) {
+//				// 微信公众号带过来的参数
+//				var _code = getQueryString("code");
+//				if( _code ) {
+//					openOrUserId = getOpenIdByWXCode( _code );
+//				}
+//			}
+			//地址栏获取地图页面传过来的经纬度
+			var userLng = getQueryString('lng');
+			var userLat = getQueryString('lat');
+			var OpenId = getOpenId('openId');
+			$(function(){
+				var listNum = 0;
+				function search(){
+					var $searchBtn = $(".search-condition"),
+						$searchPop = $(".search-pop"),
+						$resetBtn = $(".reset-btn"),
+						$statusDd = $(".status-dl dd"),
+						$payDd = $(".pay-dl dd"),
+						$oMask = $(".mask");
+					
+					$searchBtn.add($searchPop).bind("click",function(e){
+						e.stopPropagation();
+						$searchPop.css("display","block");
+						$oMask.css("display","block");
+						
+					})
+					$(document).add($oMask).bind("click",function(){
+						$searchPop.css("display","none");
+						$oMask.css("display","none");
+					})
+					$searchPop.find("dd").each(function(i,n){
+						var $n = $(n);
+						$n.bind("click",function(){
+							var $this = $(this);
+							$this.css({"border":"1px solid #7db147"});
+							if($this.find("img").length == 0 || ($this.find("img").length == 1) && $this.find("img").eq(0).attr("class") != "right-icon-pic"){
+								$this.append('<img src="../../static/images/search/right-icon.png" width="19" class="right-icon-pic" />');
+							}else{
+								$this.find("img:last").remove();
+								$this.css({"border":"1px solid #d7d7d7"});				
+							}
+						})
+					})
+					function select(ele){
+						var $ele = ele;
+						$ele.each(function(i,n){
+							var $n = $(n);
+							$n.bind("click",function(){
+								if(i != 0){
+									$ele.eq(0).html("全部");
+									$ele.eq(0).css({"border":"1px solid #d7d7d7"});
+								}else if(i == 0){
+									$ele.eq(0).siblings().find(".right-icon-pic").remove();
+									$ele.eq(0).siblings().css({"border":"1px solid #d7d7d7"});
+									$ele.eq(0).siblings().removeAttr("selected");
+									$(".pay-dl>dt").css({border:0});
+								}	
+							});
+						})
+					}
+					select($payDd);
+					$resetBtn.bind("click",function(){
+						$(".right-icon-pic").remove();
+						$searchPop.find("dd").css("border","1px solid #d7d7d7");
+					})
+				}
+				function reloadMask (){
+					var $oMask = $(".mask"),
+						documentH = $(document).height();
+					$oMask.css("height",documentH );
+				}
+				
+				reloadMask();
+				//页面加载的时候，去异步获取支付方式
+				function getPayMethod(){
+					jqueryAjaxGetJsonp(config.cdzServerUrl + '/pile/payList', '', function (result) {
+						if(result.code == 2000){	
+							var payData = result.data,
+								payStr = '',
+								$payDdFirst = $(".pay-dl dd:first");
+							for(var i = 0; i < payData.length; i++){
+								payStr += '<dd payid = "'+ payData[i].id +'">'+ payData[i].name +'</dd>';
+							}
+							$payDdFirst.after(payStr);
+							search();
+							reLoad();
+						}
+					},null,null, {openId:OpenId});					
+				}
+				getPayMethod();
+				
+				
+				// 获取用户当前所在的坐标点
+				// 定位用户所在的坐标信息
+				function positionUserLocation() {
+					if( wxReady==true ) {
+						getWXJSLocation();
+					} else {
+						var callWXApiList = ["getLocation"];
+						getWXJSTicket( callWXApiList );
+					}
+				}
+				positionUserLocation();
+				var lngPosition = '',
+					latPosition = '';
+				function getWXJSLocation() {
+					wx.getLocation({
+						//type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+						success: function (res) {
+							var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+							var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+							var speed = res.speed; // 速度，以米/每秒计
+							var accuracy = res.accuracy; // 位置精度							
+							lngPosition = longitude;
+							latPosition = latitude;
+							initData(page);	
+						}
+					});
+				}
+				var wxReady;
+				wx.ready(function() {
+					wxReady = true;
+					getWXJSLocation();
+				});
+				
+				var $listWrapper = $(".list-wrapper"),
+					page = 1,
+					filterStr = '',
+					str = '',
+					totalPage = 0,
+					listData = [];
+				function initData(page){
+//					var params = 'version=1.0.0&lng='+ lngPosition +'&lat='+ latPosition + (filterStr ? ('&' +	 filterStr) : '');
+					var params = 'version=1.0.0&lng='+ userLng +'&lat='+ userLat + (filterStr ? ('&' +	 filterStr) : '');
+					jqueryAjaxGetJsonp(config.cdzServerUrl + '/pile/getgrouplist', params , function (result) {	
+					//jqueryAjaxGetJsonp(config.cdzServerUrl + '/pile/getgrouplist', 'page='+ page +'&pageSize=5&lng=116.4466&lat=39.90543&version=1.0.0 '+ (filterStr ? ('&' +	 filterStr) : '') , function (result) {	
+						if(result.code == 2000){							
+							$listWrapper.html("");							
+							var data = result.data;
+							listNum = data.list.length;
+							var operatorType = '',
+								pileStatus  = '',
+								picType = '';
+							totalPage = Math.ceil(data.list.length / 5);
+							listData = data.list;
+							addNextData(1);
+							
+							
+							if(listNum==0){
+								$listWrapper.html('<div style="text-align: center; margin-top: 100px;font-size:14px;"><img src="../../../../xwzn/m/static/images/return-visit/sorry.png" width="100"/><p style="margin-top:20px;margin-bottom:5px;">没有找到符合的桩群哦！</p></div>');
+								$(".no-more-data").remove();
+							}
+							
+						}else if(result.code == 5002 || result.code == 3000){
+							//$listWrapper.html('<p style="padding:20px;">' + decodeURIComponent(result.msg) + '</p>');							
+							$listWrapper.html('<div style="text-align: center; margin-top: 100px;font-size:14px;"><img src="../../../../xwzn/m/static/images/return-visit/sorry.png" width="100"/><p style="margin-top:20px;margin-bottom:5px;">没有找到符合的桩群哦！</p></div>');
+						
+						}						
+					},null,null, {openId:OpenId});
+					
+				}
+				function addNextData(nowpage){
+					if(nowpage < totalPage){
+						for(var i = (nowpage - 1) * 5; i <= nowpage*5-1; i++){
+							addDate(listData[i]);
+							
+						}
+					}else if(nowpage == totalPage){
+						for(i = (nowpage - 1) * 5; i < listData.length; i++){
+							addDate(listData[i])
+						}
+					}
+					function addDate(obj){
+						
+						if(obj.operator_type == 0){
+							operatorType = '自营';
+						}else if(obj.operator_type == 1){
+							operatorType = '第三方运营';
+						}
+						if(obj.use_status == 0){
+							pileStatus = '<em class="no-use">无空闲</em>';
+						}else if(obj.use_status == 1){
+							pileStatus = '<em class="no-use" style="border-color:#7db147;color:#7db147;">可使用</em>';
+						}if(obj.use_status == 2){
+							pileStatus = '<em class="no-use" style="border-color:#ccc; color:#ccc;">建设中</em>';
+						}if(obj.use_status == 3){
+							pileStatus = '';
+						}
+						if(obj.pile_type == 1){
+							picType = '<img src="../../static/images/search/nation-icon.png" width="28"  style="position:relative;top:3px;"/>';
+						}else{
+							picType = '<img src="../../static/images/detail/icon_08.png" width="28" />';
+						}
+						str += '<div class="list-block"><h3 class="detail-title"><span>['+ operatorType +']</span><span class="title-name">'+ obj.name +'</span>'+ pileStatus +'</h3><p class="detail-address"><img src="../../static/images/detail/poi.png" width="11" /><em>'+  obj.province + obj.city + obj.region + obj.address +'</em><span>'+ obj.distance +'</span></p><a href="./detail.html?group_id=' + obj.group_id  + '&lng=' + obj.longitude + '&lat=' + obj.latitude + '&user-lng=' + userLng + '&user-lat=' + userLat + '&version=1.0.0" target="_blank"><table width="100%"><tr><td height="60" width="10%"><div class="detail-pic">'+ picType +'</div></td><td width="70%"><table class="graphic" width="97%">';
+						for(var j in obj.piles){						
+							str += '<tr><td width="30%"><div percentNum = "'+ (obj.piles[j].use / obj.piles[j].total).toFixed(2) * 100 +'%"><p><em></em></p><span></span><h6>'+ obj.piles[j].use + '/' + obj.piles[j].total +'</h6></div></td><td><em class="text">'+ obj.piles[j].name +'</em></td></tr><tr><td colspan="2" height="4"></td></tr>';									
+						}
+						str += '</table></td><td width="10%" align="right"><img src="../../static/images/apply/sword-right.png" width="9" /></td></tr></table></a></div>';
+						$listWrapper.html(str);	
+						
+						
+						//电桩使用百分比
+						var $oDiv = $(".graphic").find("div");
+						$oDiv.each(function(i,n){
+							var $n = $(n),
+								percentNum = $n.attr("percentnum"),
+								$oEm = $n.find("em"),
+								$oSpan = $n.find("span");
+							if(parseInt(percentNum,10) == 0){
+								$n.find("p").css("background","#fff")
+							}
+							if(parseInt(percentNum,10) == 100){
+								$n.find("span").css("background","#7db147")
+							}
+							$oEm.css("margin-left",percentNum);
+							$oSpan.css("width",(94 - percentNum.substr(0,2)) + '%');						
+						})
+						reloadMask();
+						page = nowpage + 1;
+					}
+					if($(".no-more-data").length == 1){
+						$(".no-more-data").remove();
+					}
+					if(nowpage == totalPage){
+						$listWrapper.after('<p class="no-more-data">没有更多数据了</p>');
+					}
+				}	
+				var showNoDataFlag = false;
+				$(window).scroll(function(){
+					var winH = $(window).height(),
+						domH = $(document).height(),
+						scrollTop = $(document).scrollTop();						
+					if((domH - winH - scrollTop < 10)){							
+						if(page > totalPage && !showNoDataFlag){							
+							showNoDataFlag = true;
+							return;
+						}
+						if(page <= totalPage){
+							addNextData(page);
+							
+						}
+					}else{
+						return false;
+					}
+				})
+				
+				
+				//刷新列表
+			
+				function  reLoad(){	
+					var $sureBtn = $(".sure-btn"),
+						$statusDd = $(".status-dl dd"),
+						$payDd = $(".pay-dl dd"),
+						$picDd = $(".pic-dl dd"),
+						statusItem = '',
+						payItem = '',
+						picItem = '',
+						$searchPop = $(".search-pop"),
+						$oMask = $(".mask");						
+					$sureBtn.on("click",function(e){
+						page = 1;
+						var picArr = [],
+							payArr = [],
+							statusArr = [];						
+						$statusDd.each(function(i,n){
+							var $n = $(n);
+							if($n.has('img') && $n.find("img").hasClass("right-icon-pic")){								
+								if($(n).text() == '无空闲'){
+									statusArr.push(0);
+								}else if($(n).text() == '可使用'){
+									statusArr.push(1);
+								}else if($(n).text() == '建设中'){
+									statusArr.push(2);
+								}else if($(n).text() == '第三方'){
+									statusArr.push(3);
+								}
+							}
+							statusItem = statusArr.sort(function(a,b){return a>b?1:-1}).join(",");
+						})
+						$payDd.each(function(i,n){
+							var $n = $(n);
+							if($n.has('img') && $n.find("img").hasClass("right-icon-pic")){
+								payArr.push($(n).attr("payid"));
+								if($(n).text() == '全部'){
+									payItem = '';
+								}
+							}
+							payItem = payArr.join(",");
+						})
+						$picDd.each(function(i,n){
+							var $n = $(n);								
+							if($n.has('img') && $n.find("img").hasClass("right-icon-pic")){								
+								if($(n).text() == '特斯拉'){
+									picArr.push(0);
+								}else if($(n).text() == '国标'){
+									picArr.push(1);
+								}
+							}
+							picItem = picArr.join(",");
+						})
+						filterStr = 'use_status=' + statusItem + '&pile_type=' + picItem;
+						if( payItem ) {
+							filterStr += "&pay="+payItem;
+						}
+						str = '';
+						initData(page);
+						e.stopPropagation();
+						$searchPop.add($oMask).css("display","none");
+					})						
+				}	
+			})
+			
+			//返回地图页面
+			function gotoPilesMap() {
+				var gourl = config.appServerUrl+"/pile/m/template/map/pileMap.html";
+				location.href = gourl;
+			}
+			//搜索，进入搜索页面
+			function searchPage(){	
+				var jumpHref = './search.html?openId=' + OpenId;
+				location.href = jumpHref;				
+			}
+		</script>
+    </body>
+</html>

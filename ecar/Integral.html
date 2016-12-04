@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>积分明细</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        
+        <link rel="stylesheet" href="css/common.css" />
+        <link rel="stylesheet" href="css/integral.css" />
+        <script src="js/jquery-2.1.4.min.js" type="text/javascript" ></script>
+        <script src="js/common.js" type="text/javascript" ></script>
+	</head>
+	<body>
+		<div class="main">
+			<div class="header-top">
+				<div class="back-btn"><img src="img/mendpile/back.png" alt="" /></div>
+				<p class="tit">积分</p>
+			</div>
+			<ul class="list">
+				<div class="myimg" style="width:100%;padding-top:4.9rem; text-align:center;display: none;">
+					<img style="width:7.9rem;margin:0 auto;" src="img/mendpile/myimg1.png" alt="" />
+					<p style="color:#333333;font-size:0.75rem;text-align: center;margin-top:1rem;">您未获取积分哦 </p>
+					<p style="color:#333333;font-size:0.75rem;text-align: center;margin-top:1rem;">每成功提交一个电桩将赚取50积分……</p>
+				</div>
+				<!--<li><div class="left"><p>补充电桩—<span>北京</span></p><p>2016-08-01 18：00</p></div><div class="right"><i>+</i><span>50</span></div></li>-->
+			</ul>
+		</div>
+		<script>
+			$(function(){
+				var type = getQueryString("type");
+				var userId = getQueryString("userId");
+				if(type==1){
+					$(".tit").html("补桩积分");
+				}else if(type==2){
+					$(".tit").html("勘察积分");
+				}
+				var pileUrl = config.cdzServerUrl+'/user/PointList';
+				var pileParams = 'user_id='+userId+'&type='+type;
+				jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+					var oData = result.data;
+					if(result.code==2000){
+						if (typeof oData === "object" && !(oData instanceof Array)){
+							$(".main").css("background","#fff");
+							$(".myimg").show();	
+						}else{
+							$(".myimg").hide();
+							var str='';
+							for(var i=0;i<oData.length;i++){
+								str='<li><div class="left"><p><span>'+oData[i].desc+'</span></p><p>'+oData[i].create_time_format+'</p></div><div class="right"><i>+</i><span>'+oData[i].point+'</span></div></li>';
+								$(".list").append(str);
+							}  
+						}
+					}else{
+						alert(result.msg);
+					}
+				})
+				
+				 //返回上一层
+		        $(".back-btn").on("touchstart",function(){
+		        	var jumpHref = 'javascript:history.go(-1)';
+		        	location.href = jumpHref;
+		        })
+			})
+		</script>
+	</body>
+</html>

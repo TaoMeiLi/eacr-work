@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+    <!-- Link Swiper's CSS -->
+    <link rel="stylesheet" href="../../static/css/swiper-test.css">
+	<script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="../../static/js/underscore.js"></script>
+	<script type="text/javascript" src="../../static/js/common.js"></script>
+    <!-- Demo styles -->
+    <style>
+    html, body {
+        position: relative;
+        height: 100%;
+    }
+    body {
+        background: #eee;
+        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color:#000;
+        margin: 0;
+        padding: 0;
+    }
+    .swiper-container {
+        width: 100%;
+        height: 100%;
+    }
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #000;
+
+        /* Center slide text vertically */
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+    }
+	.pinch-zoom-container{
+		width:100%;
+		height:100%;
+	}
+	.currentShow{
+		position:absolute;
+		top:0px;
+		left:0px;
+		width:100%;
+		color:#fff;
+		z-index:50;
+		text-align:center;
+		height:50px;
+		line-height:50px;
+		font-size:30px;
+	}
+    </style>
+</head>
+<body>
+	
+    <!-- Swiper -->
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide"><div><img src="1.jpg" /></div></div>
+			<div class="swiper-slide"><div><img src="2.png" /></div></div>
+			<div class="swiper-slide"><div><img src="3.jpg" /></div></div>
+			<div class="swiper-slide"><div><img src="4.jpg" /></div></div>
+			<div class="swiper-slide"><div><img src="5.jpg" /></div></div>
+        </div>
+        <!-- Add Pagination -->
+        <div class="swiper-pagination"></div>
+		<div class="currentShow"></div>
+    </div>
+
+    <!-- Swiper JS -->
+	<script type="text/javascript" src="../../static/js/swiper.min.js"></script>
+	<script type="text/javascript" src="../../static/js/pinchzoom.js"></script>
+
+    <!-- Initialize Swiper -->
+    <script type="text/javascript">
+	(function(){
+		console.log(getQueryString("index"));		
+		console.log(localStorage.getItem('picArr'));
+		
+		
+		var picList = localStorage.getItem('picArr').split(","),
+			str = '';
+		$(".swiper-wrapper").html("");
+		for(var i = 0; i < picList.length; i++){
+			str += '<div class="swiper-slide"><div><img src="'+ picList[i] +'" /></div></div>';
+		}
+		$(".swiper-wrapper").html(str);
+		
+		var swiper = new Swiper('.swiper-container', {
+			pagination: '.swiper-pagination',
+			paginationClickable: true,
+			initialSlide:getQueryString("index")
+		});
+		
+		/*var imgArr = [];
+		for(var i in swiper.slides){
+			imgArr.push(swiper.slides[i])
+		}
+		var newImgArr = [];
+		newImgArr = imgArr.slice(0,5);
+		for(var i = 0; i < newImgArr.length; i++){
+			var newPic = new Image(); 
+			newPic.src = $(newImgArr[i]).find("img").attr("src");
+			newPic.onload = function(){
+				console.log(newPic.offsetHeight);
+			}
+			//console.log($(newImgArr[i]).find("img")[0].offsetHeight);
+			if(newPic.height > 1000){
+				$(newImgArr[i]).find("img").css("width","100px")
+			}
+		}
+		$(".swiper-pagination-bullet").eq(1).addClass("swiper-pagination-bullet-active");
+		$(".swiper-slide").removeClass("swiper-slide-prev").removeClass("swiper-slide-active").removeClass("swiper-slide-next");
+		$(".swiper-pagination-bullet").removeClass("swiper-pagination-bullet-active");
+		$(".swiper-slide").eq(1).addClass("swiper-slide-prev");
+		$(".swiper-slide").eq(0).addClass("swiper-slide-active");
+		$(".swiper-slide").eq(2).addClass("swiper-slide-next");*/
+		$('div.swiper-slide div').each(function () {
+			var zoomer = new RTP.PinchZoom($(this), {});
+			var fator = zoomer.getInitialZoomFactor();
+		})
+		
+		
+	})()
+	
+    </script>
+</body>
+</html>

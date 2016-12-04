@@ -1,0 +1,61 @@
+body, html, #container {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";font-size:12px;}
+        
+/* CSS实现向右三角箭头 */
+/*
+.arrow-right { width:0; height:0; border-top: 20px solid transparent; border-bottom: 20px solid transparent; border-left: 20px solid #7DAF4D;
+	position: absolute; margin-top: 20px; left: 0; z-index: 1; }
+.arrow-right:after { clear:both; }
+*/
+/* 图片实现向右箭头 */
+.arrow-right { position:absolute;left:0;margin-top:20px;z-index: 1; }
+.arrow-right img { width:20px;height:30px; }
+
+/* 左上角的状态浮框 */
+.pile-status-desc { padding: 10px; background-color: #fff; position: absolute; margin-top: 20px; left: 3px; z-index: 10; }
+.pile-status-desc img { position: relative; top: 8px; margin: 5px; width: 15px; height: 18px;}
+
+/* 底部扫描二维码 */
+.scan-qrcode { z-index:5;position: absolute; bottom: 5%; width: 100%; text-align: center; }
+.scan-qrcode .scan-img { width:50px;height:50px; }
+
+/* 右上角的定位当前位置 */
+.position-icon { position: absolute; margin-top: 20px; right: 10px; z-index: 1; width: 35px; height: 35px; }
+
+/* 底部内容块，与列表页的区分 */
+.map-block { z-index: 6; position: fixed; bottom: 0; width: 98%; margin-left: 1%; margin-right: 1%;padding: 2%; }
+.map-block em.status { border:1px solid #7db147;border-radius:5px;font-weight:normal;color:#7db147;padding:5px 10px;height:20px;line-height:20px;}
+.map-block .goto-map { z-index: 10; position:absolute;right:2%;top:-30px;width:60px;height:60px;background: url(../images/map/goto.png);background-size:100% 100%; }
+.map-block .map-block-addr img {top:2px;}
+ /** 去掉下方百度地图logo **/
+.anchorBL{display:none} 
+
+/* 筛选框的样式 */
+.pile-pop { top: 10%; }
+
+
+.cd-popup {
+  z-index: 999;
+  position: fixed;
+  left: 50%;
+  top: 45%;
+  opacity: 0;
+  visibility: hidden;
+}
+.cd-popup.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.cd-popup-container {
+    font-size: 14px;
+    position: relative;
+    top: 48%;
+    margin-left: -50%;
+    width: 200px;
+    color: #fff;
+    background: #666;
+    border-radius: 7px 7px 7px 7px;
+    text-align: center;
+}
+.cd-popup-container p { padding: 10px; padding-bottom: 13px; margin: 0; }
+.cd-popup-container p img { width: 20px; height: 20px; position: relative; top: 4px; margin-right: 5px; }

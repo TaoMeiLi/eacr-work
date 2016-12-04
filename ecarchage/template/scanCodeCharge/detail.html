@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/scanCodeCharge/detail.css" />
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+	</head>
+	<body>
+		<div class="main"></div>
+	</body>
+	<script>
+		$(function(){
+			var OpenId = getOpenId('openId');
+			var Id=getQueryString('id');
+			var Status=getQueryString('status');				//支付状态0：未支付；1：已支付
+			var pileUrl = config.cdzServerUrl+'/order/getorderdetail';
+			var pileParams = 'id='+Id+'&openId='+OpenId;
+			jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+				var oData = result.data;
+				var payMethod = oData.pay_id;//支付方式 
+				var payStatus='';
+				if(result.code==2000){
+					$(".main").html('');
+					//获取桩号后三位
+					var opileIdNum = oData.pile_id;
+					var opileIdSize = opileIdNum.length-3;
+					var pile_id = opileIdNum.substr(opileIdSize,3);
+					if(Status==0){
+						var str='<div class="headline"><div class="left-img"><img src="'+oData.img+'" alt="" /></div><div class="right-text"><p class="building">'+oData.name+'</p><p class="pile-num">桩号：<span>'+pile_id+'</span></p></div><img src="../../static/images/scanCodeCharge/non.png" alt="" / class="mark"></div><div class="list"><ul><li>交易流水：<span>'+oData.order_sn+'</span></li><li>开始时间：<span>'+oData.begin_time+'</span></li><li class="end">结束时间：<span>'+oData.end_time+'</span></li><li>充电耗时：<span>'+oData.charge_time+'</span></li><li>充电电量：<span>'+oData.charge_quantity+'</span></li><li>服务费：<span>'+oData.service_money+'</span></li><li>电费：<span>'+oData.electric_money+'</span></li><li class="expenditure"><p>消费金额：<span>'+oData.detail_money+'</span>元</p></li></ul></div><div class="foot"><a href="./payment.html?openId='+OpenId+'&id='+oData.id+'&order_sn='+oData.order_sn+'&charge_time='+oData.charge_time+'&charge_quantity='+oData.charge_quantity+'&service_money='+oData.service_money+'&electric_money='+oData.electric_money+'&pay_id='+oData.pay_id+'&money='+oData.money+'" style="color:#fff;">去付款</a></div>';
+						$(".main").html(str);
+					}else if(Status==1){
+						if(payMethod==0){
+							payStatus = "<img src='../../static/images/scanCodeCharge/wx-icon.png' />微信支付";
+						}else if(payMethod==1){
+							payStatus = "支付宝支付";
+						}
+						var str='<div class="headline"><div class="left-img"><img src="'+oData.img+'" alt="" /></div><div class="right-text"><p class="building">'+oData.name+'</p><p class="pile-num">桩号：<span>'+pile_id+'</span></p></div><img src="../../static/images/scanCodeCharge/paid.png" alt="" / class="mark"></div><div class="list"><ul><li>交易流水：<span>'+oData.order_sn+'</span></li><li>开始时间：<span>'+oData.begin_time+'</span></li><li class="end">结束时间：<span>'+oData.end_time+'</span></li><li class="end">支付时间：<span>'+oData.pay_time+'</span></li><li>充电耗时：<span>'+oData.charge_time+'</span></li><li>充电电量：<span>'+oData.charge_quantity+'</span></li><li>服务费：<span>'+oData.service_money+'</span></li><li>电费：<span>'+oData.electric_money+'</span></li><li>支付方式：<span class="pay-status">'+payStatus+'</span></li><li class="expenditure"><p>消费金额：<span>'+oData.detail_money+'</span>元</p></li></ul></div>';
+						$(".main").html(str);
+					}
+				}
+			},null,null, {openId:OpenId});
+		})
+		
+	</script>
+</html>
+
+			
+
+			
+

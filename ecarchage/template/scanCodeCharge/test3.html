@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		 <meta content="text/html; charset=utf-8" http-equiv="content-type">
+		<title>js调用app</title>
+		<script src="../../static/js/jquery-2.1.4.min.js"></script>
+		<script src="../../static/js/WebViewJavascriptBridge.js"></script>
+	</head>
+	<body>
+		<div class="main">
+			<input type="text"  id="text"/>
+			<input type="button" value="提交"  id="btn" onclick="object();"/>
+			<input type="text" id="text2" />
+		</div>
+		<script>
+			var text;
+			function object(){
+				text=$("#text").val();
+				function connectWebViewJavascriptBridge(callback) {
+				    if (window.WebViewJavascriptBridge) {
+				        callback(WebViewJavascriptBridge);
+				    } else {
+				        document.addEventListener( "WebViewJavascriptBridgeReady", function() { callback(WebViewJavascriptBridge); }, false);
+				    }
+				}
+				connectWebViewJavascriptBridge(function(bridge) {
+					// bridge桥初始化
+					bridge.init(function(message, responseCallback) {
+						if (responseCallback) { responseCallback(message); }
+					});
+					
+					
+					// ------------------------------------ JS自定义函数，供APP调用 ----------------------------------------
+					bridge.registerHandler("object", function(data, responseCallback) {
+						responseCallback(text);
+						$("#text").val(data);
+					});
+					
+				});
+			}
+			window.WebViewJavascriptBridge.callHandler(
+                'H5'
+                , {'param': text}
+                , function(responseData) {
+                    $("#text2").val("打印 = " + responseData);
+                }
+            );
+			
+		</script>
+	</body>
+</html>

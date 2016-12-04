@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>地域选择</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+		<meta http-equiv="Pragma" content="no-cache" />
+		<meta http-equiv="Expires" content="0" />
+		
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				font-size: 100%;
+			}
+			html,body {
+				height:100%;
+			} 
+			ol, ul, li {
+				list-style: none;
+			}
+			
+			::-webkit-scrollbar{width: 0px; height: 10px;}
+			::-webkit-scrollbar-track{background-color:#bee1eb;}
+			::-webkit-scrollbar-thumb{background-color:#00aff0;}
+			::-webkit-scrollbar-thumb:hover {background-color:#9c3}
+			::-webkit-scrollbar-thumb:active {background-color:#00aff0}
+			
+			.region-block-100 {
+				width: 100%;
+				/*height: 100%;*/
+				overflow-x: hidden;
+				font-size: 0.9rem;
+				position: absolute;
+				top:3rem; bottom:0; left:0; right:0;
+			}
+			.region-block-div {
+				height: 100%;
+				width: 300%;
+			}
+			.region-block-ul {
+				position: relative;
+				float: left;
+				width: 33.2%;
+				height: 100%;
+				border-right: 1px solid #E1E1E1;
+				overflow-y: auto;
+			}
+			.region-block-ul li {
+				border-bottom: 1px solid #E1E1E1;
+				line-height: 3rem;
+				padding-left: 1rem;
+			}
+			.region-block-2tds {
+				width: 16.7%;
+			}
+			.region-block-3tds {
+				width: 11.2%;
+			}
+			.uhide {
+				display: none;
+			}
+			.region-block-ul li.selected {
+				color: rgba(255,128,0,1);
+			}
+			.region-block-ul li.selected::before {
+				content: '';
+			    width: 2px;
+			    height: 1rem;
+			    background-color: rgba(255,128,0,1);
+			    position: relative;
+			    top: 2rem;
+			    display: table;
+			    margin-top: -1rem;
+			    margin-left: -1rem;
+			}
+			
+			.region-select-result-block {
+				min-height: 2rem;
+				padding-left: 1rem; padding-top:1rem;
+				border-bottom: 1px solid #E1E1E1;
+				font-size: 0.9rem;
+			}
+			.region-select-result-block-more{ min-height: 2.5rem;padding-top: 0.5rem;}
+			.region-select-result-block-more .confirm-btn{ margin-top: 0.5rem;}
+			.region-select-result-text {
+				color: #000000;
+			}
+			
+			.confirm-btn {
+				float: right;
+			}
+
+			.btn-ok{
+				margin-right: 0.5rem;
+				background-color: #0068b7;
+				color: white;
+				padding: 0.3rem 0.5rem;
+			}
+		</style>
+		<script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+		<script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+		<script type="text/javascript" src="../../static/js/common.js"></script>
+	</head>
+	<body>
+		<div class="region-select-result-block">
+			<div class="confirm-btn">
+				<!--input type="button" value="确定" onclick="hideMe();"/-->
+				<span class="btn-ok" onclick="hideMe();" >确定</span>
+			</div>
+			<p>您的选择：
+			<span id="regionProvinceSelResult" class="region-select-result-text"></span>
+			<span id="regionCitySelResult" class="region-select-result-text"></span>
+			<span id="regionAreaSelResult" class="region-select-result-text"></span>
+			</p>
+		</div>
+		<div class="region-block-100">
+			<div id="regionBlock" class="region-block-div">
+				<ul id="province" class="region-block-ul" onclick="">
+					<li>加载中...</li>
+				</ul>
+				<ul id="city" class="region-block-ul" onclick="">
+					<li>加载中...</li>
+				</ul>
+				<ul id="area" class="region-block-ul" onclick="">
+					<li>加载中...</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+	 	var OpenId = getOpenId('openId');
+		var $result = $(".region-select-result-block p");
+		var resultHeight;
+		// 当前页面中用户的选择数据
+		var regionSelRslt = {
+				"province": {"id":"", "name":""},
+				"city": {"id":"", "name":""},
+				"area": {"id":"", "name":""}
+		};
+		function loadRegionProvinceData() {
+			var provinceUrl = config.apiServerUrl + "/region/index.json?userId=z3v5yqkbv8v70";
+			jqueryAjaxGetJsonp(provinceUrl, "", function( result ) {
+				if( result.code=="2000" ) {
+					var dataArr = result.data;
+					var content = "";
+					$.each( dataArr, function(i, data) {
+						content += "<li value='"+data['region_id']+"'>"+data['region_name']+"</li>";
+					});
+					if( !content ) {
+						content = "<li>暂时没有数据</li>"
+					}
+					$("#province").html(content);
+				}
+			},null,null, {openId:OpenId});		
+		}
+		
+		/**
+		* 根据当前点击的数据级联加载下一级别的数据
+		* @param {Object} parentId 当前级联数据的父id
+		* @param {Object} nextLvlType 下一级别的类型：2-表示城市；3-表示区县
+		*/
+		function loadRegionNextLvlData(parentId, nextLvlType) {
+			var showCompId = "";
+			if( nextLvlType==2 ) {
+				//加载城市
+				showCompId = "city";
+			} else if( nextLvlType==3 ) {
+				//加载区县
+				showCompId = "area";
+			} else {
+				alert("nextLvlType参数错误！");
+				return false;
+			}
+			var url = config.apiServerUrl + "/region/area.json?userId=z3v5yqkbv8v70";
+			var params = "parent_id="+parentId+"&region_type="+nextLvlType;
+			jqueryAjaxGetJsonp(url, params, function( result ) {
+				if( result.code=="2000" ) {
+					var dataArr = result.data;
+					var content = "";
+					$.each( dataArr, function(i, data) {
+						content += "<li value='"+data['id']+"'>"+data['region_name']+"</li>";
+					});
+					if( !content ) {
+						content = "<li>暂时没有数据</li>"
+					}
+					$("#"+showCompId).html(content);
+				}
+			},null,null, {openId:OpenId});		
+		}
+		
+		$(function() {
+			loadRegionProvinceData();
+			
+			// 省份下所有菜单的点击事件
+			$("body").on("click", "#province li", function() {
+				$("#province li, #city li, #area li").removeClass("selected");
+				$("#city li").removeClass("selected");
+				$(this).addClass("selected");
+				
+				$("#province, #city, #area").removeClass("region-block-3tds");
+				$("#province, #city").addClass("region-block-2tds");
+				
+				regionSelRslt["province"].id = $(this).attr("value");
+				regionSelRslt["province"].name = $(this).html();
+				
+				regionSelRslt["city"].id = regionSelRslt["area"].id = "";
+				regionSelRslt["city"].name = regionSelRslt["area"].name = "";
+				
+				$("#regionProvinceSelResult").html( $(this).html() );
+				$("#regionCitySelResult").html( "" );
+				$("#regionAreaSelResult").html( "" );
+
+				//设置结果文字的显示样式
+				resultHeight = $result.height();
+
+				loadRegionNextLvlData( $(this).attr("value"), 2);
+			});
+			// 城市下所有菜单的点击事件
+			$("body").on("click", "#city li", function() {
+				$("#city li, #area li").removeClass("selected");
+				$(this).addClass("selected");
+				
+				$("#province, #city").removeClass("region-block-2tds");
+				$("#province, #city, #area").addClass("region-block-3tds");
+				
+				regionSelRslt["city"].id = $(this).attr("value");
+				regionSelRslt["city"].name = $(this).html();
+				
+				regionSelRslt["area"].id = "";
+				regionSelRslt["area"].name = "";
+				
+				$("#regionCitySelResult").html( " > "+$(this).html() );
+				$("#regionAreaSelResult").html( "" );
+
+				//设置结果文字的显示样式
+				if($result.height() > resultHeight){
+					$result.parent().addClass("region-select-result-block-more");
+				}
+
+				loadRegionNextLvlData( $(this).attr("value"), 3);
+			});
+			// 市区下所有菜单的点击事件
+			$("body").on("click", "#area li", function() {
+				$("#area li").removeClass("selected");
+				$(this).addClass("selected");
+				
+				regionSelRslt["area"].id = $(this).attr("value");
+				regionSelRslt["area"].name = $(this).html();
+
+				$("#regionAreaSelResult").html( " > "+$(this).html() );
+
+				//设置结果文字的显示样式
+				if($result.height() > resultHeight){
+					$result.parent().addClass("region-select-result-block-more");
+				}
+			});
+		});
+		// 关闭当前当前页面，同时将选择的数据返回父窗口
+		function hideMe() {
+			var regionSelRsltStr = JSON.stringify(regionSelRslt);
+			console.log(regionSelRsltStr);
+			if( window.parent && window.parent.returnAreaVal ) {
+				window.parent.returnAreaVal(regionSelRsltStr);
+
+			} else {
+				alert( JSON.stringify(regionSelRsltStr) );
+			}
+		}
+	</script>
+</html>

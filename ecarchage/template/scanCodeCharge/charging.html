@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>充电开关</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/scanCodeCharge/charging.css" />
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+	</head>
+	<body>
+		<div class="main"></div>
+		<div class="mask"></div>
+		<div class="pay">
+			<img src="../../static/images/scanCodeCharge/dele.png" class="pay-dele" />
+			<div class="pay-title">
+				<img src="../../static/images/scanCodeCharge/stop-icon.png" alt="" />
+				<span>故障</span>
+			</div>
+			<div class="pay-top">
+				<p>充电耗时 : <span class="time"></span></p>
+				<p>充电电量 : <span class="energy"></span></p>
+			</div>
+			<div class="pay-bottom">
+				<p>消费金额 : <span></span></p>
+				<div class="gopay">去付款</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		$(function(){
+		//水波
+			var oWater='<div class="water-bg"><div class="water-wave"><div class="loading bg-1"></div><div class="loading bg-2"></div></div><div class="water"></div></div>'
+		//旋转按钮
+			var RotateHTML='<div class="on-off-bg" ><div class="on-off"><img class="rotate" id="rotate" src="../../static/images/scanCodeCharge/annular.png" alt=""  /><img class="rotate-bg" src="../../static/images/scanCodeCharge/annular-con.png" alt="" /><span class="state-text">结束</span></div></div>';
+		//背景水波；
+			var $H=initParams.clientHeight;		//设备窗口高度；							
+			function oWaterheight(oSoc){
+				var soc=oSoc*0.01;//充电比例:30%；
+				var $scale=$H*soc-40;					//水深高度(-30:减去水波的高度)
+				$(".water-bg").css({"height":$H});	
+				$(".percent-num").html(soc*100);
+				$(".water").css({"height":$scale});		
+				$(".water-wave").css({"bottom":$scale-1});
+			}
+		
+			
+		//通过URL获取电桩编号：pile_id
+			var OpenId = getOpenId('openId');
+			var PileId=getQueryString('pile_id');				//电桩编号
+			var oType=getQueryString('type');					//电流类型：直流、交流
+			var SerialNumber=getQueryString('serial_number');   //流水号(查看充电进度使用)
+			var oId='';
+		//通过流水号获取充电中的状态
+		
+			function oCharging(){
+				
+				var pileUrl = config.cdzServerUrl+'/pile/getinfobyserialnum';
+				var pileParams = 'serial_num='+SerialNumber;
+				jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+					
+					var oData=result.data;
+					if(result.code==2000){
+						var inStatus = oData.status;	//充电中，桩的状态
+						var statusImg = '';				//充电中，状态图片
+						var statusText = '';			//充电中，状态描述（充电中/充电完成/充电故障/急停中/已经充满）
+						var oUnit='';                //底下当前充电单位的样式；
+						if(inStatus==0){
+							statusImg='cell';
+							statusText='充电中';
+							
+						}else if(inStatus==1){
+							statusImg='total';
+							statusText='已充满';
+						}else if(inStatus==2){
+							statusImg='stopt';
+							statusText='急停中';
+							oId=oData.order_info.id;
+							Stopt(result);
+							$(".pay").css({"height":"290px"});
+							$(".pay-title").show();
+							$(".pay-title span").html("您的充电已被急停处理 ！");
+						}else if(inStatus==3){
+							statusImg='malfunction';
+							statusText='故障中';
+							oId=oData.order_info.id;
+							Stopt(result);
+							$(".pay").css({"height":"290px"});
+							$(".pay-title").show();
+							$(".pay-title span").html("电桩出现故障 ！");
+						}
+						var str='<div class="con"><div class="con-left"><ul><li><img src="../../static/images/scanCodeCharge/time-icon.png" alt="" /><span>'+ oData.total_time_format +'</span><em></em></li><li><img src="../../static/images/scanCodeCharge/deg-icon.png" alt="" /><span>'+ oData.spend +'</span><em></em></li><li><img src="../../static/images/scanCodeCharge/money-icon.png"  /><span>'+oData.money+'</span><em></em></li><li><img src="../../static/images/scanCodeCharge/v-icon.png"/><span>'+ oData.output_a +'</span><em></em></li></ul></div><div class="con-right"><img src="../../static/images/scanCodeCharge/'+statusImg+'.png" /><p>'+statusText+'</p></div></div>';
+						$(".main").html(str);
+						if(oType==0){//直流
+							$(".main").append('<div class="percent"><p><i class="percent-num">'+oWaterheight(oData.soc)+'</i><span>%</span></p></div>')
+							$(".main").after(oWater);
+							oWaterheight(oData.soc);
+							oUnit='<div class="unit"><p style="color:#fff;">当前充电单位：<span style="color:#fff;">'+oData.charging_fee+'</span></p></div>';
+						
+						}else if(oType==1){//交流
+							$(".con").css({"margin-bottom":"240px"});
+							oUnit='<div class="unit"><p>当前充电单位：<span>'+oData.charging_fee+'</span></p></div>';	
+						}
+						//扫码充电页面中开始、结束按钮旋转
+						$(".main").append(RotateHTML);
+						Ratate();
+						//底下当前充电单位的样式；
+						$(".on-off-bg").after(oUnit);
+						
+					}else{
+						alert(result.msg);
+					}
+				},null,null, {openId:OpenId});
+			}
+			oCharging();
+			var teme;
+			teme=setInterval(function(){
+				oCharging();
+			},5000)//每几分钟刷新获取一下充电中的状态
+			function Stopt(result){
+				$(".mask").show();
+				$(".pay").show();
+				$(".state-text").html("付款");
+				$(".rotate-bg").attr("src","../../static/images/scanCodeCharge/end.png")
+				$(".pay-top .time").html(result.data.total_time_format);
+				$(".pay-top .energy").html(result.data.spend);
+				$(".pay-bottom p span").html(result.data.money);
+			}
+			
+			$(".pay-dele").on("click",function(){
+				$(".mask").hide();
+				$(".pay").hide();
+			})	
+			
+		//结束充电
+			$("body").on("click",".on-off",function(){
+				var result='';
+				if($(".state-text").html()=="结束"){
+					clearInterval(teme);
+					oCharging();
+					var pileUrl = config.cdzServerUrl+'/user/chargesetting';
+					var pileParams = 'pile_id='+PileId;
+					jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+						if(result.code==2000){
+							result=result;
+							oId=result.data.id;
+							Stopt(result);
+							$(".con-right>p").html("充电完成").css({"margin-left":"-8px"});
+							$(".con-right>img").attr("src","../../static/images/scanCodeCharge/over.png");
+						}else{
+							alert(result.code)
+							alert(result.msg)
+						}
+						
+					},null,null, {openId:OpenId});
+				}else{
+					
+					$(".mask").show();
+					$(".pay").show();
+				}
+				
+				
+			});
+			
+			$(".gopay").on("click",function(){
+				var jumpHref = './payment.html?id='+oId;
+				location.href = jumpHref;
+			})	
+			
+		})
+	</script>
+</html>

@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>充电桩地图</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/list.css">
+        <link rel="stylesheet" href="../../static/css/pileMap.css">
+
+        <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&s=1&ak=9eQUU2A8MQQx4yF0y3pQVIBr"></script>
+        <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+        <script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+        <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+        <script type="text/javascript" src="../../static/js/storageCommon.js"></script>
+    </head>
+
+    <body>
+        <header class="com-head jsCom-head">
+            <img src="../../static/images/global/list.png" width="24" class="search-poi" onclick="gotoPilesList()">
+            <div class="search-input-wrapper"><input id="pileSearchKeys" type="text" placeholder="请输入充电桩地址" readonly="readonly" onclick="jumpToSearchPage();" onfocus="hidePileStatusDesc();searchInputFocus();" onblur="searchInputBlur();"></div>
+            <img src="../../static/images/global/fdj.png" width="16" class="fdj" onclick="searchTextAddr()">
+            <img src="../../static/images/global/ss.png" width="20" class="search-condition" onclick="">
+        </header>
+
+        <div>
+            <!--向右的三角-->
+            <div class="arrow-right uhide" onclick="showPileStatusDesc(this)">
+                <img src="../../static/images/map/left-hide.png" />
+            </div>
+            <div class="pile-status-desc" onclick="hidePileStatusDesc()">
+                <div>电桩的状态：</div>
+                <div><img src="../../static/images/map/status-busy.png">无空闲</div>
+                <div><img src="../../static/images/map/status-canuse.png">可使用</div>
+                <div><img src="../../static/images/map/status-building.png">建设中</div>
+                <div><img src="../../static/images/map/status-thirdpart.png">第三方</div>
+            </div>
+        </div>
+
+        <img src="../../static/images/map/position-icon.png" class="position-icon" onclick="positionUserLocation()"/>
+
+        <div id="container"></div>
+
+        <div class="scan-qrcode uhide">
+            <img class="scan-img" src="../../static/images/map/scan-code.png" />
+        </div>
+        <div class="list-block map-block" onclick="gotoPilesDetail(this)" gourl="" style="display:none;">
+            <a id="gotoNavHref"><div class="goto-map img-div" id="gotoNav1" gourl="" onclick="gotoNavPage(this, event)"></div></a>
+            <h3 class="detail-title" id="name"><!-- <span>[自营]</span>现代百联大厦 --></h3>
+            <p class="detail-address map-block-addr" id="detailAddr"><!-- <img src="../../static/images/detail/poi.png" width="11" /><span></span> --></p>
+            <a href="javascript:;" target="_blank">
+                <table width="100%">
+                    <tr>
+                        <td height="60" width="10%"><div class="detail-pic"><img id="pileType" src="../../static/images/detail/icon_08.png" width="28" /></div></td>
+                        <td width="55%">
+                            <table class="graphic" width="97%" id="percentTable">
+                                <!-- 
+                                <tr><td width="30%"><div><p><em></em></p><span></span><h6>1/3</h6></div></td><td><em class="text">直流30KW</em></td></tr>
+                                <tr><td colspan="2" height="4"></td></tr>
+                                <tr><td><div><p><em></em></p><span></span><h6>1/3</h6></div></td><td><em class="text">直流30KW</em></td></tr>
+                                -->
+                            </table>
+                        </td>
+                        <td id="bottomPileStatus"></td>
+                        <td width="5%" align="right"><img src="../../static/images/apply/sword-right.png" width="9" /></td>
+                    </tr>
+                </table>
+            </a>
+        </div>
+        <div class="mask" onclick=""></div>
+        <div class="search-pop pile-pop">
+            <dl class="pic-dl" paramflag="pile_type">
+                <dt>接口类型<span>(可多选)</span></dt>
+                <dd value="0"><img src="../../static/images/detail/icon_08.png" width="28" class="logo-icon" /><p>特斯拉</p></dd>
+                <dd class="nation-pic-dd" value="1"><img src="../../static/images/search/nation-icon.png" width="46" class="logo-icon" /><p>国标</p></dd>
+            </dl>
+            <div class="clear"></div>
+            <dl paramflag="use_status" class="status-dl">
+                <dt>桩群状态<span>(可多选)</span></dt>
+                <dd value="0">无空闲</dd>
+                <dd value="1">可使用</dd>
+                <dd value="2">建设中</dd>
+                <dd value="3">第三方</dd>
+            </dl>
+            <div class="clear"></div>
+            <dl id="payTypes" paramflag="pay" class="pay-dl">
+            </dl>
+            <div class="clear"></div>
+            <div><a href="javascript:;" class="pop-btn reset-btn">重置</a><a href="javascript:;" class="sure-btn pop-btn" onclick="searchWithConditions(event)">确定</a></div>
+        </div>
+
+        <div id="loadingBox" class="cd-popup is-visible" role="alert">
+            <div class="cd-popup-container">
+                <p>
+                    <img src="../../../../images/loadding.gif">正在加载中，请稍等
+                </p>
+            </div>
+        </div>
+    </body>
+
+    <script type="text/javascript">
+        function searchInputFocus() {
+            var $bottom = $(".scan-qrcode");
+            var $listBlock = $(".list-block");
+            $bottom.hide();
+            $listBlock.hide();
+        }
+        function searchInputBlur() {
+            var $bottom = $(".scan-qrcode");
+            $bottom.show();
+            if (map && lastMarkerPile) {
+                // 之前选中的取消选中，变为原来大小
+                map.removeOverlay(lastMaxMarker);
+                addMyMaker(lastMarkerPile, null);
+                lastMarkerPile = lastMaxMarker = null;
+            }
+            setTimeout(function () {
+            }, 500);
+        }
+    </script>
+    <script type="text/javascript">
+        /**
+         var openOrUserId = xwznUtility.getOpenOrUserId(); // 值为：openId=xxx或者user_id=xxx
+         if( !openOrUserId ) {
+         // 微信公众号带过来的参数
+         var _code = getQueryString("code");
+         if( _code ) {
+         openOrUserId = getOpenIdByWXCode( _code );
+         if( openOrUserId && openOrUserId!=="undefined" ) { // 成功获取到openId的值
+         openOrUserId = "openId="+openOrUserId;
+         storageData("currentOpenOrUserId", openOrUserId);
+         }
+         }
+         }
+         if( !openOrUserId ) {
+         openOrUserId = loadStorageData("currentOpenOrUserId");
+         }
+         **/
+        var OpenId = getOpenId('openId');
+        var openOrUserId = 'openId=' + OpenId;
+        var lngParam = getQueryString("lng");
+        var latParam = getQueryString("lat");
+        var isPos = getQueryString("isPos");
+        var posPoi; // 根据上面三个参数内容得出结果
+        if (isPos == 1 && lngParam && latParam) {
+            posPoi = true;
+        }
+
+        var $searchInput; // 搜索框组件
+        var page = 1, pageSize = 5000;
+        var distance = 2000000; //  单位是米
+        var allPiles; // 所有的充电桩群
+        var pileMapStatus; // 当前用户的地理位置及附近电桩是否成功
+        var initMapZoom = 13; // 取值范围1-18，18最大化
+        var userGPSPosition = {"lng": "", "lat": ""}; // 用户当前所在GPS的坐标
+        var userBPosition = {"lng": "", "lat": ""}; // 用户当前所在百度地图的坐标
+        var bjPosition = {"lng": "116.404068", "lat": "39.914832"}; // 北京天安门所在的坐标
+        var xianPosition = {"lng": "108.953492", "lat": "34.276411"}; // 西安北大街所在的坐标
+
+        // 底部浮层，跳转到详情页
+        function gotoPilesDetail(obj) {
+            var gourl = $(obj).attr("gourl");
+            if (gourl) {
+                location.href = gourl;
+            }
+        }
+        // 底部浮层右上角导航，跳转到地图导航页面
+        function gotoNavPage(obj, event) {
+            event.stopPropagation();
+            var gourl = $(obj).attr("gourl");
+            if (gourl) {
+                //location.href = gourl;
+            }
+        }
+        // 左上角跳转到列表页面
+        function gotoPilesList() {
+            var lng = "", lat = "";
+            if (userBPosition.lng && userBPosition.lng !== "undefined") {
+                lng = userBPosition.lng;
+                lat = userBPosition.lat;
+            }
+            var gourl = config.appServerUrl + "/pile/m/template/nearbyPile/list.html?lng=" + lng + "&lat=" + lat + "&" + openOrUserId;
+            location.href = gourl;
+        }
+        // 搜索输入框点击跳转到搜索页面
+        function jumpToSearchPage() {
+            var gourl = config.appServerUrl + "/pile/m/template/nearbyPile/search.html?" + openOrUserId;
+            location.href = gourl;
+        }
+
+        // 百度地图API功能
+        var map = new BMap.Map("container", {enableMapClick: false});	//构造底图时，关闭底图可点功能
+        //map.centerAndZoom(new BMap.Point(xianPosition["lng"], xianPosition["lat"]), 5); // 显示中国地图
+        map.centerAndZoom(new BMap.Point(bjPosition["lng"], bjPosition["lat"]), initMapZoom); // 显示北京地图
+
+        setTimeout(function () {
+            if (!pileMapStatus) {
+                //map.centerAndZoom(new BMap.Point(bjPosition["lng"], bjPosition["lat"]), initMapZoom);
+                positionUserLocation();
+            }
+        }, 100);
+
+        map.enableScrollWheelZoom();	//启用滚轮放大缩小
+        // 地图添加点击事件
+        map.addEventListener("click", function (event) {
+            if (!event.overlay) {
+                // 充电桩被选中
+                if (lastMarkerPile) {
+                    // 之前选中的取消选中，变为原来大小
+                    map.removeOverlay(lastMaxMarker);
+                    addMyMaker(lastMarkerPile, null);
+                    lastMarkerPile = lastMaxMarker = null;
+                }
+                $(".list-block").hide();
+            }
+            if (!$searchInput) {
+                $searchInput = $("#pileSearchKeys");
+            }
+            if ($searchInput) {
+                $searchInput.blur();
+            }
+        });
+        var currentZoom = initMapZoom;
+        var markers = []; //所有充电桩点的集合
+        // 地图缩放事件
+        map.addEventListener("zoomend", function () {
+            currentZoom = map.getZoom();
+        });
+
+        // 搜索功能工具
+        var geolocationControl = new BMap.GeolocationControl();
+        map.addControl(geolocationControl);
+        var ac = new BMap.Autocomplete({
+            "input": "pileSearchKeys",
+            "location": map
+        });
+        // 搜索下拉框中内容选中时的事件
+        var myValue;
+        ac.addEventListener("onconfirm", function (e) {    //鼠标点击下拉列表后的事件
+            var _value = e.item.value;
+            myValue = _value.province + _value.city + _value.district + _value.street + _value.business;
+            setPlace();
+        });
+        function setPlace() {
+            function myFun() {
+                var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
+                //map.centerAndZoom(pp, initMapZoom);
+                loadPiles(pp, 2);
+            }
+            //智能搜索
+            var local = new BMap.LocalSearch(map, {onSearchComplete: myFun});
+            local.search(myValue);
+        }
+
+        // 创建地址解析器实例
+        var myGeo = new BMap.Geocoder();
+        function searchTextAddr() {
+            var addrStr = $("#pileSearchKeys").val();
+            if (addrStr) {
+                // 将地址解析结果显示在地图上,并调整地图视野
+                myGeo.getPoint(addrStr, function (point) {
+                    if (point) {
+                        loadPiles(point, 2);
+                    } else {
+                        alert("您选择地址没有解析到结果!");
+                    }
+                }, "北京市");
+            }
+        }
+
+        $(function () {
+            $searchInput = $("#pileSearchKeys");
+            $(".list-block").hide();
+            initPayTypes();
+        });
+        // ----------------------------- 同/pile/m/template/nearbyPile/list.html -------------------------------
+        function search() {
+            var $searchBtn = $(".search-condition"),
+                    $searchPop = $(".search-pop"),
+                    $resetBtn = $(".reset-btn"),
+                    $payDd = $(".pay-dl dd"),
+                    $oMask = $(".mask"),
+                    $documentH = $(document).height() + 150;
+            $oMask.css("height", $documentH);
+
+            $searchBtn.add($searchPop).bind("click", function (e) {
+                e.stopPropagation();
+                $searchPop.css("display", "block");
+                $oMask.css("display", "block");
+
+            })
+            $(document).bind("click", function () {
+                $searchPop.css("display", "none");
+                $oMask.css("display", "none");
+            })
+            $searchPop.find("dd").each(function (i, n) {
+                var $n = $(n);
+                $n.bind("click", function () {
+                    var $this = $(this);
+                    $this.css({"border": "1px solid #7db147"});
+                    if ($this.find("img").length == 0 || ($this.find("img").length == 1) && $this.find("img").eq(0).attr("class") != "right-icon-pic") {
+                        $this.append('<img src="../../static/images/search/right-icon.png" width="19" class="right-icon-pic" />');
+                        $this.attr("selected", "selected");
+                    } else {
+                        $this.find("img:last").remove();
+                        $this.css({"border": "1px solid #d7d7d7"});
+                        $this.removeAttr("selected");
+
+                    }
+
+                })
+            })
+            function select($ele) {
+                $ele.each(function (i, n) {
+                    var $n = $(n);
+                    $n.bind("click", function () {
+                        if (i != 0) {
+                            $ele.eq(0).html("全部");
+                            $ele.eq(0).css({"border": "1px solid #d7d7d7"});
+                        } else if (i == 0) {
+                            $ele.eq(0).siblings().find(".right-icon-pic").remove();
+                            $ele.eq(0).siblings().css({"border": "1px solid #d7d7d7"});
+                            $ele.eq(0).siblings().removeAttr("selected");
+                            $(".pay-dl>dt").css({border: 0});
+                        }
+
+                    });
+                })
+            }
+            select($payDd);
+            $resetBtn.bind("click", function () {
+                $searchPop.find("dd").removeAttr("selected");
+                $(".right-icon-pic").remove();
+                $searchPop.find("dd").css("border", "1px solid #d7d7d7");
+            })
+        }
+        function unbindSearch() {
+            var $searchBtn = $(".search-condition"),
+                    $searchPop = $(".search-pop"),
+                    $resetBtn = $(".reset-btn");
+            $searchBtn.add($searchPop).unbind("click");
+            $(document).unbind("click");
+            $searchPop.find("dd").each(function (i, n) {
+                var $n = $(n);
+                $n.unbind("click");
+            })
+            $resetBtn.unbind("click");
+        }
+
+        var wxReady;
+        wx.ready(function () {
+            wxReady = true;
+            getWXJSLocation();
+        });
+        // 定位用户所在的坐标信息
+        function positionUserLocation() {
+            $("#loadingBox").addClass("is-visible");
+            $(".list-block").hide();
+            if (wxReady == true) {
+                getWXJSLocation();
+            } else {
+                var callWXApiList = ["getLocation"];
+                getWXJSTicket(callWXApiList);
+            }
+        }
+        //坐标转换完之后的回调函数
+        function translateCallback(data) {
+            if (data.status == 0) {
+                var point = data.points[0];
+                userBPosition.lng = point["lng"];
+                userBPosition.lat = point["lat"];
+
+                // 判断是否定位到某个固定点上
+                if (posPoi == true) {
+                    var tmpPoint = {"lng": lngParam, "lat": latParam};
+                    loadPiles(tmpPoint, 3, 5); // 显示定位点和用户所在点
+                } else {
+                    loadPiles(userBPosition, 1); // 显示用户点和周围的充电桩群点
+                }
+            } else {
+            }
+        }
+        // 获取用户当前所在的坐标点
+        function getWXJSLocation() {
+            wx.getLocation({
+                //type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                success: function (res) {
+                    var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                    var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                    var speed = res.speed; // 速度，以米/每秒计
+                    var accuracy = res.accuracy; // 位置精度
+
+                    userGPSPosition.lng = longitude;
+                    userGPSPosition.lat = latitude;
+                    userBPosition.lng = longitude;
+                    userBPosition.lat = latitude;
+                    //loadPiles(userBPosition, 1);
+
+                    setTimeout(function () {
+                        var currentPoint = new BMap.Point(longitude, latitude);
+                        var convertor = new BMap.Convertor();
+                        var pointArr = [];
+                        pointArr.push(currentPoint);
+                        convertor.translate(pointArr, 1, 5, translateCallback);
+                        //convertor.translate(currentPoint, 0, translateCallback); // GPS地址转换成百度坐标
+                    }, 500);
+                },
+                fail: function () {
+                    userBPosition = bjPosition;
+                    loadPiles(userBPosition, 1);
+                }
+            });
+        }
+        function test() {
+            var currentPoint = new BMap.Point(116.44674, 39.905304);
+            var convertor = new BMap.Convertor();
+            var pointArr = [];
+            pointArr.push(currentPoint);
+            convertor.translate(pointArr, 1, 5, translateCallback);
+        }
+        //test();
+        //loadPiles(bjPosition, true);
+
+        /**
+         * 地图加载展示当前用户的图标
+         * @PARAM position 当前用户的地址坐标。格式{"lng": "116.421064", "lat": "39.933058"}
+         * @PARAM isCenter 是否将用户所在点设置地图的中心点，true为设置中心点；false为不需要设置中心点。默认为true
+         */
+        function showPositionPoint(position, isCenter) {
+            var currentPoint = new BMap.Point(position.lng, position.lat);
+            var myIcon = new BMap.Icon("../../static/images/map/current-position.png", new BMap.Size(20, 20));
+            var marker2 = new BMap.Marker(currentPoint, {icon: myIcon});  // 创建标注
+            map.addOverlay(marker2);              // 将标注添加到地图中
+
+            if (isCenter == true) {
+                map.centerAndZoom(currentPoint, initMapZoom);
+            }
+        }
+
+        /**
+         * 加载某个中心坐标点周围的充电桩点
+         * @param position 中心坐标点
+         * @param showPointType 
+         *		显示点的类型：1-表示显示当前用户点；2-表示显示参数position点；3-表示当前用户和参数position(地图中心)两个点；其余值表示什么点都不展示
+         */
+        function loadPiles(position, showPointType, tempDistance) {
+            if (!tempDistance) {
+                tempDistance = distance;
+            }
+            var lngQuery = position.lng;
+            var latQuery = position.lat;
+            if (posPoi) { // 如果是定位到某个点，则以用户为坐标查询，为了计算距离
+                lngQuery = userBPosition.lng;
+                latQuery = userBPosition.lat;
+            }
+            var pileUrl = config.cdzServerUrl + "/pile/getgrouplist";
+//			var pileParams = "version=1.0.0&lng="+lngQuery+"&lat="+latQuery;  
+            var pileParams = "lng=" + lngQuery + "&lat=" + latQuery;
+//			+"&distance="+tempDistance+"&page="+page+"&pageSize="+pageSize
+
+            jqueryAjaxGetJsonp(pileUrl, pileParams, function (result) {
+                if (result.code == 2000) {
+                    map.clearOverlays();    //清除地图上所有覆盖物
+                    if (showPointType == 1) {
+                        showPositionPoint(userBPosition, true);
+                    } else if (showPointType == 2) {
+                        //showPositionPoint( position, true );
+                        var centerPoint = new BMap.Point(position.lng, position.lat);
+                        map.centerAndZoom(centerPoint, initMapZoom);
+                    } else if (showPointType == 3) {
+                        showPositionPoint(userBPosition, false);
+                        //showPositionPoint( position, true );
+                        var centerPoint = new BMap.Point(position.lng, position.lat);
+                        map.centerAndZoom(centerPoint, initMapZoom);
+                    }
+                    pileMapStatus = true;
+                    var datasArr = result.data.list;
+                    if (datasArr && datasArr.length > 0) {
+                        allPiles = datasArr;
+                        initNearPiles(datasArr, posPoi);
+                    }
+                } else {
+                    alert(decodeURI(result.msg));
+                }
+            }, null, null, {openId: OpenId});
+        }
+        /**
+         * 加载某个中心坐标点周围的充电桩点
+         * @param position 中心坐标点
+         * @param conditions 查询条件
+         */
+        function loadPilesWithConditions(position, conditions) {
+            $("#loadingBox").addClass("is-visible");
+            var pileUrl = config.cdzServerUrl + "/pile/getgrouplist";
+
+            var mapView = map.getBounds();
+            var mapCenterPoint = mapView.getCenter();
+            var pileParams = "version=1.0.0&lng=" + mapCenterPoint.lng + "&lat=" + mapCenterPoint.lat;
+//			+"&distance="+distance+"&page="+page+"&pageSize="+pageSize
+            if (conditions) {
+                pileParams += "&" + conditions;
+            }
+            jqueryAjaxGetJsonp(pileUrl, pileParams, function (result) {
+
+                if (result.code == 2000) {
+                    map.clearOverlays();    //清除地图上所有覆盖物
+                    showPositionPoint(userBPosition, false);  // 以地图中心点为坐标加载数据，用户坐标点保留，但不作为中心点出现
+                    var datasArr = result.data.list;
+                    if (datasArr && datasArr.length > 0) {
+                        initNearPiles(datasArr);
+                    } else {
+                        $("#loadingBox").removeClass("is-visible");
+                    }
+                } else {
+                    $("#loadingBox").removeClass("is-visible");
+                    alert(decodeURI(result.msg));
+                }
+            }, null, null, {openId: OpenId});
+        }
+
+        function initNearPiles(pilePois, posFlag) {
+            for (var i = 0; i < pilePois.length; i++) {
+                if (posFlag) {
+                    if (pilePois[i]["longitude"] == lngParam && pilePois[i]["latitude"] == latParam) {
+                        addMyMaker(pilePois[i], null);
+                    }
+                } else {
+                    addMyMaker(pilePois[i], null);
+                }
+            }
+            $("#loadingBox").removeClass("is-visible");
+        }
+
+        // 自定义覆盖物图标
+        var mark_busy = new BMap.Icon("../../static/images/map/marker-busy.png", new BMap.Size(23, 30));//无空闲
+        var mark_busy_selected = new BMap.Icon("../../static/images/map/marker-busy-selected.png", new BMap.Size(28, 37));
+        var mark_canuse = new BMap.Icon("../../static/images/map/marker-canuse.png", new BMap.Size(23, 30));//可使用
+        var mark_canuse_selected = new BMap.Icon("../../static/images/map/marker-canuse-selected.png", new BMap.Size(28, 37));
+        var mark_building = new BMap.Icon("../../static/images/map/marker-building.png", new BMap.Size(23, 30));//建设中
+        var mark_building_selected = new BMap.Icon("../../static/images/map/marker-building-selected.png", new BMap.Size(28, 37));
+        var mark_thirdpart = new BMap.Icon("../../static/images/map/marker-thirdpart.png", new BMap.Size(23, 30));//第三方
+        var mark_thirdpart_selected = new BMap.Icon("../../static/images/map/marker-thirdpart-selected.png", new BMap.Size(28, 37));
+
+        var lastMarkerPile, lastMaxMarker;
+        // 在地图上添加自定义的桩群点
+        function addMyMaker(pile, clickMarker) {
+            var nearPile, nearMarker, nearIcon, nearMarkerLabel, nearMaxPile;
+            var numColor = "#fff";
+
+            var lng = pile["longitude"];  // 经度
+            var lat = pile["latitude"];  // 纬度
+            var status = pile["use_status"];  // 桩群状态: 0无空闲,1可使用,2建设中,3第三方
+            var num = pile["num_total"]; // 桩群里面的桩个数
+
+            var nearPile = new BMap.Point(lng, lat);
+
+            if (status == 0) {
+                nearIcon = mark_busy;
+                nearMaxPile = mark_busy_selected;
+            } else if (status == 1) {
+                nearIcon = mark_canuse;
+                nearMaxPile = mark_canuse_selected;
+            } else if (status == 2) {
+                nearIcon = mark_building;
+                nearMaxPile = mark_building_selected;
+            } else if (status == 3) {
+                nearIcon = mark_thirdpart;
+                nearMaxPile = mark_thirdpart_selected;
+                numColor = "#7DAF4D";
+            }
+
+            var labelX1 = 7, labelX2 = 2, labelY = 3;
+            if (clickMarker) {
+                nearIcon = nearMaxPile;
+                labelX1 = 9, labelX2 = 4, labelY = 5;
+            }
+
+            nearMarker = new BMap.Marker(nearPile, {icon: nearIcon});	// 创建标注
+
+            if (num < 10) {
+                nearMarkerLabel = new BMap.Label(num, {offset: new BMap.Size(labelX1, labelY)});
+            } else {
+                nearMarkerLabel = new BMap.Label(num, {offset: new BMap.Size(labelX2, labelY)});
+            }
+            nearMarkerLabel.setStyle({
+                textAlign: "center",
+                color: numColor,
+                fontSize: "14px",
+                backgroundColor: "0",
+                border: "0"
+            });
+            nearMarker.setLabel(nearMarkerLabel);
+            if (clickMarker) {
+                if (lastMarkerPile) {
+                    map.removeOverlay(lastMaxMarker);
+                    addMyMaker(lastMarkerPile, null);
+                }
+                lastMarkerPile = pile;
+                lastMaxMarker = nearMarker;
+                map.removeOverlay(clickMarker);
+            } else {
+                markers.push(nearMarker);
+            }
+
+            map.addOverlay(nearMarker);	// 将标注添加到地图中
+
+            nearMarker.onclick = function (e) {
+                e.domEvent.stopPropagation();
+            }
+            nearMarker.addEventListener("click", func);
+
+            function func(event) {
+                if (!$searchInput) {
+                    $searchInput = $("#pileSearchKeys");
+                }
+                if ($searchInput) {
+                    $searchInput.blur();
+                }
+                //console.log("该覆盖物是点，点的坐标是：" + point.getPosition().lng + "," + point.getPosition().lat);
+                var nameCnt = "<span>";
+                var operType = pile.operator_type;
+                if (operType == 0) {
+                    nameCnt += "[自营]";
+                } else if (operType == 1) {
+                    nameCnt += "[第三方运营]";
+                }
+                nameCnt += "</span>";
+                nameCnt += "<span class='title-name'>" + pile.name + "</span>";
+                $("#name").html(nameCnt);
+                $("#detailAddr").html('<img src="../../static/images/detail/poi.png" width="11" /><em>' + pile.address + '</em><span>' + pile.distance + '</span>');
+
+                var pileType = pile.pile_type;
+                if (pileType == 0) { // 特斯拉
+                    $("#pileType").attr("src", "../../static/images/detail/icon_08.png");
+                } else if (pileType == 1) { // 国际
+                    $("#pileType").attr("src", "../../static/images/search/nation-icon.png");
+                }
+
+                // 充电桩群状态内容
+                var pileStatus = pile.use_status;
+                if (pileStatus == 0) {
+                    $("#bottomPileStatus").html("<em class='status no-use'>无空闲</em>");
+                } else if (pileStatus == 1) {
+                    $("#bottomPileStatus").html("<em class='status'>可使用</em>");
+                } else if (pileStatus == 2) {
+                    $("#bottomPileStatus").html("<em class='status'>建设中</em>");
+                } else if (pileStatus == 3) {
+                    $("#bottomPileStatus").html("");
+                }
+
+                // 列表中电桩使用百分比
+                var piles = pile.piles;
+                var name, use, total, htmlStr;
+                var $percentTable = $("#percentTable");
+                $percentTable.empty();
+                for (var j = 0; j < piles.length; j++) {
+                    name = piles[j].name;
+                    use = piles[j].use;
+                    total = piles[j].total;
+                    //name = "test"; use = 2; total = 3;
+                    htmlStr = '<tr><td width="30%"><div percentNum = "' + (use / total).toFixed(2) * 100 + '%"><p><em></em></p><span></span><h6>' + use + '/' + total + '</h6></div></td><td><em class="text">' + name + '</em></td></tr><tr><td colspan="2" height="4"></td></tr>';
+                    $percentTable.append(htmlStr);
+                }
+
+                //电桩使用百分比
+                var $oDiv = $(".graphic").find("div");
+                $oDiv.each(function (i, n) {
+                    var $n = $(n),
+                            percentNum = $n.attr("percentnum"),
+                            $oEm = $n.find("em"),
+                            $oSpan = $n.find("span");
+                    if (parseInt(percentNum, 10) == 0) {
+                        $n.find("p").css("background", "#fff")
+                    }
+                    if (parseInt(percentNum, 10) == 100) {
+                        $n.find("span").css("background", "#7db147")
+                    }
+                    $oEm.css("margin-left", percentNum);
+                    $oSpan.css("width", (94 - percentNum.substr(0, 2)) + '%');
+                })
+
+                // !!!注意!!!：eword这个参数不能出现特殊字符，否则跳转腾讯地图时，会报异常无法跳转导航。
+                var gourl = "http://apis.map.qq.com/tools/routeplan/eword=" + pile.name + "&epointx=" + pile.longitude + "&epointy=" + pile.latitude + "?referer=崔sir的个人应用&key=V5IBZ-SS2WV-P2XPS-U5UQS-WRVBT-GSBLC";
+                //gourl = "http://apikey.map.qq.com/mkey/index.php/mkey/check?key=00e3d061e7debe5f88aec44e0b549b76&output=json&pf=and_2Dmap&ver=1.1.0&hm=Coolpad+8297-W01&os=A19&pid=com.tencent.mm&suid=8PPa3Nbb2NnTjNHa3d7a3dvx-fHw-P7wrfD___r.&ref=%E5%BE%AE%E4%BF%A1&psv=6.3.13.49_r4080b63&dpi=320&scrn=720*1280";
+                //gourl = encodeURIComponent(gourl);
+                //$("#gotoNav").attr("gourl", gourl);
+                $("#gotoNavHref").attr("href", gourl);
+
+                var detailHref = config.appServerUrl + "/pile/m/template/nearbyPile/detail.html?version=1.0.0&group_id=" + pile.group_id + "&user-lng=" + userBPosition.lng + "&user-lat=" + userBPosition.lat + "&" + openOrUserId;
+                ;
+                $(".map-block").attr("gourl", detailHref);
+
+                setTimeout(function () {
+                    $(".list-block").slideDown(500);
+                    addMyMaker(pile, nearMarker);
+                }, 600);
+            }
+            if (posPoi == true) {
+                func();
+                posPoi = null;
+            }
+        }
+
+        function searchWithConditions(event) {
+            var searchConditions, paramflag;
+            $.each($(".search-pop dl"), function (i, dl) {
+                var values = "";
+                paramflag = $(dl).attr("paramflag");
+                searchConditions = searchConditions ? searchConditions + "&" : "";
+                var hasSelected = false;
+                $.each($(dl).find("dd"), function (j, dd) {
+                    var selectFlag = $(dd).attr("selected")
+                    if (selectFlag == "selected") {
+                        if ($(dd).attr("value")) {
+                            hasSelected = true;
+                            if (values) {
+                                values += "," + $(dd).attr("value");
+                            } else {
+                                values = $(dd).attr("value");
+                            }
+                        }
+                    }
+                });
+                if (hasSelected) {
+                    searchConditions += paramflag + "=" + values;
+                }
+            });
+
+            event.stopPropagation();
+            $(".search-pop").add($(".mask")).css("display", "none");
+            console.log("result-->" + searchConditions);
+            loadPilesWithConditions(userBPosition, searchConditions);
+        }
+        function initPayTypes() {
+            var payUrl = config.cdzServerUrl + "/pile/payList";
+            var params = "version=1.0.0";
+            jqueryAjaxGetJsonp(payUrl, params, function (result) {
+                if (result.code == 2000) {
+                    var payStr = "<dt>支付方式<span>(可多选)</span></dt>";
+                    payStr += "<dd value=''>全部</dd>";
+                    for (var i = 0; i < result.data.length; i++) {
+                        payStr += "<dd value='" + result.data[i].id + "'>" + result.data[i].name + "</dd>";
+                    }
+                    $("#payTypes").html(payStr);
+
+                    unbindSearch();
+                    search();
+                } else {
+                }
+            }, null, null, {openId: OpenId});
+        }
+
+        // 点击左上角的三角时，展示充电桩的状态说明框
+        function showPileStatusDesc(statusHideArrow) {
+            var $arrow = $(statusHideArrow);
+            var $statusDesc = $arrow.parent().find(".pile-status-desc");
+            $statusDesc.removeClass("uhide");
+            $arrow.addClass("uhide");
+
+            //1分钟后，状态栏自动隐藏
+            setTimeout(function () {
+                $statusDesc.addClass("uhide");
+                $arrow.removeClass("uhide");
+            }, 60000);
+        }
+        function hidePileStatusDesc() {
+            var $statusDesc = $(".pile-status-desc");
+            var $arrow = $statusDesc.parent().find(".arrow-right");
+            $statusDesc.addClass("uhide");
+            $arrow.removeClass("uhide");
+        }
+    </script>
+</html>

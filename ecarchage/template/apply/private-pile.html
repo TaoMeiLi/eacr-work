@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>自己家建桩</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+		<meta http-equiv="Pragma" content="no-cache" />
+		<meta http-equiv="Expires" content="0" />
+
+        <link rel="stylesheet" href="../../static/css/common.css">
+        <link rel="stylesheet" href="../../static/css/apply.css">
+        
+        <script type="text/javascript" src="../../static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../../static/js/jquery-md5.js"></script>
+        <script type="text/javascript" src="../../static/js/common.js"></script>
+    </head>
+    <body>        
+		<script type="text/javascript">
+			$(function(){
+				$("#chooseAddr").click(function(){
+					openAreaSel();
+				});
+			})
+
+			function openAreaSel() {
+				$("#regionSel").removeClass("uhide");
+				// 如果当前页面有滚动条，则处理这行
+				$("body").css("overflow-y", "hidden");
+			}
+			function returnAreaVal(val) {
+				$("#regionSel").addClass("uhide");
+				// 如果当前页面有滚动条，则处理这行
+				$("body").css("overflow-y", "auto");
+				var regionSelResult = eval("("+val+")");
+				//regionSelResult = { "province": {"id":"", "name":""}, "city": {"id":"", "name":""}, "area": {"id":"", "name":""} }
+
+				// TODO 用户自己的业务逻辑处理... ...
+				var selCnt;
+				if( regionSelResult["province"].name ) selCnt = ' ' + regionSelResult["province"].name;
+				if( regionSelResult["city"].name ) selCnt += ' ' + regionSelResult["city"].name;
+				if( regionSelResult["area"].name ) selCnt += ' ' + regionSelResult["area"].name;
+
+				if( selCnt ) { selCnt = selCnt; } else { selCnt = "您没有做任何选择"; }
+				$("#address-h").html(selCnt);
+				$('#province').val(regionSelResult["province"].name);
+				$('#city').val(regionSelResult["city"].name);
+				$('#area').val(regionSelResult["area"].name);
+			}
+		</script> 
+		<div class="cooperation-step">
+			<ul>
+				<li class="other-tab current"><p>1</p><div>填写信息</div></li>
+				<li class="mid-tab"><p>2</p><div>图片上传</div></li>
+				<li class="other-tab"><p>3</p><div>等待回访</div></li>
+			</ul>
+			<div class="step-line-bg"></div>
+		</div>
+		<form id="apply">
+		<div class="apply-content">			
+			<div class="apply-con">
+				<table>
+					<tr><td width="85">你的姓名</td><td><input type="text" name="name" placeholder="请输入姓名" value="" class="apply-input address-detail-input" maxlength="8" /></td></tr>
+				</table>
+			</div>
+			<div class="apply-con">
+				<table>
+					<tr><td width="85">你的电话</td><td><input type="text" name="mobile" placeholder="请输入" value="" class="apply-input address-detail-input" maxlength="11" /></td></tr>
+				</table>
+			</div>
+			<div class="apply-gap"></div>
+			<div class="mobile-yz">
+				<table>
+					<tr><td width="40%"><input type="text" name="code" placeholder="请输入手机验证码" value="" class="mobile-yz-input" maxlength="6" /></td><td ><span class="mobile-get-code-btn">获取验证码</span></td><td width="32%" align="right"><span class="mobile-yz-tip">确认验证码</span></td></tr>
+				</table>				
+			</div>		
+		</div>
+		<div class="apply-content">
+			<div class="apply-con">
+				<table>
+					<tr><td width="85">你的位置</td><td><span class="apply-option" id="chooseAddr"><i id="address-h">请选择省市区</i></span><img src="../../static/images/apply/poi.png" width="13" class="map-poi-icon" onclick="openMap();" /><img src="../../static/images/apply/sword-right.png" class="sword-right-icon" width="8" /></td></tr>
+				</table>
+			</div>
+			<div class="apply-con">
+				<table>
+					<tr><td width="85">详细地址</td><td><input type="text" placeholder="请输入" name="address" value="" class="apply-input address-detail-input" maxlength="45" /></td></tr>
+				</table>
+			</div>
+			<input type="hidden" id="province" name="province" placeholder="请输入" value="" class="apply-input address-detail-input" required="required" />
+			<input type="hidden" id="city" name="city" placeholder="请输入" value="" class="apply-input address-detail-input" required="required" />
+			<input type="hidden" id="area" name="area" placeholder="请输入" value="" class="apply-input address-detail-input" required="required" />
+			<div class="apply-con">
+				<table>
+					<tr><td width="85">车位数量</td><td><input type="text" placeholder="请输入车位数量" name="car_num" value="" class="apply-input address-detail-input" maxlength="6" /></td></tr>
+				</table>
+			</div>
+			<div class="apply-con">
+				<textarea class="other-need" name="info" maxlength="100">其他要求、信息</textarea>
+			</div>
+		</div>
+		<div class="next-btn-wrapper"><button type="button" class="next-btn">下一步</button></div>
+		</form>
+		<div class="loading"></div>
+		<div class="mask"></div>
+		<iframe id="regionSel" name="regionSel" src="regionSelect.html"  width="100%" height="100%" frameborder="0" scrolling="no" class="uhide" style="z-index: 999; position: fixed;top: 0px; bottom:0; left: 0; background-color: rgba(255,255,255,1);"></iframe>
+		<iframe id="mapSel" name="mapSel" src=""  width="100%" height="100%" frameborder="0" scrolling="no" class="uhide" style="z-index: 999; position: fixed;top: 0px; bottom:0; left: 0; background-color: rgba(255,255,255,1);"></iframe>
+		<script type="text/javascript" src="../../static/js/place.js"></script>
+		<script type="text/javascript">
+			$(function () {				
+				var $getCodeBtn = $(".mobile-get-code-btn"),
+					$yzBtn = $(".mobile-yz-tip"),
+					minute = 60,
+					countDownTimer = null,					
+					$loading = $(".loading"),
+					$nextBtn = $(".next-btn"),
+//					openOrUserId = xwznUtility.getOpenOrUserId(),
+					$yzInput = $("input[name='code']"),
+					$otherInfo = $(".other-need"),
+					yzFlag = false;
+					var userId = getQueryString("userId");
+	                if (userId) {
+	                    var OpenId = "appWebView_" + userId;
+	                    var openOrUserId = 'userId=' +userId;
+	                } else {
+	                    var OpenId = getOpenId();
+	                    var openOrUserId = 'openId=' + OpenId;
+	                }
+				$nextBtn.on("click",function(){
+					var _mobile = $("input[name='mobile']").val(),
+						_name = $("input[name='name']").val(),
+						carNum = $("input[name='car_num']").val(),
+						otherInfo = $("textarea[name='info']"),
+						detailDress = $("input[name='address']"),
+//						detailDress = '北京',
+						yzCode = $("input[name='code']").val();
+					if(!_name){
+						hideTip('请输入姓名');
+						return false;
+					}
+					if (carNum && !xwznUtility.regExp.number.test(carNum)) {
+						hideTip('车位数量应为数字');
+						return false;
+					}
+					if (yzCode && !xwznUtility.regExp.number.test(yzCode)) {
+						hideTip('验证码应为数字');
+						return false;
+					}
+					if (!_mobile) {
+						hideTip('手机号码不能为空');
+						return false;
+					}
+					if (!xwznUtility.regExp.mobile.test(_mobile)) {
+						hideTip('手机号码格式不对');
+						return false;
+					}
+					if(!yzFlag){
+						hideTip('请验证手机验证码');
+						return false;
+					}
+					
+					if (OpenId) {
+						jqueryAjaxGetJsonp(config.cdzServerUrl + '/project/post?type=1',  openOrUserId + '&' + $("#apply").serialize() , function (result) {
+							if (result.code == 2000) {
+								window.location.href = './upload-photos.html?' + openOrUserId;
+							} else {
+								hideTip(decodeURI(result.msg));
+								$getCodeBtn.html("重新发送");
+							}
+						},null,null, {openId:OpenId});	
+					}
+				});
+				$otherInfo.on("focus",function(){
+					$(this).html("");
+				})
+				function hideTip (data) {
+					$loading.css("display", "block");
+					$loading.html(data);
+					setTimeout(function () {
+						$loading.css("display", "none");
+					}, 2000);
+				}
+				
+				//获取验证码
+				function getCocd(){
+					$getCodeBtn.bind("click",function(){
+						clearInterval(countDownTimer);
+						var $this = $(this),
+							_mobile = $("input[name='mobile']").val();
+						if(_mobile && xwznUtility.regExp.mobile.test(_mobile)){
+							countDownTimer = setInterval(function(){
+								minute--;
+								if(minute <= 0){
+									$this.text('重新发送');
+									minute = 60;
+									clearInterval(countDownTimer);
+								}else{
+									$this.html('');
+									$this.text(minute + 's');
+								}
+								
+							},1000);
+							jqueryAjaxGetJsonp(config.cdzServerUrl + '/project/mcode?type=2',  openOrUserId + "&mobile=" + _mobile , function (result) {
+							
+							},null,null, {openId:OpenId});	
+						}						
+						
+						
+					});
+				}
+				getCocd();	
+				
+				//验证验证码是否正确
+				function checkCode(){
+					$yzBtn.unbind("click");
+					$yzBtn.on("click",function(){
+						var _mobile = $("input[name='mobile']").val(),
+							yzCode = $("input[name='code']").val();
+						$yzBtn.text("确认验证码");						
+						jqueryAjaxGetJsonp(config.cdzServerUrl + '/project/mcheck?type=2&code='+ yzCode,  openOrUserId + "&mobile=" + _mobile , function (result) {
+							if (result.code == 2000) {
+								$yzBtn.html('<img src="../../static/images/apply/sucess-icon.png" width="13" />验证成功');
+								$getCodeBtn.html("获取验证码").css("color","#999").unbind("click");
+								yzFlag = true;
+							} else {
+								hideTip("验证码有误，请重新输入！");
+								hideTip("验证失败");
+								$yzInput.focus();
+								yzFlag = false;
+							}
+						},null,null, {openId:OpenId});	
+					}).on("blur",function(){
+						$yzBtn.text("获取验证码");
+					})
+				}
+				$yzInput.on("keyup",function(){					
+					if(xwznUtility.getByteLen($(this).val()) == 6){
+						clearInterval(countDownTimer);
+						$getCodeBtn.text("重新发送");
+						$yzBtn.text('确认验证码');
+					}
+					if($yzBtn.text() == '确认验证码'){
+						checkCode()
+					}
+				})
+				
+			});
+		</script>
+		
+    </body>
+</html>

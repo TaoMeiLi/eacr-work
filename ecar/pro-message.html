@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>勘察基本信息</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        
+        <link rel="stylesheet" href="css/common.css" />
+        <script src="js/jquery-2.1.4.min.js" type="text/javascript" ></script>
+        <script src="js/common.js" type="text/javascript" ></script>
+        <!--时间段-->
+        <script src="js/time/mobiscroll_002.js" type="text/javascript"></script>
+		<script src="js/time/mobiscroll_004.js" type="text/javascript"></script>
+		<link href="css/time/mobiscroll_002.css" rel="stylesheet" type="text/css">
+		<link href="css/time/mobiscroll.css" rel="stylesheet" type="text/css">
+		<script src="js/time/mobiscroll.js" type="text/javascript"></script>
+		<script src="js/time/mobiscroll_005.js" type="text/javascript"></script>
+		<link href="css/time/mobiscroll_003.css" rel="stylesheet" type="text/css">
+		<!--时间段-->
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=kxc8PlugAKeUrngspKYF99kBIMVksLtU"></script>
+		<link rel="stylesheet" href="css/pile-message.css" />
+        <link rel="stylesheet" href="css/map.css" />
+		
+	</head>
+	<body>
+		<script>
+		var comp=[];
+		var oCom;
+			$(function(){
+				$(".compan-btn").click(function(){
+					openCom();
+				})
+			})
+			function openCom(){
+				$("#regionCom").removeClass("uhide");
+				
+			}
+			function returnComVal(val) {
+				$("#regionCom").addClass("uhide");
+				oCom = eval(val);
+				comp=oCom.split(",");
+				$(".compan-btn").val(comp[0]);
+			}
+		</script>
+		<div class="main">
+			<div class="header-top">
+				<div class="back-btn"><img src="img/mendpile/back.png" alt="" /></div>
+				<p class="tit">勘察基本信息</p>
+			</div>
+			<ul>
+				<li><span>电桩名称</span><input type="text" placeholder="请以地名或建筑命名" class="pile-name"/></li>
+				<li><span>电桩位置</span><a id="gomap"> <input type="text" readonly="true" placeholder="请选择位置" id="" name="" class="pile-position"/></a></li>
+				<li>
+					<span>电桩数量 <i class="ts">*请输入数字</i></span>
+					<p>
+						<i class="yblue">快</i>
+						<input type="text"  class="pile-fast"/>个
+						<i class="yyell">慢</i>
+						<input type="text" class="pile-slow" />个
+					</p>
+				</li>
+				<li>
+					<span>是否对外开放</span>
+					<p>
+						<input type="button" value="是" class="pile-yes"/>
+						<input type="button" value="否" class="pile-no"/>
+					</p>
+				</li>
+				<li>
+					<span>开放时间</span>
+					<p>
+						<input type="text" value="00:00" readonly="readonly1" name="appTime1" id="appTime1"/>
+						<i>至</i>
+						<input type="text" value="24:00" readonly="readonly2" name="appTime2" id="appTime2"/>
+					</p>
+				</li>
+				<li class="solid-bg"></li>
+				<li>
+					<span>充电费<i class="ts">*请输入数字</i></span>
+					<textarea placeholder="元/度"  class="park-fee" rows="5" cols="22"></textarea>
+				</li>
+				<li>
+					<span>服务费<i class="ts">*请输入数字</i></span>
+					<textarea placeholder="元/度"  class="service-charge" rows="5" cols="22"></textarea>
+				</li>
+				<li>
+					<span>运营商</span>
+					<input type="text" readonly="true" placeholder="请选择运营商&nbsp;&nbsp;&nbsp;&nbsp;" class="compan-btn"/>
+				</li>
+				<li class="solid-bg"></li>
+				<li>
+					<span>停车场地</span>
+					<p>
+						<input type="button" value="地上" class="ground"/>
+						<input type="button" value="地下" class="underground"/>
+					</p>
+				</li>
+				<li>
+					<span>停车费<i class="ts">*请输入数字</i></span>
+					<textarea placeholder="元/时"  class="park-charge" rows="5" cols="22"></textarea>
+				</li>
+				<li class="solid-bg"></li>
+				<li id="photo-bg">
+					<div class="photo clearfix">
+						<div class="img-add add">
+							<form id="myform" name="myform" method="post" enctype="multipart/form-data" action="">
+				                <input id="profile" type="file" name="profile" value="">
+				                <input id="subm-btn" type="button" name="dosubmit"  value="提交" onclick="upimg()">
+				            </form>
+						</div>
+						
+					</div>
+					<p style="text-align:left;">上传1~3张电桩现场实景照片</p>
+				</li>
+				
+				<li >
+					<a class="next-btn">提交</a>
+				</li>
+				
+			</ul>
+			<div id="allmap"></div>
+			<div class="float-nav"><span>拖动地图选取电桩位置</span><img src="img/mendpile/dele-icon.png" alt="" class="dele-btn" /></div>
+			<div class="float-tab"></div>
+			<div class="float-map"></div>
+			<div class="usermap"><img src="img/mendpile/usermap.jpg" alt="" /></div>
+			<iframe id="regionCom" name="regionCom" src="companies.html" frameborder="0"  width="100%" height="100%" class="uhide" style="z-index: 999; position: fixed;top: 0px; bottom:0; left: 0;right:0; background-color: rgba(255,255,255,1);"></iframe>
+			<div class="cpm-bg">
+				<div class="cpm">
+					<p class="cpm-top">您信息尚未填写完成，返回将放弃填写哦</p>
+					<div class="cpm-b">
+						<p class="cpmb-l">返回</p>
+						<p class="cpmb-r">继续填写</p>
+					</div>
+				</div>
+			</div><!--cpm-bg-->
+			<div class="hint"></div>
+			<div class="tip-bg" id="tip-bg">
+				<div class="tip">
+					<img src="img/mendpile/loading-white.gif"/>
+					<span>上传中...</span>
+				</div>
+			</div><!--tip-bg-->
+		</div><!--main-->
+		<script>
+		$(function(){
+			var $Lng;	//桩的经度
+			var $Lat;	//桩的维度
+			var address;//地址 、
+			var powerId = getQueryString("id");	//桩id
+			var userId = getQueryString("userId");
+			var lng = getQueryString("lng");
+			var lat = getQueryString("lat");
+			var	num = /^[0-9]*$/,	//数字
+				numx = /^[0-9]+(.[0-9]{0,3})?$/ ,  //验证有0-3位小数的正实数： 
+			 	$pilenamV,	 	//电桩名称；
+				$pileposV,		//电桩位置；
+				$fastV,			//快桩数量；
+				$slowV,			//慢桩数量；
+				$statyesV=0,		//是否对外开放状态 ；是
+				$statgroV=0,		//地上地下； 地上
+				$parkfV,			//充电费元/度
+				$serviceV,			//服务费 元/度
+				$parkcV,			//停车费 元/时
+				$beginTime,			//开放开始时间；
+				$endTime,			//开放结束时间；
+				$openTime,			//开发时间；
+				$comV,				//运营商；
+				cOmp,				//接口回传的运营商
+				oUrl,			//上传图片地址；
+				oPath,
+				$imgLeng;		//添加图片的长度；
+			var oImgs = [];		//图片
+			
+			var pileUrl = config.cdzServerUrl+'/kancha/kanchaInfo';
+			var pileParams = 'id='+powerId;
+			jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+				var oData = result.data;
+				if(result.code==2000){
+					var openTime=[];
+					var oDatTime=oData.open_time;
+						openTime=oDatTime.split('-');
+					cOmp=oData.operate;
+					$(".pile-name").val(oData.pile_name);
+					$(".pile-position").val(oData.pile_address);
+					$(".pile-fast").val(oData.ac_num);
+					$(".pile-slow").val(oData.dc_num);
+					$("#appTime1").val(openTime[0]);
+					$("#appTime2").val(openTime[1]);
+					$(".park-fee").val(oData.charging_fee);
+					$(".service-charge").val(oData.service_fee);
+					
+					if(cOmp==0){
+						$(".compan-btn").val("特来电");
+					}else if(cOmp==1){
+						$(".compan-btn").val("国家电网");
+					}else if(cOmp==2){
+						$(".compan-btn").val("普天");
+					}else if(cOmp==3){
+						$(".compan-btn").val("星星");
+					}
+					
+					$(".park-charge").val(oData.parking_fee);
+					$Lng = oData.lng;
+					$Lat = oData.lat;
+					$statgroV=oData.parking_postion;
+					console.log("停车场"+$statgroV);
+					var oDataImg =oData.img;
+					
+					for(var i=0;i<oDataImg.length;i++){
+						oImgs.push(oDataImg[i].substring(oDataImg[i].lastIndexOf('/')+1));
+						console.log(oDataImg[i]);
+			          	$(".photo").prepend('<div class="img-add img-bg"><div class="img"><img src="'+oDataImg[i]+'" alt="" /></div><h3 class="de-icon" ><i>x</i></h3></div>');
+			          	
+			        }
+					if($statgroV==0){
+						$(".ground").css({
+							color: 'rgb(255, 255, 255)',
+							background: 'rgb(85, 189, 255)'
+						});
+						$(".underground").css({
+							color: "rgb(255, 179, 0)",
+							background: "rgb(255, 255, 255)"
+						});
+					}else{
+						$(".ground").css({
+							color: 'rgb(85, 189, 255)',
+							background: 'rgb(255, 255, 255)'
+						});
+						$(".underground").css({
+							color: "rgb(255, 255, 255)",
+							background: "rgb(255, 179, 0)"
+						});
+					}
+				}else{
+					alert(result.msg);
+				}
+			})
+		//以下地图-------------------------------------------------------------------------------------------
+			$("#allmap").css({"width":initParams.phoneWidth,"height":initParams.phoneHeight});
+			//删除nav
+			$(".dele-btn").on("click",function(){
+				$(".float-nav").hide();
+			})
+			var map='';
+			function oMap(){
+				// 百度地图API功能
+				function G(id) {
+					return document.getElementById(id);
+				}
+				map = new BMap.Map("allmap");    // 创建Map实例
+				var marker;  // 创建标注
+				var userIcon = new BMap.Icon("img/mendpile/map-logo3.png", new BMap.Size(20,20));
+				var userPoint= new BMap.Point(lng, lat);//初始化地图,设置中心点坐标以用户为中点
+				map.centerAndZoom(userPoint, 13);  // 地图级别
+	//			map.setCurrentCity("北京");   // 设置地图显示的城市 此项是必须设置的
+				map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放         
+				var userMark = new BMap.Marker(userPoint,{icon:userIcon});// 创建用户位置标注；
+				map.addOverlay(userMark);               // 将标注添加到地图中
+			//单击逆地址解析并创建标注
+				function showPositionPoint(){
+					var geoc = new BMap.Geocoder();
+					var myIcon = new BMap.Icon("img/mendpile/map-top.png", new BMap.Size(18,18));
+					map.addEventListener("click", function(e){        
+						map.clearOverlays();    //清除地图上所有覆盖物
+						map.addOverlay(userMark);
+						var pt = e.point;
+						$Lng = pt.lng;
+						$Lat = pt.lat;
+						marker = new BMap.Marker(pt,{icon:myIcon});// 创建标注
+						map.addOverlay(marker);               // 将标注添加到地图中
+						geoc.getLocation(pt, function(rs){
+							var addComp = rs.addressComponents;
+							address = addComp.city+addComp.district+addComp.street+addComp.streetNumber;
+							$(".float-tab").html('<div class="pile-phon"><img src="img/mendpile/map2-logo.png" alt="" /><span>'+address+'</span></div><div class="shift" ">确定</div>')
+						});        
+					});
+				}
+				showPositionPoint();
+			}
+		
+			//确定选择地址；
+			$("body").on("click",".shift",function(){
+				$(".pile-position").val(address);
+				$("#allmap").hide();
+				$(".float-nav").hide();
+				$(".float-tab").hide();
+				$(".main>ul").show();
+				$(".usermap").hide();
+				$(".tit").html("勘察基本信息");
+			})
+			//去地图选择地址
+			$(".pile-position").click(function(){
+				$(".tit").html("电桩位置");
+				$(".main>ul").hide();
+				if(map==''){
+					oMap();
+					$("#allmap").css("z-index","999");
+				}else{
+					$("#allmap").show();
+				}	
+				$(".float-nav").show();
+				$(".float-tab").show();
+				$(".usermap").show();
+			});
+			//		显示用户当前位置；
+			$(".usermap").on("touchstart",function(){
+				oMap();
+				$(".float-tab").html('');
+			})
+		//以上地图-------------------------------------------------------------------------------------------
+			
+			//开放状态；
+			$(".pile-yes").on("click",function(){
+				$(".pile-yes").css({"background":"#55bdff","color":"#fff"});
+				$(".pile-no").css({"background":"#fff","color":"#ffb300"});
+				$statyesV=0; //是
+			})
+			$(".pile-no").on("click",function(){
+				$(".pile-yes").css({"background":"#fff","color":"#55bdff"});
+				$(".pile-no").css({"background":"#ffb300","color":"#fff"});
+				$statyesV=1;	//否
+			})
+			$(".ground").on("click",function(){
+				$(".ground").css({"background":"#55bdff","color":"#fff"});
+				$(".underground").css({"background":"#fff","color":"#ffb300"});
+				$statgroV=0;	//地上
+			})
+			$(".underground").on("click",function(){
+				$(".ground").css({"background":"#fff","color":"#55bdff"});
+				$(".underground").css({"background":"#ffb300","color":"#fff"});
+				$statgroV=1;	//地下
+			})
+			//上传图片操作
+				$("body").on("change", "#myform", function (e) {
+					$("#tip-bg").show();
+                   	setTimeout(function(){
+                   		upimg();
+                   	},10)
+				})
+				function upimg() {
+					
+					var formData = new FormData($("#myform")[0]);
+		            $.ajax({
+		                url: config.cdzServerUrl+'/common/imgupload',
+		                type: 'POST',
+		                data: formData,
+		                async: false,
+		                cache: false,
+		                dataType: "json",
+		                contentType: false,
+		                processData: false,
+		                success: function (returndata) {
+		                	if(returndata.code==9001){
+		                		$("#tip-bg").hide();
+		                	}
+		                    console.log(returndata);
+		                    oUrl = returndata.data.url;
+		                    oPath = returndata.data.path;
+		                    oImgs.push(oPath);
+		          			$(".photo").prepend('<div class="img-add img-bg"><div class="img"><img src="'+oUrl+'" alt="" /></div><h3 class="de-icon" ><i>x</i></h3></div>');
+		          			setTimeout(function(){
+		          				$("#tip-bg").hide();
+		          			},1000);
+			            },
+		                error: function (returndata) {
+		                    console.log(returndata);
+		                     $("#tip-bg").hide();
+		                     Hint("上传失败");
+		                }
+		           });
+				}	
+			$(".next-btn").on("click",function(){
+				$(".ts").hide();
+				$pilenamV = $(".pile-name").val();
+				$pileposV = $(".pile-position").val();
+				$fastV = $(".pile-fast").val();
+				$slowV = $(".pile-slow").val();
+				$parkfV = $(".park-fee").val();
+				$serviceV = $(".service-charge").val();
+				$parkcV = $(".park-charge").val();
+				$beginTime = $("#appTime1").val();
+				$endTime = $("#appTime2").val();
+				$openTime = $beginTime+'-'+$endTime;
+				$comV = $(".compan-btn").val();
+				$imgLeng = $("#photo-bg .photo .img-bg").length;
+				if($pilenamV==''){
+					Hint("请输入电桩名称");
+					return;
+				}
+				if($pileposV==''){
+					Hint("请选择电桩位置");
+					return;
+				}
+				if($fastV==''){
+					Hint("请输入慢桩数量");
+					return;
+				}else if(!num.test($fastV)){
+					$(".pile-fast").closest("li").find(".ts").show();
+					return;
+				}
+				if($slowV==''){
+					Hint("请输入快桩数量");
+					return;
+				}else if(!num.test($slowV)){
+					$(".pile-fast").closest("li").find(".ts").show();
+					return;
+				}
+				if($parkfV==''){
+					Hint("请输入充电费");
+					return;
+				}
+				if($serviceV==''){
+					Hint("请输入服务费");
+					return;
+				}
+				if($parkcV==''){
+					Hint("请输入停车费");
+					return;
+				}
+				if($comV==''){
+					Hint("请选择运营商");
+					return;
+				}
+				if($imgLeng==0){
+					Hint("请上传图片");
+					return;
+				}
+				oSubmit();
+			})
+			function oSubmit(){	
+				var oCompnum;
+				if(comp==''){
+					oCompnum=cOmp;
+				}else{
+					oCompnum=comp[1];
+				}
+				var pileUrl = config.cdzServerUrl+'/kancha/edit';
+				var pileParams = 'user_id='+userId+'&id='+powerId+'&pile_name='+$pilenamV+'&pile_address='+$pileposV+'&lat='+$Lat+'&lng='+$Lng+'&ac_num='+$slowV+'&dc_num='+$fastV+'&charging_fee='+$parkfV+'&parking_fee='+$parkcV+'&service_fee='+$serviceV+'&operate='+oCompnum+'&parking_postion='+$statgroV+'&open_time='+$openTime+'&img='+oImgs;
+				jqueryAjaxGetJsonp( pileUrl, pileParams, function( result ) {
+					if(result.code==2000){
+						var jumpHref = './pro-success.html?status=&userId='+userId+'&lng='+lng+'&lat='+lat;
+						location.href = jumpHref;
+					}else{
+						alert(result.msg);
+					}
+				})
+			}
+			//点击图片
+			$("body").on("touchstart",".img",function(){
+				$(this).next(".de-icon").toggle();
+			})
+			//删除图片
+			$("body").on("touchstart",".de-icon",function(event){
+				$(this).parent(".img-bg").remove();
+			})
+			//提示框返回和继续填写
+			function Hint(text){
+				$(".hint").show().html(text);
+				setTimeout(function(){
+					$(".hint").hide();
+				},2000)
+			}
+			//返回上一层
+			$(".back-btn").on("touchstart",function(){
+				var $txt=$(".tit").html();
+				if($txt=="电桩位置"){
+					$("#allmap").hide();
+					$(".float-nav").hide();
+					$(".float-tab").hide();
+					$(".main>ul").show();
+					$(".tit").html("勘察基本信息");
+					$(".usermap").hide();
+				}else if($txt=="勘察基本信息"){
+					if($(".pile-name").val()==''&&$(".pile-position").val()==''&&$(".pile-fast").val()==''&&$(".pile-slow").val()==''&&$(".park-fee").val()==''&&$(".service-charge").val()==''&&$(".park-charge").val()==''&&$(".compan-btn").val()==''&&$("#photo-bg .photo .img-bg").length==0){
+						var jumpHref = 'javascript:history.go(-1);';
+			     		location.href = jumpHref;
+					}else{
+						$(".cpm-bg").show();
+					}
+				}
+			})
+			//继续填写
+			$(".cpmb-r").on("touchstart",function(){
+				$(".cpm-bg").hide();
+			})
+			//返回
+			$(".cpmb-l").on("touchstart",function(){
+				var jumpHref = 'javascript:history.go(-1);';
+			    location.href = jumpHref;
+			})
+		})
+//		时间段
+		$(function () {
+			var currYear = (new Date()).getFullYear();	
+			var opt={};
+			opt.time = {preset : 'time'};
+			opt.default = {
+				theme: 'android-ics light', //皮肤样式
+		        display: 'modal', //显示方式 
+		        mode: 'scroller', //日期选择模式
+				lang: 'zh',
+			};
+			
+		  	var optTime = $.extend(opt['time'], opt['default']);
+		    $("#appTime1").mobiscroll(optTime).time(optTime);
+		    $("#appTime2").mobiscroll(optTime).time(optTime);
+        });
+        
+        
+		</script>
+	</body>
+</html>
