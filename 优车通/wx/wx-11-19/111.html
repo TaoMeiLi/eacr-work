@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>车辆详情</title>
+	<link rel="stylesheet" href="css/cardetail.css">
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/gd.css">
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery.event.drag-1.5.min.js"></script>
+	<script src="js/jquery.touchSlider.js"></script>
+</head>
+<body>
+	<div class="main">
+		<div class="main_visual">
+             <div class="flicking_con">
+                <div class="flicking_inner">
+                    <a href="javascript:"></a>
+                    <a href="javascript:"></a>
+                    <a href="javascript:"></a>
+                    <a href="javascript:"></a>
+                    <a href="javascript:"></a>
+               	</div>
+            </div>
+			<div class="main_image">
+				<ul>					
+					<li><span class="img_3"></span></li>
+					<li><span class="img_4"></span></li>
+					<li><span class="img_1"></span></li>
+					<li><span class="img_2"></span></li>
+					<li><span class="img_5"></span></li>
+				</ul>
+			</div>
+		</div>
+		<div class="carmany_bg">
+			<img src="imgs/carmany_bg.png" alt="">
+			<div class="many_l">
+				<p>&#xffe5;<span>67.2</span>万元</p>
+				<p>&nbsp;&#xffe5;<span>72.8</span>万元&nbsp;</p>
+			</div><!-- many_l -->
+			<div class="many_r">
+				<p>距离结束仅剩</p>
+				<div class="many_r_time" id="many_time">
+					<span>22</span>
+					<span>天</span>
+					<span>22</span>
+					<span>时</span>
+					<span>22</span>
+					<span>分</span>
+					<span>22</span>
+					<span>秒</span>
+				</div><!-- many_r_time -->
+			</div><!-- many_r -->
+		</div><!-- carmany_bg -->
+		<div class="carname_bg">
+			<div class="carname">
+				<p>奥迪A3 Limousine 35 TFSI</p>
+				<p>自动舒适型</p>
+			</div><!-- carname -->
+		</div>
+		<div class="content">
+			<div class="spec_nav_bg">
+				<div class="spec_nav">
+					<i></i>
+					<span>规格信息</span>
+				</div><!-- spec_nav -->
+			</div><!-- spec_nav_bg -->
+			<div class="spec_con clear">
+				<div class="spec_con1">
+					<ul >
+						<li class="clear" style="margin-top:30px;">
+							<div><span>车辆颜色</span></div>
+							<div><span>黑色 白色 银色</span></div>
+						</li>
+						<li class="clear">
+							<div><span>内饰颜色</span></div>
+							<div><span>黑色</span></div>
+						</li>
+						<li class="clear">
+							<div><span>车辆生产日期</span></div>
+							<div><span>2015-11-24</span></div>
+						</li>
+					</ul >
+				</div><!-- spec_con1 -->
+				<div class="spec_con2">
+					<ul >
+						<li class="clear" style="margin-top: 30px;">
+							<div><span>特价原因</span></div>
+							<div><span>展厅特价</span></div>
+						</li>
+						<li class="clear">
+							<div><span>提车地点</span></div>
+							<div><span>北京市-北京市</span></div>
+						</li>
+						<li class="clear">
+							<div><span>发售范围</span></div>
+							<div><span>全国</span></div>
+						</li>
+					</ul >
+				</div><!-- spec_con2 -->
+				<div class="spec_con3">
+					<ul >
+						<li class="clear" style="margin-top: 30px;">
+							<div><span>其他额外促销</span></div>
+							<div><span>无</span></div>
+						</li>
+						<li class="clear">
+							<div><span>加装说明</span></div>
+							<div><span>哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈</span></div>
+						</li>
+						<li class="clear">
+							<div><span>额外成交条件</span></div>
+							<div><span>无</span></div>
+						</li>
+					</ul >
+				</div><!-- spec_con3 -->
+			</div><!-- spec_con -->
+			<div class="rate_nav_bg">
+				<div class="rate_nav">
+					<i></i>
+					<span>价格信息</span>
+				</div><!-- rate_nav -->
+			</div><!-- rate_nav_bg -->
+			<div class="rate_con clear">
+				<div class="rate_con_l">
+					<ul>
+						<li><i>厂商指导价格</i></li>
+						<li><i>厂商指导价格</i></li>
+						<li><i>淘淘特价</i></li>
+					</ul>
+				</div><!-- rate_con_l -->
+				<div class="rate_con_r">
+					<ul>
+						<li><i>&nbsp;72.8万元&nbsp;</i></li>
+						<li><i>&nbsp;71.6万元&nbsp;</i></li>
+						<li><h1>&nbsp;67.2</h1><i>万</i><p><span>优惠<em>5.6</em>万</span></p></li>
+					</ul>
+				</div><!-- rate_con_r -->
+			</div><!-- rate_con -->
+			<div class="cargood_bg">
+				<div class="cargood_t"></div>
+				<div class="cargood">
+					<div class="cargood_top">
+						<p><span>猜您喜欢</span></p>
+					</div><!-- cargood_top -->
+					<div class="cargood_conbg">
+						<div id="wrapper">
+							<div class="cargd_con" class="scroll" >
+								<ul class="clear">
+									<li>
+										<a href="">
+											<img src="imgs/car.jpg" alt="">
+										</a>
+										<p>奥迪A3 Limousine 35 TFSI 自动舒适型</p>
+										<p>阿玛菲白</p>
+										<p>市场: 22.48万元</p>
+										<p>淘淘特价：<span>21.48万元</span></p>
+									</li>
+									<li>
+										<a href="">
+											<img src="imgs/car.jpg" alt="">
+										</a>
+										<p>奥迪A3 Limousine 35 TFSI 自动舒适型</p>
+										<p>阿玛菲白</p>
+										<p>市场: 22.48万元</p>
+										<p>淘淘特价：<span>21.48万元</span></p>
+									</li>
+									<li>
+										<a href="">
+											<img src="imgs/car.jpg" alt="">
+										</a>
+										<p>奥迪A3 Limousine 35 TFSI 自动舒适型</p>
+										<p>阿玛菲白</p>
+										<p>市场: 22.48万元</p>
+										<p>淘淘特价：<span>21.48万元</span></p>
+									</li>
+									<li>
+										<a href="">
+											<img src="imgs/car.jpg" alt="">
+										</a>
+										<p>奥迪A3 Limousine 35 TFSI 自动舒适型</p>
+										<p>阿玛菲白</p>
+										<p>市场: 22.48万元</p>
+										<p>淘淘特价：<span>21.48万元</span></p>
+									</li>
+									<li>
+										<a href="">
+											<img src="imgs/car.jpg" alt="">
+										</a>
+										<p>奥迪A3 Limousine 35 TFSI 自动舒适型</p>
+										<p>阿玛菲白</p>
+										<p>市场: 22.48万元</p>
+										<p>淘淘特价：<span>21.48万元</span></p>
+									</li>
+									<li>
+										<a href="">
+											<img src="imgs/car.jpg" alt="">
+										</a>
+										<p>奥迪A3 Limousine 35 TFSI 自动舒适型</p>
+										<p>阿玛菲白</p>
+										<p>市场: 22.48万元</p>
+										<p>淘淘特价：<span>21.48万元</span></p>
+									</li>
+								</ul>
+							</div><!-- cargd_con -->
+						</div>
+					</div><!-- cargood_conbg -->
+				</div><!-- cargood -->
+			</div><!-- cargood_bg -->
+		</div><!-- content -->
+		<div class="footer clear">
+			<div class="foot_l clear">
+				<div class="foot_l_l">
+					<p></p>
+					<p><a href="">关注</a></p>
+				</div>
+				<div class="foot_l_r">
+					<p></p>
+					<p>分享</p>
+				</div>
+			</div><!-- foot_l -->
+			<div class="foot_r">立即预约</div><!-- foot_r -->
+		</div><!-- footer -->		
+	</div><!-- main -->
+	<script>
+	$(document).ready(function () {
+		$(".main_visual").hover(function(){
+			$("#btn_prev,#btn_next").fadeIn()
+			},function(){
+			$("#btn_prev,#btn_next").fadeOut()
+			})
+		$dragBln = false;
+		$(".main_image").touchSlider({
+			flexible : true,
+			speed : 200,
+			btn_prev : $("#btn_prev"),
+			btn_next : $("#btn_next"),
+			paging : $(".flicking_con a"),
+			counter : function (e) {
+				$(".flicking_con a").removeClass("on").eq(e.current-1).addClass("on");
+			}
+		});
+		$(".main_image").bind("mousedown", function() {
+			$dragBln = false;
+		})
+		$(".main_image").bind("dragstart", function() {
+			$dragBln = true;
+		})
+		$(".main_image a").click(function() {
+			if($dragBln) {
+				return false;
+			}
+		})
+		timer = setInterval(function() { $("#btn_next").click();}, 5000);
+		$(".main_visual").hover(function() {
+			clearInterval(timer);
+		}, function() {
+			timer = setInterval(function() { $("#btn_next").click();}, 5000);
+		})
+		$(".main_image").bind("touchstart", function() {
+			clearInterval(timer);
+		}).bind("touchend", function() {
+			timer = setInterval(function() { $("#btn_next").click();}, 5000);
+		})
+	});
+</script>
+<script src="js/cardetail.js"></script>
+<script src="js/iscroll.js"></script>
+	<script>
+		var Scroll = new iScroll('wrapper',{hScrollbar:false, vScrollbar:false});
+		// 第一参数必需是滑动元素的父元素的id。
+		// 主要参数一览：	 hScroll: true, 左右滑动，默认为true	 vScroll: true,上下滑动	hScrollbar: true, 是否显示y轴滚动条，默认为显示	 vScrollbar: true,是否显示X轴滚动条，默认为显示
+	</script>
+</body>
+</html>

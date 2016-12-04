@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>关于我们</title>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/head.css">
+	<style>
+		.main{
+			width:100%;
+			background: #fff;
+		}
+		.api,.commit{
+			width:100%;
+			height: 114px;
+			background: #f2f2f2;
+		}
+		.api p,.commit p{
+			width: 92.8%;
+			margin:0 auto;
+			line-height: 114px;
+		}
+		.api p i,.commit p i{
+			display: inline-block;
+			width:20px;
+			height: 48px;
+			background: #bc240d;
+			margin-right: 48px;
+			vertical-align: middle;
+			margin-bottom: 25px;
+		}
+		.api p span,.commit p span{
+			font-size:48px;
+			font-weight: bold;
+
+		}
+		.api_con,.commit_con{
+			width:92.8%;
+			margin:0 auto;
+			padding-top:40px;
+			padding-bottom:40px;
+		}
+		.api_con p,.commit_con p span{
+			font-size:35px;
+			margin-left:10px;
+			line-height:100px;
+		}
+		.commit_con p{
+			padding-left:50px;
+		}
+		.commit_con p i{
+			display: inline-block;
+			width:18px;
+			height: 18px;
+			background: #bc240d;
+			border-radius: 50%;
+			margin-left: -40px;
+			vertical-align: top;
+			margin-top:40px;
+		}
+	</style>
+</head>
+<body>
+	<div id="all">
+		<div class="head_fd" id="head_fd">
+			<ul>
+				<li>
+					<div><a href="javascript:void(0);">精品物惠</a></div>
+					<div><a href="javascript:void(0);">淘淘特价</a></div>
+				</li>
+				<li>
+					<div><a href="javascript:void(0);">我的淘淘</a></div>
+					<div><a href="">我的预约</a></div>
+					<div><a href="">我的关注</a></div>
+				</li>
+				<li>
+					<div><a href="">关于淘淘</a></div>
+				</li>
+			</ul>
+		</div><!-- head_fd -->
+	</div><!-- all -->
+	<div class="main" id="main">
+		<div class="head_bg">
+			<div class="head ">
+				<div class="head_div1"><span>淘淘特价车</span></div>
+			</div>
+		</div><!-- head_bg -->
+		<div class="api_bg">
+			<div class="api">
+				<p><i></i><span>产品介绍</span></p>
+			</div><!-- api -->
+			<div class="api_con">
+				<p>
+					&nbsp;&nbsp;&nbsp;&nbsp;淘淘特价车”是一个建立在汽车经销商与汽车终端消费者之间的电子商务平台。通过互联网广泛传播及大数据优势，将各地区汽车经销商在售特价车辆信息精准送达到汽车终端消费者手中，在销售商和消费者间打通一条信息传递的高速通道，既能帮助汽车经销商更为高效的达成交易，又能满足不同消费者对于汽车产品的差异化需求。
+				</p>
+			</div><!-- api_con -->
+		</div><!-- api_bg -->
+		<div class="commit_bg">
+			<div class="commit">
+				<p><i></i><span>我们承诺</span></p>
+			</div><!-- .commit -->
+			<div class="commit_con">
+				<p>
+					<i></i>
+					<span>所有在售车辆均为特价销售，销售车辆的汽车经销商在店面优惠的基础上提供更具优势的价格。</span>
+				</p>
+				<p>
+					<i></i>
+					<span>所有车辆信息真实价格透明，每辆车辆配有实景照片、车辆情况说明及成交条件说明，保证购车者到店成交信息一致。</span>
+				</p>
+				<p>
+					<i></i>
+					<span>
+						所以车辆交易环节均为汽车经销商直接提供服务，“淘淘特价车”不参与任何交易环节，也无任何额外收费。
+					</span>
+				</p>
+			</div><!-- commit_con -->
+		</div>	<!-- commit_bg -->
+			
+	</div><!-- main -->
+	<script>
+		var head_fd=document.getElementById("head_fd");
+		var all=document.getElementById("all");
+		var main=document.getElementById("main");
+		// all.addEventListener("touchstart",function(){
+		// 	 head_fd.style.display = "block";
+		// 	// e =window.event||event;
+		// 	// // alert(target);
+	 //  //       var target = e.target || e.srcElement;
+	 //  //       if (target == all) {
+	 //  //           head_fd.style.display = "block";
+	 //  //       } else {
+	 //  //           head_fd.style.display = "none";
+	 //  //       }
+		// })
+		all.addEventListener("touchstart",function(){
+			 head_fd.style.display = "block";
+		})
+		main.addEventListener("touchstart",function(){
+			 head_fd.style.display = "none";
+		})
+
+	</script>
+</body>
+</html>

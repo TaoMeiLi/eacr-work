@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>弹出框</title>
+<style>
+	.tab_a{
+		width: 100px;
+		height: 100px;
+		background:url(kf.png);
+		position: fixed;
+		right: 0px;
+		bottom:300px;
+		cursor: pointer;
+	}
+	.tab_b{
+		width:400px;
+		height: 600px;
+		position: fixed;
+		right:100px;
+		bottom:0;
+		display: none;
+	}
+</style>
+</head>
+<body>
+	<div class="tab_a"></div><!-- tab_a -->
+	<div class="tab_b">
+		<iframe width=400px; height=600 frameborder=0 scrolling=auto src=http://meiqia.com/chat/566919224eae35cc2f000001></iframe>
+	</div><!-- b -->
+</body>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script><!-- 引用CDN的js; -->
+<script>
+	function oTab(){
+		var i=1;
+		$(".tab_a").bind("click",function(){
+			if(i==1){
+				$(".tab_b").show();
+				i=0;
+			}else{
+				$(".tab_b").hide();
+				i=1;
+			}
+			
+		})
+	}
+	oTab();
+	
+</script>
+</html>

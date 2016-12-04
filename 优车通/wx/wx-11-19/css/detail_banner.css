@@ -1,0 +1,21 @@
+.banner{
+	width:100%;
+	background: #fff;
+}
+.tab{
+	height: 542px;
+	overflow: hidden;
+	margin:0 auto;
+	position: relative;
+}
+.imgs{
+	height: 542px;
+	overflow: hidden;
+	position: absolute;
+	top:0;
+	left:0;
+}
+.imgs img{
+	float: left;
+	width:20%;
+}

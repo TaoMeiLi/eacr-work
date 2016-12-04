@@ -1,0 +1,191 @@
+.main{
+	width:100%;
+}
+.top_bg{
+	width:100%;
+	height: 80px;
+	border-bottom:1px solid #880000;
+}
+.top{
+	width:1200px;
+	height: 80px;
+	margin:0 auto;
+	padding-top:10px;
+}
+.top h1{
+	display: inline-block;
+	float: right;
+	font-size:17px;
+	margin-top: 15px;
+}
+.top h1 span{
+	display: inline-block;
+	width:80px;
+	height: 43px;
+	background: #d80a00;
+	color:#fff;
+	text-align: center;
+	line-height: 43px;
+	cursor: pointer;
+}
+.con_bg{
+	width:1200px;
+	margin:0 auto;
+	padding-bottom: 60px;
+}
+.con_nav{
+	height: 35px;
+	width:1200px;
+	line-height: 35px;
+	border-bottom:1px solid #c2c2c2;
+	margin-top:20px;
+	color:#880000;
+}
+.connection{
+	width:1200px;
+	border-bottom:1px solid #c2c2c2;
+	overflow: hidden;
+	margin-top: 35px;
+}
+.connection ul li{
+	margin-bottom: 20px;
+}
+.connection ul li:nth-child(1) input{
+	width:168px;
+	height: 42px;
+	padding-left: 10px;
+	border:1px solid #c2c2c2;
+}
+.connection ul li:nth-child(2) input{
+	width:290px;
+	height: 42px;
+	border:1px solid #c2c2c2;
+	padding-left: 10px;
+}
+.connection ul li:nth-child(1) i,.connection ul li:nth-child(2) i,.connection ul li:nth-child(3) i{
+	color:#d10000;
+	margin-left: 15px;
+}
+.connection ul li:nth-child(1) span,.connection ul li:nth-child(2) span{
+	margin-right: 104px;
+}
+.connection ul li:nth-child(3) input{
+	width:170px;
+	height: 42px;
+	border:1px solid #c2c2c2;
+	margin-left: 178px;
+	padding-left: 10px;
+}
+.connection ul li:nth-child(3) span{
+	display: inline-block;
+	width:99px;
+	height: 42px;
+	border:1px solid #c2c2c2;
+	text-align: center;
+	line-height: 42px;
+	margin-left: 20px;
+	vertical-align: middle;
+	background: #dddddd;
+	cursor: pointer;
+}
+.address{
+	width:1200px;
+	border-bottom:1px solid #c2c2c2;
+	overflow: hidden;
+}
+.address div{
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+.address div input{
+	width:476px;
+	height: 42px;
+	border:1px solid #c2c2c2;
+	margin-left: 118px;
+	padding-left: 10px;
+}
+.charter,.card,.place{
+	width:1200px;
+	border-bottom:1px solid #c2c2c2;
+	overflow: hidden;
+	padding-top:20px ;
+	padding-bottom: 20px;
+	height: 105px;
+}
+.charter div{
+	display: inline-block;
+	width:98px;
+	height: 98px;
+	border:1px solid #c2c2c2;
+}
+.charter span,.card span,.place span{
+	vertical-align: top;
+	margin-right: 118px;
+	float: left;
+}
+.charter input,.card div input,.card div input,.place>div input{
+	opacity: 0;
+	width:98px;
+	height: 42px;
+	position: absolute;
+	top:0;
+	left:0;
+	cursor: pointer;
+}
+.charter a,.card div a,.card div a,.place>div a{
+	overflow: hidden;
+	position: relative;
+	display: inline-block;
+	width:98px;
+	height: 42px;
+	line-height: 42px;
+	border:1px solid #c2c2c2;
+	border-radius: 8px;
+	background: #f5f5f5;
+	margin-left: 15px;
+	text-align: center;
+	vertical-align: top;
+	margin-top: 55px;
+	cursor: pointer;
+}
+.card>div,.place>div{
+	float:left;
+	margin-left: 14px;
+	margin-right: 75px;
+}
+.card div div,.place>div div{
+	display: inline-block;
+	width:98px;
+	height: 98px;
+	border:1px solid #c2c2c2;
+}
+.place>div{
+	margin-left:0px;
+}
+.submit{
+	margin-left: 179px;
+	margin-top: 20px;
+}
+.submit div{
+	width:100px;
+	height: 45px;
+	background: #d10000;
+	line-height: 45px;
+	text-align: center;
+	color:#fff;
+	cursor: pointer;
+}
+.foot{
+	width:100%;
+	height:50px;
+	border-top:1px solid #ddd;
+	line-height: 50px;
+	text-align: center;
+	color:#bbb;
+}
+#charter_img img,#card1_img img,#card2_img img,#place1_img img,#place2_img img{
+	width:100%;
+}
+#place2_img{
+	margin-left: 14px;
+}

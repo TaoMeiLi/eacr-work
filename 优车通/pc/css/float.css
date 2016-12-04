@@ -1,0 +1,80 @@
+#float_bg{
+	background: rgba(0,0,0,0.3);
+	position: fixed;
+	top:0;
+	left:0;
+	z-index: 9;
+}
+#float_tab{
+	width:479px;
+	height: 519px;
+	background: url(../images/float7_f.png) no-repeat;
+	position: fixed;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	margin:auto;
+	z-index: 9;
+}
+#float_tab ul{
+	width:438px;
+	margin-left: 21px;
+	margin-top: 80px;
+}
+#float_tab ul li{
+	width:388px;
+	height:65px;
+	padding-left: 25px;
+	padding-right: 25px;
+	line-height: 65px;
+	overflow: hidden;
+
+}
+#order_f>span,#knockdown_f>span,#find_f>span{
+	font-size:22px;
+	font-family: "黑体";
+	color:#4c4c4c;
+	margin-left: 8px;
+}
+#order_f>i{
+	display: inline-block;
+	width:29px;
+	height: 32px;
+	background:url(../images/icon7_f.png) 0px 0px no-repeat;
+	vertical-align: middle;
+}
+#knockdown_f>i{
+	display: inline-block;
+	width:29px;
+	height: 29px;
+	background:url(../images/icon7_f.png) 0px -63px no-repeat;
+	vertical-align: middle;
+	margin-top: -6px;
+}
+#find_f>i{
+	display: inline-block;
+	width:29px;
+	height:29px;
+	background:url(../images/icon7_f.png) 0px -125px no-repeat;
+	vertical-align: middle;
+	margin-top: -14px;
+}
+#float_tab ul li a{
+	display: inline-block;
+	float: right;	
+}
+#float_tab ul li a i,#float_tab ul li a span{
+	font-size:22px;
+	font-family: "黑体";
+	color:#fb565a;
+}
+#delete_f{
+	width:46px;
+	height: 46px;
+	background: url(../images/delete7_f.png) center no-repeat;
+	position: absolute;
+	top:-39px;
+	right:-34px;
+	cursor: pointer;
+}

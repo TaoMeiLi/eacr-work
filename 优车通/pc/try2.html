@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	
+	<input type="text" id="o"> 
+	<input type="button" value="提交" id="tj">
+</body>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script><!-- 引用CDN的js; -->
+<script>
+ var re = /[^\u4e00-\u9fa5]/;
+ // var a=$("#o").val();  
+$("#tj").bind("click",function(){
+	
+	if(re.test($("#o").value)){
+		alert("是中文")
+	}
+	else{
+		alert("不是中文")
+	}
+})
+	
+</script>
+</html>

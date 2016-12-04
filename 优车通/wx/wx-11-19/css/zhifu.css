@@ -1,0 +1,146 @@
+.content{
+	width:92.5%;
+	margin:0 auto;
+	overflow: hidden;
+}
+.content .content_con{
+	margin-top:40px;
+	padding-bottom:40px;
+	/*border-bottom:2px dashed #a7a7a7;*/
+	overflow: hidden;
+}
+.con_left{
+	width:19%;
+	height: 200px;
+	border:1px solid #a7a7a7;
+	float:left;
+}
+.con_left img{
+	width:100%;
+	text-align: center;
+	margin-top:45px;
+}
+.con_rig{
+	float:right;
+	margin-left:18px;
+	width:78%;
+}
+.con_rig h1{
+	font-size:36px;
+	font-weight: bold;
+}
+.con_rig h2{
+	font-size: 30px;
+	font-weight: bold;
+}
+.con_rig h2 i{
+	color:#ba000e;
+	margin-left: 200px;
+}
+.con_rig h2 span{
+	font-size: 90px;
+	color:#ba000e;
+}
+.commit_bg{
+	width:100%;
+	background:#f2f2f2;
+}
+.commit{
+	width:100%;
+	height: 114px;
+}
+.commit p{
+	width: 92.8%;
+	margin:0 auto;
+	line-height: 114px;
+}
+.commit p i{
+	display: inline-block;
+	width:20px;
+	height: 48px;
+	background: #bc240d;
+	margin-right: 48px;
+	vertical-align: middle;
+	margin-bottom: 25px;
+}
+.commit p span{
+	font-size:48px;
+	font-weight: bold;
+
+}
+.commit_con{
+	width:92.8%;
+	margin:0 auto;
+	padding-top:40px;
+	padding-bottom:40px;
+}
+.commit_con p span{
+	font-size:35px;
+	margin-left:10px;
+	line-height:100px;
+}
+.commit_con p{
+	padding-left:50px;
+}
+.commit_con p i{
+	display: inline-block;
+	width:18px;
+	height: 18px;
+	background: #bc240d;
+	border-radius: 50%;
+	margin-left: -40px;
+	vertical-align: top;
+	margin-top:40px;
+}
+.foot{
+	width: 100%;
+	position:fixed;
+	bottom:0px;
+	left:0px;
+	z-index: 8;
+}
+.footer{
+	width:100%;
+
+}
+.foot_l{
+	width:41.6%;
+	height: 130px;
+	background: #262626;
+	float: left;
+}
+.foot_l_l,.foot_l_r{
+	text-align: center;
+	width:100%;/*...................*/
+	float: left;
+	margin-top:15px;
+}
+.foot_l_l p:nth-child(1){
+	width:65px;
+	height: 57px;
+	background: url(../imgs/f_nav.png) 0 0 no-repeat;
+	margin-left:170px;
+
+}
+.foot_l_r p:nth-child(1){
+	width:65px;
+	height: 57px;
+	background: url(../imgs/f_nav.png) 0 -70px no-repeat;
+	margin-left:70px;
+}
+.foot_l_l p:nth-child(2) a,.foot_l_r p:nth-child(2){
+	color: #d4d4d4;
+	font-size:36px;
+	font-weight: bold;
+}
+.foot_r{
+	width:58.4%;
+	height: 130px;
+	background: #fe2e7d;
+	float:left;
+	font-size: 36px;
+	color:#fff;
+	font-weight: bold;
+	text-align: center;
+	line-height: 130px;
+}

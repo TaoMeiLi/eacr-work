@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>个人中心</title>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/denglu.css">
+</head>
+<body>
+	<div class="main">
+		<div class="head_bg">
+			<div class="head">
+				<div class="photo_bg">
+						<div class="photo">
+							<img src="imgs/photo.jpg" alt="">
+						</div><!-- photo -->
+				</div><!-- photo_bg -->
+				<p>超级兵</p>
+				<p>微信号:<span>zF88888888</span></p>
+			</div><!-- head -->
+		</div><!-- head_bg -->
+		<div class="content_bgpc" id="content_bgpc">
+			<div class="contentpc">
+				<a href="">
+					<p><i></i></p>
+					<span>个人信息</span>					
+					<em></em>
+					<span>查看、修改个人信息</span>
+				</a>
+				<a href="">
+					<p><i></i></p>
+					<span>修改密码</span>
+					<em></em>
+				</a>
+				<a href="">
+					<p><i></i></p>
+					<span>我的预约</span>
+					<em></em>
+					<span>1</span>
+				</a>
+				<a href="">
+					<p><i></i></p>
+					<span>我的收藏</span>					
+					<em></em>
+					<span>4</span>
+				</a>
+				<a href="">
+					<p><i></i></p>
+					<span>关于</span>
+					<em></em>
+				</a>
+			</div><!-- contentpc -->
+		</div><!-- content_bgpc -->
+	</div><!-- main -->
+	<script>
+		window.onload=function(){
+			var h=document.documentElement.clientHeight;
+			var cbg=document.getElementById("content_bgpc");
+			cbg.style.height=h+"px";
+		}
+	</script>
+</body>
+</html>

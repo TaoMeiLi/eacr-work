@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>星星</title>
+<style>
+	.star1{
+		display: inline-block;
+		width:20px;
+		height: 20px;
+		background: url(star1.png) center no-repeat;
+		cursor: pointer;
+	}
+	.star2{
+		display: inline-block;
+		width:20px;
+		height: 20px;
+		background: url(star2.png) center no-repeat;
+		cursor: pointer;
+	}
+</style>
+</head>
+<body>
+	<div class="stars">
+		<span class="star1"></span>
+		<span class="star1"></span>
+		<span class="star1"></span>
+		<span class="star1"></span>
+		<span class="star1"></span>
+	</div>
+</body>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script><!-- 引用CDN的js; -->
+<script>
+	$(function(){
+		$(".stars span").bind("click",function(){
+			$(".stars span").attr("class","star1");
+			$(this).attr("class","star2").prev("span").attr("class","star2").prev("span").attr("class","star2").prev("span").attr("class","star2").prev("span").attr("class","star2")
+		})
+	})
+</script>
+</html>

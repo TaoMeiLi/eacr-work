@@ -1,0 +1,374 @@
+.main{
+	width:100%;
+	background: #fff;
+	position: relative;
+}
+#all{
+	width:66px;
+	height: 47px;
+	float: right;
+	text-align: left;
+	/* margin-top: 40px; */
+	top:37px;
+	background: url(../imgs/nav.png) 0 0 no-repeat;
+	position:absolute;
+	z-index:4;
+	right:4%;
+}
+.head_fd{
+	display: none;
+	position: absolute;
+	width:320px;
+	background: #af000d;
+	top:110px;
+	right:25px;
+	border:0px;
+	box-shadow: 3px 3px 10px #000;
+	z-index: 9;
+}
+.head_fd ul li{
+	width:100%;
+	border-bottom: 1px solid #5b0007;
+	padding-top: 20px;
+}
+.head_fd ul li div{
+	height: 90px;
+	margin-left: 30px;
+}
+.head_fd ul li div a{
+	font-size: 42px;
+	color:#fff;
+	text-align: center;
+}
+.carmany_bg{
+	position: relative;
+	width:100%;
+}
+.carmany_bg img{
+	width:100%;
+	/*margin-top:-4px;*/
+}
+.many_l{
+	position: absolute;
+	z-index: 1;
+	top:0px;
+	left:0px;
+}
+.many_l p:nth-child(1){
+	display: inline-block;
+	font-size:33px;
+	color:#fff;
+	font-weight: bold;
+	margin-left:40px;
+	margin-top:50px;
+}
+.many_l p:nth-child(1) span{
+	font-size:65px;
+	font-family: Arial;
+	font-weight: bold;
+	color:#fff;
+}
+.many_l p:nth-child(2){
+	display: inline-block;
+	width:220px;
+	height: 48px;
+	border-radius:24px;
+	background:#cc000f;
+	font-size:28px;
+	color:#fff;
+	font-weight: bold;
+	text-decoration:line-through;
+	text-align: center;
+	line-height: 48px;
+	vertical-align: top;
+	margin-top:20px;
+}
+.many_r{
+	position: absolute;
+	z-index: 1;
+	right:0px;
+	top:0px;
+	margin-right:40px; 
+}
+.many_r p:nth-child(1){
+	font-size:30px;
+	color:#ba000e;
+	text-align: center;
+	margin-top:10px;
+	font-weight: bold;
+}
+.many_r_time{
+	margin-top:10px;
+}
+.many_r_time span:nth-child(2n+1){
+	font-size:25px;
+	font-weight: bold;
+	color:#fff;
+	display: inline-block;
+	width:51px;
+	height: 51px;
+	border-radius:8px;
+	background:#58350f;
+	line-height: 51px;
+	text-align:center;
+}
+.many_r_time span:nth-child(2n){
+	font-size:25px;
+	font-weight: bold;
+	color:#58350f;
+	display: inline-block;
+	line-height: 51px;
+}
+.carname_bg{
+	width:100%;
+}
+.carname{
+	width:92.5%;
+	height: 160px;
+	margin:0 auto;
+	line-height:60px;
+	margin-top:15px;
+}
+.carname p{
+	font-size:45px;
+	font-weight: bold;
+}
+.content{
+	width:100%;
+	background: #fff;
+	padding-bottom:180px;
+}
+.spec_nav_bg,.rate_nav_bg{
+	width:100%;
+	background: #f2f2f2;
+}
+.spec_nav,.rate_nav{
+	width:92.5%;
+	height: 131px;
+	margin:0 auto;
+	line-height:131px;
+}
+.spec_nav i,.rate_nav i{
+	display:inline-block;
+	width:21px;
+	height: 59px;
+	background: #ba000e;
+	vertical-align: top;
+	margin-top:33px;
+}
+.spec_nav span,.rate_nav span{
+	font-size:35px;
+	font-weight: bold;
+	margin-left:15px;
+}
+.spec_con,.rate_con{
+	width:92.5%;
+	margin:0 auto;
+}
+.spec_con1 ul,.spec_con2 ul,.spec_con3 ul{
+	border-bottom:1px solid #a7a7a7;
+	padding-bottom:5px;
+}
+.spec_con1 ul li,.spec_con2 ul li,.spec_con3 ul li{
+	margin-bottom:15px;
+}
+.spec_con1 ul li div:nth-child(1),.spec_con2 ul li div:nth-child(1),.spec_con3 ul li div:nth-child(1){
+	font-size:35px;
+	color:#a7a7a7;
+	font-weight: bold;
+	float:left;
+	width:50%;
+}
+.spec_con1 ul li div:nth-child(2),.spec_con2 ul li div:nth-child(2),.spec_con3 ul li div:nth-child(2){
+	font-size:35px;
+	color:#000;
+	font-weight: bold;
+	float:left;
+	width:50%;
+}
+.rate_con_l ul li,.rate_con_r ul li{
+	font-size:35px;
+	color:#a7a7a7;
+	font-weight: bold;
+	margin-bottom: 15px;
+}
+.rate_con_l,.rate_con_r{
+	width:50%;
+	float:left;
+	margin-top:38px;
+}
+.rate_con_r ul li:nth-child(1),.rate_con_r ul li:nth-child(2){
+	text-decoration: line-through;
+}
+.rate_con_r ul li:nth-child(3) h1{
+	display: inline;
+	color:#ba000e;
+	font-size: 40px;
+	font-weight: bold;
+}
+.rate_con_r ul li:nth-child(3) i{
+	color:#ba000e;
+	font-size: 35px;
+	font-weight: bold;
+}
+.rate_con_r ul li:nth-child(3) p{
+	display: inline-block;
+	width:182px;
+	height: 78px;
+	background: url(../imgs/icon2.png) 0 0 no-repeat;
+	text-align: center;
+	font-size: 32px;
+	line-height: 78px;
+	font-weight: normal;
+	color:#ffa540;
+	margin-left:60px;
+}
+.cargood_bg{
+	width:100%;
+}
+.cargood_bg .cargood_t{
+	width:100%;
+	height: 40px;
+	background: #f2f2f2;
+}
+.cargood{
+	width:92.5%;
+	background: #fff;
+	margin:0 auto;
+}
+.cargood_top p{
+	width:262px;
+	height: 82px;
+	background: #ba000e;
+	text-align: center;
+	padding-top:7px;
+	margin-top: 15px;
+	
+}
+.cargood_top p span{
+	display: inline-block;
+	width:240px;
+	height: 70px;
+	border:2px dashed  #eab3b7;
+	font-size:46px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 72px;
+	color:#fff;
+}
+/*/推荐的6款车////////////////////////////////////////////*/
+
+.cargood_conbg{
+	width:100%;
+	overflow: hidden;
+	margin-top: 40px;
+}
+.cargd_con{
+	width:100%;
+	height: 430px;
+	overflow-y:hidden;
+	overflow-x: auto;
+	position:relative;
+}
+#tabs{
+	position: absolute;
+	height: 430px;
+	top:0;
+	left:0px;
+}
+.cargd_con ul li{
+	width:350px;
+	background: #fff;
+	border:1px solid #d3d3d3;
+	float:left;
+	padding-top:20px ;
+	padding-left:20px;
+	padding-bottom: 20px;
+	margin-right: 20px;	
+	margin-bottom: 40px;
+}
+.cargd_con ul li a{
+	display: inline-block;
+	width:95%;
+}
+.cargd_con ul li a img{
+	width:100%; 
+}
+.cargd_con ul li p:nth-child(2){
+	font-size: 30px;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+.cargd_con ul li p:nth-child(3){
+	font-size: 30px;
+	color:#a7a7a7;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+.cargd_con ul li p:nth-child(4){
+	font-size: 30px;
+	color:#a7a7a7;
+	font-weight: bold;
+	text-decoration:line-through;
+	margin-bottom: 10px;
+}
+.cargd_con ul li p:nth-child(5){
+	font-size: 30px;
+	color:#a7a7a7;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+.cargd_con ul li p:nth-child(5) span{
+	color:#ff0126;
+}
+
+/*//以上为页面底部---推荐车*/
+
+.footer{
+	position: fixed;
+	width:100%;
+	bottom:0px;
+	left:0px;
+	z-index: 8;
+}
+.foot_l{
+	width:41.6%;
+	height: 130px;
+	background: #262626;
+	float: left;
+}
+.foot_l_l,.foot_l_r{
+	text-align: center;
+	width:100%;/*...................*/
+	float: left;
+	margin-top:15px;
+}
+.foot_l_l p:nth-child(1){
+	width:65px;
+	height: 57px;
+	background: url(../imgs/f_nav.png) 0 0 no-repeat;
+	margin-left:170px;
+
+}
+.foot_l_r p:nth-child(1){
+	width:65px;
+	height: 57px;
+	background: url(../imgs/f_nav.png) 0 -70px no-repeat;
+	margin-left:70px;
+}
+.foot_l_l p:nth-child(2) a,.foot_l_r p:nth-child(2){
+	color: #d4d4d4;
+	font-size:36px;
+	font-weight: bold;
+}
+.foot_r{
+	width:58.4%;
+	height: 130px;
+	background: #fe2e7d;
+	float:left;
+	font-size: 36px;
+	color:#fff;
+	font-weight: bold;
+	text-align: center;
+	line-height: 130px;
+}

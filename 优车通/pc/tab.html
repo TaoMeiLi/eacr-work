@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>提车申请</title>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/tab.css">
+</head>
+<body>
+	<div class="main_tab">
+		<div class="top_tab"><span>寻 车 请 求</span> <i id="top_btn"></i></div><!-- tab_top -->
+		<div class="con_tab">
+			<form action="">
+				<ul>
+					<li>
+						<label for="">客户姓名</label>
+						<input type="text" placeholder="姓名">
+						<strong>*</strong>
+					</li>
+					<li>
+						<!-- <label for="">身份证号</label>
+						<input type="text" placeholder="身份证号">
+						<strong>*</strong> -->
+					</li>
+					<li id="tcdd_bg">
+						<label for="">提车地点</label>
+						<div id="tcdd">
+							<!-- <p class="tcdd_cs"><span>北京</span><i>X</i></p> -->
+						</div>
+						<div id="tcdd_btn"><span>选择</span></div>
+						<strong>*</strong>
+						<div id="tcdd_se">
+
+							<div>
+								<span>省份：</span>
+								<select name="" id="plate_sele11">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+								</select>
+							</div>
+							<div>
+								<span>城市：</span>
+								<select name="" id="plate_sele22">
+									<option value="邯郸">邯郸</option>
+									<option value="廊坊">廊坊</option>
+									<option value="唐山">唐山</option>
+									<option value="保定">保定</option>
+									<option value="衡水">衡水</option>
+									<option value="石家庄">石家庄</option>
+								</select>
+							</div>
+							<div id="tcdd_add">
+								<span>添加</span>
+							</div>
+						</div>
+					</li><!-- tcdd_bg -->
+					<li id="spdd_bg">
+						<label for="">上牌地点</label>
+						<select name="" id="">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+						</select>
+						<span>-</span>
+						<select name="" id="">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+						</select>
+						<span>添加</span>
+						<strong>*</strong>
+					</li><!-- spdd_bg -->
+					<li>
+						<label for="">品牌</label>
+						<select name="" id="">
+							<option value="">全部</option>
+						</select>
+						<strong>*</strong>
+					</li>
+					<li>
+						<label for="">车系</label>
+						<select name="" id="">
+							<option value="">全部</option>
+						</select>
+						<strong>*</strong>
+					</li>
+					<li>
+						<label for="">配置</label>
+						<select name="" id="">
+							<option value="">全部</option>
+						</select>
+						<strong>*</strong>
+					</li>
+					<li>
+						<label for="">车辆颜色</label>
+						<select name="" id="">
+							<option value="">全部</option>
+						</select>
+					</li>
+					<li>
+						<label for="">内饰颜色</label>
+						<select name="" id="">
+							<option value="">全部</option>
+						</select>
+					</li>
+					<li>
+						<label for="">备注</label>
+						<input type="textarea" cols="40" rows="4" >
+					</li>
+					<li>
+						<input type="button" value="提 交">
+					</li>
+				</ul>
+			</form>
+		</div><!-- con_tab -->	
+	</div><!-- main_tab -->
+</body>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script><!-- 引用CDN的js; -->
+<script src="js/tab.js"></script>
+</html>

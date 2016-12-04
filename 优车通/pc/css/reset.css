@@ -1,0 +1,55 @@
+*{
+	padding:0;
+	margin:0;
+}
+html {
+	font-family:'Microsoft Yahei','Hiragino Sans GB',"WenQuanYi Micro Hei",SimSun,Tahoma,Arial,sans-serif,Helvetica,STHeiti;
+	font-size:14px;
+
+	/*	依次是 微软雅黑、“苹果丽黑字体”(这个是苹果系列设备上用)，文泉驿(细)微米黑字体，宋体，Tahoma,Arial,Helvetica,苹果黑体字体(这个是苹果系列设备上用)
+	*/
+}
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, form, fieldset, input, button, textarea, p, th, td, b, i, strong,em {
+	font-family:'Microsoft Yahei','Hiragino Sans GB',"WenQuanYi Micro Hei",SimSun,Tahoma,Arial,sans-serif,Helvetica,STHeiti;
+	padding: 0;
+	margin: 0;
+	font-size:14px;
+}
+strong,b,i,em{
+	font-style:normal;
+	font-weight: normal;
+}
+fieldset, img {
+	border: 0
+}
+a {
+	text-decoration: none;
+	color: #000;
+	outline: none
+}
+li {
+	list-style: none
+}
+h1, h2, h3, h4, h5, h6 {
+	font-size: 100%;
+	font-weight: normal
+}
+input, button, textarea, select, optgroup, option {
+	font-family: inherit;
+	font-size: inherit;
+	font-style: inherit;
+	font-weight: inherit
+}
+input, button, textarea, select {
+*font-size:100%
+}
+.clear:after {
+	display: block;
+	content: "clear";
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+.clear {
+	zoom: 1;
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>收货地址</title>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/addres.css">
+</head>
+<body>
+
+			<div class="right">
+				<div class="addres">
+					<div class="addres_title">
+						<h1>收货地址</h1>
+						<hr>
+					</div><!-- addres_title -->
+					<div class="addres_con">
+						<div class="addres_nav">
+							<input type="button" value="新增" id="add">
+							<input type="button" value="删除" id="delete">
+						</div><!-- addres_nav -->
+						<table cellspacing="0">
+							<tr class="first">
+								<th><input type="checkbox" id="all_checked"></th>
+								<th>姓名</th>
+								<th>联系电话</th>
+								<th>地址</th>
+								<th>操作</th>
+							</tr>
+							<tr>
+								<td><input type="checkbox" class="check"></td>
+								<td>陶美利</td>
+								<td>13788888888</td>
+								<td>北京朝阳</td>
+								<td><input type="button" value="修改"></td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" class="check"></td>
+								<td>小胖</td>
+								<td>15555888888</td>
+								<td>北京东城区</td>
+								<td><input type="button" value="修改"></td>
+							</tr>
+							
+						</table>
+						<div class="addres_add">
+							<div class="add_nav">
+								<span>收货地址管理</span>
+								<i id="dele_tab"></i>
+							</div><!-- add_nav -->
+							<div class="add_con">
+								<p>
+									<span>姓名：</span>
+									<input type="text" placeholder="姓名" id="user_name">
+								</p>
+								<p>
+									<span>联系电话：</span>
+									<input type="text" placeholder="联系电话" id="user_phone">
+								</p>
+								<p>
+									<span>地址：</span>
+									<input type="text" placeholder="地址" id="user_addres">
+								</p>
+								<p><input type="button" value="确定" id="addok"></p>
+							</div><!-- add_con -->
+						</div><!-- addres_add -->
+					</div><!-- addres_con -->
+				</div><!-- addres -->
+			</div><!-- right -->
+
+</body>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script><!-- 引用CDN的js; -->
+<script src="js/addres.js"></script>
+</html>

@@ -1,0 +1,62 @@
+<html>
+<body>
+<head>
+	<meta charset="utf-8">
+</head>
+<script language="javascript">
+function GetByteLength(index)
+{
+var s = document.all(index).value;
+var l= s.length;
+var i=0;
+var c=0;
+var actLength=l;
+while(i<l){
+c=s.charCodeAt(i);
+if(c>255)
+actLength++;
+i++;
+}
+return(actLength);
+}
+
+function CheckMaxlength()
+{
+var byteLen,maxLen;
+for(i=0;i<document.all.length;i++)
+{
+if(document.all(i).type == "text")
+{
+byteLen = GetByteLength(i);
+maxLen = document.all(i).maxLength;
+if((maxLen > 0) && (maxLen < byteLen))
+{
+document.all(i).focus();
+alert("输入的内容　＂" + document.all(i).value + "＂　超过实际长度\n最多输入" + Math.floor(maxLen/2).toString() + "个汉字或"+ maxLen + "个字母");
+document.all(i).set
+return(false); 
+}
+}
+}
+return(true);
+}
+
+function CLength(index)
+{
+var str=document.all(index).value;
+//alert(str);
+re=/[\u4E00-\u9FA5]/g;
+if(re.test(str))
+{
+    //alert(str.match(re).length);
+    return str.match(re).length;
+}
+else return 0;
+}
+</script>
+<input type="text" name="test" size=100 value="dddd测试定居点军军ddafa" maxlength="25"><br>
+<input type="text" name="test1" size=100 value="dddd测试定居dd点军军ddafa" maxlength="24"><br>
+<input type="Text" name="test2" size=100 value="dddd测试定居dd点军军ddafa" maxlength="10"><br>
+<input type="button" onClick="CheckMaxlength()" value="test length">
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>合作加盟</title>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/join.css">
+</head>
+<body>
+	<div class="main">
+		<div class="top_bg">
+			<div class="top">
+				<img src="images/dl_logo.png" alt="">
+				<h1>已有优车通账号？&nbsp;&nbsp;&nbsp;<span>登录</span></h1>
+			</div>
+		</div><!-- top_bg -->
+		<div class="con_bg">
+			<div class="con">
+				<div class="con_nav"><span>合作商加盟</span></div><!-- con_nav -->
+				<div class="connection">
+					<ul>
+						<li>
+							<span>联系业务人</span>
+							<input type="text">
+							<i>*</i>
+						</li>
+						<li>
+							<span>联系人电话</span>
+							<input type="text">
+							<i>*</i>
+						</li>
+						<li>
+							<input type="text">
+							<span>获取验证码</span>
+							<i>*</i>
+						</li>
+					</ul>
+				</div><!-- connection -->
+				<div class="address">
+					<div>
+						<span>经营地址</span>
+						<input type="text" placeholder="北京市朝阳区广渠门外大街8号优士阁B座">
+					</div>
+				</div><!-- address -->
+				<div class="charter">
+					<span>营业执照</span>
+					<div id="charter_img"></div>
+					<a href="javascript:void(0)" id="charter_btn"><input type="file" />点击上传</a>
+				</div><!-- charter  -->
+				<div class="card">
+					<span>身份证</span>
+					<div>
+						<div id="card1_img"></div>
+						<a href="javascript:void(0)" id="card1_btn"><input type="file" />点击上传</a>
+					</div>
+					<div>
+						<div id="card2_img"></div>
+						<a href="javascript:void(0)" id="card2_btn"><input type="file" />点击上传</a>
+					</div>
+				</div><!--   card -->
+				<div class="place">
+					<span>营业场地</span>
+					<div>
+						<div id="place1_img"></div>
+						<a href="javascript:void(0)" id="place1_btn"><input type="file" />点击上传</a>
+					</div>
+					<div>
+						<div id="place2_img"></div>
+						<a href="javascript:void(0)" id="place2_btn"><input type="file" />点击上传</a>
+					</div>
+				</div><!-- place  -->
+				<div class="submit">
+					<div>提交申请</div>
+				</div><!-- submit -->
+			</div><!-- con -->
+		</div><!-- con_bg -->
+		<div class="foot"><p>京ICP备15048886号</p></div>
+	</div><!-- main -->
+</body>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script><!-- 引用CDN的js; -->
+<script>
+$("#charter_btn").bind("change",function(){
+	var img='<img src="'+$(this).val()+'"/>';
+    $('#charter_img').append(img);
+})
+$("#card1_btn").bind("change",function(){
+	var img='<img src="'+$(this).val()+'"/>';
+    $('#card1_img').append(img);
+})
+$("#card2_btn").bind("change",function(){
+	var img='<img src="'+$(this).val()+'"/>';
+    $('#card2_img').append(img);
+})
+$("#place1_btn").bind("change",function(){
+	var img='<img src="'+$(this).val()+'"/>';
+    $('#place1_img').append(img);
+})
+$("#place2_btn").bind("change",function(){
+	var img='<img src="'+$(this).val()+'"/>';
+    $('#place2_img').append(img);
+})
+</script>
+</html>

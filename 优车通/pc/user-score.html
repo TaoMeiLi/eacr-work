@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>积分记录</title>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/score.css">
+</head>
+<body>
+	<div class="main">
+		<div class="article-main">
+			<div class="left" style="width: 190px; height: 300px;background: #ddd; float: left;"></div>
+			<div class="right">
+				<div class="score">
+					<div id="score_tite">
+						<h1 id="tite_1" >积分记录</h1>
+						<h1 id="tite_2" >购车记录</h1>
+					</div><!-- score_tite -->
+					<hr>
+					<div class="score_con">
+						<div class="score_tab1" id="score_tab1">
+							<table>
+								<tr>
+									<th>时间</th>
+									<th>事件</th>
+									<th>分数</th>
+								</tr>
+								<tr>
+									<td>2015-12-17 10:13:13</td>
+									<td>购车三星评价</td>
+									<td>2</td>
+								</tr>
+							</table>
+						</div><!-- score_tab1 -->
+						<div class="score_tab2" id="score_tab2">
+							<table>
+								<tr>
+									<th>成交时间</th>
+									<th>经销商</th>
+									<th>车型</th>
+								</tr>
+								<tr>
+									<td>2015-12-17 10:13:13</td>
+									<td>北京联通昊普汽车销售服务有限公司</td>
+									<td>2015款别克GL8 2.4L 豪华商务15款别克GL8 2.4L 豪华商务灌灌灌灌</td>
+								</tr>
+							</table>
+						</div><!-- score_tab2 -->
+					</div><!-- score_con -->
+				</div><!-- score -->
+			</div><!-- right -->
+		</div><!-- article-main -->
+	</div><!-- main -->
+</body>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script><!-- 引用CDN的js; -->
+<script>
+$("#tite_1").bind("click",function(){
+	$("#tite_1").css({"color":"#000"});
+	$("#tite_2").css({"color":"#ddd"});
+	$("#score_tab2").hide();
+	$("#score_tab1").show();
+})
+$("#tite_2").bind("click",function(){
+	$("#tite_2").css({"color":"#000"});
+	$("#tite_1").css({"color":"#ddd"});
+	$("#score_tab1").hide();
+	$("#score_tab2").show();
+})	
+</script>
+</html>

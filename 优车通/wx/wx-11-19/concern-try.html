@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>我的关注</title>
+	<link rel="stylesheet" href="css/denglu.css">
+	<link rel="stylesheet" href="css/reset.css">
+</head>
+<body>
+	<div class="main">
+		<div class="head_bgc">
+			<div class="headc ">
+				<div><span>淘淘特价车</span></div>
+				<span id="all"></span>
+			</div>
+			<div class="head_fdc" id="head_fd">
+				<ul>
+					<li>
+						<div><a href="">精品物惠</a></div>
+						<div><a href="">淘淘特价</a></div>
+					</li>
+					<li>
+						<div><a href="">我的淘淘</a></div>
+						<div><a href="">我的预约</a></div>
+						<div><a href="">我的关注</a></div>
+					</li>
+					<li>
+						<div><a href="">关于淘淘</a></div>
+					</li>
+				</ul>
+			</div><!-- head_fdc -->
+		</div><!-- head_bgc -->
+		<ul class="content">
+			<li class="clear" class="content_con">
+				<div class="con_left">
+					<img src="imgs/car_photo/carpho.png" alt="">
+				</div><!-- con_left -->
+				<div class="con_rig" >
+					<h1>奥迪A3 Limousine 35 TFSI 自动舒适型</h1>
+					<h2>配Bang＆Olufsen音响</h2>
+					<div class="rig_xq clear">
+						<div class="rig_l">
+							<ul>
+								<li >
+									<i>车辆颜色:</i>
+									<span>颜色一样一样</span>
+								</li>
+								<li>
+									<i>内饰颜色:</i>
+									<span>内饰颜色是是是</span>
+								</li>
+								<li>
+									<i>厂商指导价格:</i>
+									<span>厂商指导价格</span>
+								</li>
+								<li>
+									<i>市场正常价格:</i>
+									<span>市场正常价格</span>
+								</li>
+								<li>
+									<i>淘淘特价:</i>
+									<span>taotaotejia</span>
+								</li>
+							</ul>
+						</div><!-- rig_l -->
+						<div class="rig_r">
+							
+						</div><!-- rig_r -->
+						<!-- <div class="rig_l">
+							<p>车辆颜色&nbsp;:&nbsp;<span>白色</span></p>
+							<p>厂商指导价格</p>
+							<p>市场正常价格</p>
+							<p>淘淘特价</p>
+						</div> --><!-- rig_l -->
+						<!-- <div class="rig_r">
+							<p>内饰颜色&nbsp;:&nbsp;<span>白色</span></p>
+							<p><span>￥<i>72.8</i>万元</span></p>
+							<p><span>￥<i>71.6</i>万元</span></p>
+							<p><span>￥<i>67.2</i>万</span></p>
+						</div> --><!-- rig_r -->
+						<!-- <div class="rig_rr">
+							<p>优惠</p>
+							<span>5.6</span><i>万</i>
+						</div> --><!-- rig_rr -->
+					</div><!-- rig_xq -->
+					<div class="biao">
+						<p>已被预约</p>
+						<p></p>
+						<p>立即付款</p>
+						<p>取消关注</p>
+					</div><!-- biao -->
+				</div><!-- con_rig -->
+			</li>
+		</ul><!-- content -->
+	</div><!-- main -->
+	<script>
+		var head_fd=document.getElementById("head_fd");
+		falt=0;
+		all.addEventListener("touchstart",function(){
+		if(falt==0){
+			head_fd.style.display="block";
+			falt=1;
+		}else if(falt==1){
+			head_fd.style.display="none";
+			falt=0;
+		}// var all=document.getElementById("all");
+	
+	},false)
+
+	</script>
+</body>
+</html>

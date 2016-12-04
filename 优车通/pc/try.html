@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<meta charset="utf-8">
+<TITLE>选择下拉菜单--http://www.yongfa365.com/item/686ba37800f67121.html</TITLE>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<META NAME="Description" CONTENT="Power by 51windows.Net">
+</HEAD>
+<BODY>
+<form method="post" name="myform">
+<table border="1" width="400">
+<tr>
+<td><CENTER>
+可选择排序方式
+</CENTER></td>
+<td></td>
+<td><CENTER>
+已选择排序方式
+</CENTER></td>
+</tr>
+<tr>
+<td width="40%"><select style="width:100%;" multiple name="left" size="8"
+ondblclick="moveOption(document.getElementById('left'), document.getElementById('right'))">
+<option value="20">按编入时间(晚到早)</option>
+<option value="30">按编入时间(早到晚)</option>
+<option value="40">按点击率(升序)</option>
+<option value="50">按点击率(降序)</option>
+<option value="60">按资产名称(升序)</option>
+<option value="70">按资产名称(升序)</option>
+</select>
+</td>
+<td width="20%" align="center"><input type="button" value=" >>>> " onClick="moveOption(document.getElementById('left'), document.getElementById('right'))">
+<br>
+<br>
+<input type="button" value=" <<<< " onClick="moveOption(document.getElementById('right'), document.getElementById('left'))">
+</td>
+<td width="40%"><select style="width:100%;" multiple name="right" size="8"
+ondblclick="moveOption(document.getElementById('right'), document.getElementById('left'))">
+</select>
+</td>
+</tr>
+<tr>
+<td colspan="3"><CENTER>
+<INPUT TYPE="button" value="优先级上升" onClick="changepos(right,-1)">
+<INPUT TYPE="button" value="优先级下降" onClick="changepos(right,1)">
+<INPUT TYPE="button" value="优先级置顶" onClick="gototop(right)">
+</CENTER></td>
+</tr>
+</table>
+值：
+<input type="text" name="result" id="result" size="40" value="" />
+</form>
+<script language="JavaScript">
+<!--
+function moveOption(e1, e2){
+for(var i=0;i<e1.options.length;i++){
+if(e1.options[i].selected){
+var e = e1.options[i];
+e2.options.add(new Option(e.text, e.value));
+e1.remove(i);
+i=i-1
+}
+}
+document.getElementById('result').value=getvalue(document.getElementById('right'));
+}
+function getvalue(geto){
+//var allvalue = "";
+//for(var i=0;i<geto.options.length;i++){
+// allvalue +=geto.options[i].value + ",";
+//}
+var resultArray = new Array();
+for(var i=0;i<geto.options.length;i++){
+resultArray.push(geto.options[i].value);
+}
+return resultArray.join();
+}
+function changepos(obj,index){
+if(index==-1){
+if(obj.selectedIndex !=-1){
+if (obj.selectedIndex>0){
+obj.options(obj.selectedIndex).swapNode(obj.options(obj.selectedIndex-1));
+document.getElementById('result').value=getvalue(document.getElementById('right'));
+}
+}else{
+alert("请至少选择一个已选择排序方式");
+}
+}else if(index==1){
+if(obj.selectedIndex !=-1){
+if (obj.selectedIndex<obj.options.length-1) {
+obj.options(obj.selectedIndex).swapNode(obj.options(obj.selectedIndex+1));
+document.getElementById('result').value=getvalue(document.getElementById('right'));
+}
+}else{
+alert("请至少选择一个已选择排序方式");
+}
+}
+}
+function gototop(obj){
+if(obj.multiple){
+if(obj.selectedIndex !=-1){
+for(var selIndex=0; selIndex<obj.options.length; selIndex++){
+if(obj.options[selIndex].selected){
+var transferIndex = selIndex;
+while(transferIndex > 0 && !obj.options[transferIndex - 1].selected){
+obj.options[transferIndex].swapNode(obj.options[transferIndex - 1]);
+transferIndex --;
+}
+document.getElementById('result').value=getvalue(document.getElementById('right'));
+}
+}
+}else{
+alert("请至少选择一个已选择排序方式");
+}
+}else{
+if(obj.selectedIndex !=-1){
+var selIndex = obj.selectedIndex;
+while(selIndex > 0){
+obj.options[selIndex].swapNode(obj.options[selIndex - 1]);
+selIndex --;
+}
+document.getElementById('result').value=getvalue(document.getElementById('right'));
+}else{
+alert("请至少选择一个已选择排序方式");
+}
+}
+}
+//-->
+</script>
+</BODY>
+</HTML>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/float.css">
+</head>
+<body>
+	<div id="float_bg"></div><!-- float_bg -->
+	<div id="float_tab">
+		<ul>
+			<li id="order_f">
+				<i></i>
+				<span>预约管理</span>
+				<a href="javascript:void(0);"><span>3</span><i>条</i></a>
+			</li><!-- order_f -->
+			<li id="knockdown_f">
+				<i></i>
+				<span>成交管理</span>
+				<a href="javascript:void(0);"><span>10</span><i>条</i></a>
+			</li><!-- order_f -->
+			<li id="find_f">
+				<i></i>
+				<span>寻车管理</span>
+				<a href="javascript:void(0);"><span>1</span><i>条</i></a>
+			</li><!-- order_f -->
+		</ul>
+		<div id="delete_f"></div><!-- delete_f -->
+	</div><!-- float_tab -->
+</body>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script><!-- 引用CDN的js; -->
+<script>
+	var oHF=window.screen.availHeight;
+	var oWF=window.screen.availWidth; 
+	$("#float_bg").css({"width":oWF,"height":oHF});
+	$("#delete_f").bind("click",function(){
+		$("#float_bg").hide();
+		$("#float_tab").hide();
+	})
+</script>
+</html>
